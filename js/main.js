@@ -327,14 +327,21 @@ function displayEditNameArry(element, index) {
   document.getElementById("nameEditContainer").innerHTML += `
         <span id="inputContainer_${index}">
           <input type="text" readonly="readonly" value="${element}" class="nameEditItem">
-          <button class="removeNameInArray" onclick="removeNameInArray(${index})">X</button>
+<button class="removeNameInArray" onclick="removeNameInArray(${index}, '${element}')">X</button>
+
         </span>`;
 }
 
-function removeNameInArray(index) {
+function removeNameInArray(index, element) {
+
   if (index != "undefined" && index > -1) {
     namesData.splice(index, 1);
     document.getElementById("nameEditContainer").innerHTML = "";
+    for (var key in localStorage) {
+      if (key.startsWith("buttonData_" + element + "_")) {
+        localStorage.removeItem(key);
+      }
+    }
     namesData.forEach(displayEditNameArry);
   }
 }
