@@ -36,42 +36,42 @@ loadDate();
 
 function loadDate() {
 
-  if (localStorage.getItem("namesData") == null) {
+  for (let i = 1; i <= daysInMonth.length; i++) {
+
+    document.getElementById("numer").innerHTML +=
+      '<span class="numerRow">' +
+      '<p class="numer">' + i + '</p>' +
+      '</span>';
+  }
+
+  if (storedMonth != null && (storedYear != year || storedMonth != month)) {
+    for (var key in localStorage) {
+      if (key.startsWith('OLD_')) {
+        localStorage.removeItem(key);
+      }
+    }
+  }
+
+  if (storedMonth != null && (storedYear != year || storedMonth != month)) {
+    for (var key in localStorage) {
+      if (key.startsWith('buttonData_')) {
+        const value = localStorage.getItem(key);
+        const newKey = key.replace('buttonData_', 'OLD_');
+        localStorage.setItem(newKey, value);
+        localStorage.removeItem(key);
+      }
+    }
+  }
+
+  localStorage.setItem("storedYear", year);
+  localStorage.setItem("storedMonth", month);
+
+  if (localStorage.getItem("namesData") == null || localStorage.getItem("namesData") == "undefined") {
     document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>"
   } else {
 
     if (storedMonth != null && (storedYear != year || storedMonth != month)) {
       localStorage.setItem("namesDataOld", localStorage.getItem("namesData"));
-    }
-
-    if (storedMonth != null && (storedYear != year || storedMonth != month)) {
-      for (var key in localStorage) {
-        if (key.startsWith('OLD_')) {
-          localStorage.removeItem(key);
-        }
-      }
-    }
-
-    if (storedMonth != null && (storedYear != year || storedMonth != month)) {
-      for (var key in localStorage) {
-        if (key.startsWith('buttonData_')) {
-          const value = localStorage.getItem(key);
-          const newKey = key.replace('buttonData_', 'OLD_');
-          localStorage.setItem(newKey, value);
-          localStorage.removeItem(key);
-        }
-      }
-    }
-
-    localStorage.setItem("storedYear", year);
-    localStorage.setItem("storedMonth", month);
-
-    for (let i = 1; i <= daysInMonth.length; i++) {
-
-      document.getElementById("numer").innerHTML +=
-        '<span class="numerRow">' +
-        '<p class="numer">' + i + '</p>' +
-        '</span>';
     }
 
     namesData = JSON.parse(localStorage.getItem("namesData"));
@@ -104,7 +104,10 @@ function main(namesData) {
 
   let names = namesData
 
-
+  if (localStorage.getItem("namesData") == null || localStorage.getItem("namesData") == "undefined") {
+    document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>"
+    return;
+  }
 
   for (let i = 0; i < namesData.length; i++) {
 
