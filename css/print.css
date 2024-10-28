@@ -1,7 +1,8 @@
 body {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    zoom: 69%;
+    /* zoom: 69%; */
+    transform: scale(calc(69 / 100));
     margin: 0;
     padding: 0;
     page-break-inside: avoid;
