@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="sv-SE">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+  <link rel="stylesheet" type="text/css" media="print" href="css/print.css">
+  <noscript>
+    <title>JavaScript måste vara aktiverat</title>
+  </noscript>
+</head>
+
+<body>
+
+  <header id="menuTopButtons" class="dont-print-that">
+
+    <button class="MenuButtons dont-print-that" onclick="dialogEditTopBar()">Redigera</button>
+
+    <button class="MenuButtons dont-print-that" onclick="dialogPrint()">Skriv ut</button>
+
+    <button class="MenuButtons dont-print-that" onclick="fullScreen()">Fullskärmsläge</button>
+
+  </header>
+
+  <main id="layoutMain">
+    <div class="dont-print-that" id="NoNetworkDiv">
+      <h1 id="titelNoNetwork" class="dont-print-that">Du är offline. Kontrollera anslutningen.
+      </h1>
+    </div>
+    <div class="title-container">
+      <div class="title title-child">
+        <a id="titelDataTitel"></a>
+        <br>
+        <a id="titleDate"></a>
+      </div>
+
+      <div class="info-Box title-child">
+        <div class="info-Heldag-Box">
+          <a class="info-Text">Heldag</a>
+        </div>
+        <div class="info-Halvdag-Box">
+          <a class="info-Text">Halvdag</a>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="column">
+
+      <div class="numerCenter" id="numer"></div>
+
+      <div id="column"></div>
+
+      <dialog id="dialog">
+        <h1 id="dialogName"></h1>
+
+        <div class="dialogTop">
+          <button class="dialogButton_X" id="dialogX">
+            Här
+            <br>
+            [X]
+          </button>
+
+          <button class="dialogButton_M" id="dialogM">
+            Äta
+            <br>
+            [M]
+          </button>
+
+          <button class="dialogButton_L" id="dialogL">
+            Ledigt/Semester
+            <br>
+            [L]
+          </button>
+        </div>
+        <br>
+
+        <button class="dialogButton_-" id="dialog-">
+          Inte här
+          <br>
+          [-]
+        </button>
+
+        <button class="dialogButton_S" id="dialogS">
+          Sjuk
+          <br>
+          [S]
+        </button>
+
+        <button id="dialogRensa">Sudda</button>
+        <button class="dialogclose" id="dialogclose">Stäng</button>
+      </dialog>
+
+      <dialog id="MenuButtonEditDialog">
+
+        <h1 class="menuTitelEditDialog">Redigera</h1>
+        <br>
+        <h2 class="menuTitelEditDialog">Grupp namn</h2>
+        <p class="viktigtMedelande">Max 90 tecken</p>
+        <div id="gruppEditContainer"></div>
+        <br>
+        <h2 class="menuTitelEditDialog">Deltagare</h2>
+        <p class="viktigtMedelande">Mer än 21 deltagare kan orsaka visuella problem vid ut skrift!</p>
+        <div class="AddNames">
+          <input type="text" id="newNameInput" placeholder="Deltagareens namn">
+          <button class="dialogAddName" id="MenuButtonEditDialogAdd" onclick="addNameInArray()">Lägg till
+            deltagare</button>
+        </div>
+        <div id="nameEditContainer"></div>
+
+        <button class="dialogclose" id="MenuButtonEditDialogclose">Stäng</button>
+        <button class="dialogSave" id="MenuButtonEditDialogSave">Spara</button>
+      </dialog>
+
+      <!-- Print menu -->
+      <dialog id="MenuButtonPrintDialog">
+        <h1 class="prinDialogTitel">Skriv ut <br> för</h1>
+
+        <button class="dialogButtonPrintOld" id="MenuButtonPrintOld">
+          Föra måndaden
+        </button>
+
+        <button class="dialogButtonPrintCurrent" id="MenuButtonPrintCurrent">
+          Denna måndaden
+        </button>
+
+        <button class="dialogclose" id="MenuButtonPrintDialogclose">Stäng</button>
+      </dialog>
+
+      <noscript>Tyvärr, din webbläsare stöder inte JavaScript!</noscript>
+    </div>
+  </main>
+</body>
+<script src="js/main.js"></script>
+<script src="js/print.js"></script>
+<script src="js/fullscreen.js"></script>
+
+
+<script src="js/dev.js"></script>
+
+</html>

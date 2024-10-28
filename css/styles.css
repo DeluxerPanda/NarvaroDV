@@ -1,0 +1,424 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  display: table;
+  margin: auto;
+}
+
+body {
+  display: table-cell;
+  vertical-align: middle;
+  background-color: #d8dee9;
+}
+
+.headers {
+  overflow-y: scroll;
+}
+
+#titelNoNetwork {
+  background-color: #bf616a;
+  color: white;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  margin-inline: auto;
+  padding: 8px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bolder;
+}
+
+.title-container {
+  padding-top: 25px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: fit-content;
+}
+
+.title {
+  margin-right: 25px;
+  text-align: center;
+  font-weight: 900;
+  font-size: larger;
+}
+
+.info-Box {
+  float: right;
+}
+
+.info-Heldag-Box {
+  border: 2px solid rgba(0, 0, 0, 0.8);
+  background-color: green;
+  height: 30px;
+  width: 34px;
+}
+
+.info-Text {
+  padding-left: 40px;
+}
+
+.info-Halvdag-Box {
+  border: 2px solid rgba(0, 0, 0, 0.8);
+  background-color: white;
+  height: 30px;
+  width: 34px;
+}
+
+.column {
+  background-color: white;
+  padding-left: 35px;
+  padding-right: 35px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+#column {
+  text-align: center;
+  /* 376px */
+}
+
+.numer {
+  font-weight: 900;
+  text-align: center;
+  background-color: white;
+  width: 37px;
+  height: 22px;
+  padding: 0;
+  margin: 0;
+}
+
+.numerCenter {
+  /* padding-left: 110px; */
+  text-align: center;
+  margin-left: 110px;
+}
+
+.numerRow {
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.8);
+}
+
+.nameContainer {
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  display: inline-block;
+  width: 110px;
+  height: 45px;
+
+}
+
+.name {
+  margin: auto;
+  text-align: center;
+  font-weight: 900;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.Row {
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.8);
+}
+
+
+.Row-Heldag {
+  background-color: green;
+  float: right;
+  width: 37px;
+  height: 22px;
+}
+
+.Row-Halvdag {
+  background-color: white;
+  float: left;
+  width: 37px;
+  height: 22px;
+}
+
+.Row-weekend {
+  background-color: red;
+  float: left;
+  width: 37px;
+}
+
+.full-width-button {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: block;
+}
+
+.MenuButtons {
+  color: #e5e9f0;
+  background-color: #434c5e;
+  border-radius: 8px;
+  padding: 5px;
+  text-align: center;
+  font-weight: 900;
+}
+
+.MenuButtons:hover {
+  color: #bfb9b9;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.4);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+dialog {
+  background-color: #d8dee9;
+  border-radius: 8px;
+  text-align: center;
+}
+
+button,
+input[type=button] {
+  outline: none;
+}
+
+button::-moz-focus-inner,
+input[type=button]::-moz-focus-inner {
+  border: 0;
+
+}
+
+.dialogTop {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialogButton_X {
+  border-radius: 8px;
+  text-align: center;
+  background-color: green;
+  color: white;
+  font-weight: 900;
+  height: 100px;
+  width: 100px;
+}
+
+.dialogButton_X:hover {
+  background-color: darkgreen;
+}
+
+.dialogButton_M {
+  border-radius: 8px;
+  text-align: center;
+  background-color: green;
+  color: white;
+  font-weight: 900;
+  height: 100px;
+  width: 100px;
+}
+
+.dialogButton_M:hover {
+  background-color: darkgreen;
+}
+
+.dialogButton_- {
+  border-radius: 8px;
+  text-align: center;
+  background-color: crimson;
+  color: white;
+  font-weight: 900;
+  height: 100px;
+  width: 100px;
+}
+
+.dialogButton_-:hover {
+  background-color: darkred;
+}
+
+.dialogButton_L {
+  border-radius: 8px;
+  text-align: center;
+  background-color: goldenrod;
+  color: white;
+  font-weight: 900;
+  height: 100px;
+  width: 100px;
+}
+
+.dialogButton_L:hover {
+  background-color: darkgoldenrod;
+}
+
+.dialogButton_S {
+  border-radius: 8px;
+  text-align: center;
+  background-color: crimson;
+  color: white;
+  font-weight: 900;
+  height: 100px;
+  width: 100px;
+}
+
+.dialogButton_S:hover {
+  background-color: darkred;
+}
+
+#dialogRensa {
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 900;
+  font-size: large;
+  height: 80px;
+  width: 80px;
+  float: left;
+  margin-top: 2rem;
+  margin-inline: 2rem;
+}
+
+#dialogRensa:hover {
+  background-color: #555;
+}
+
+.dialogclose {
+  border-radius: 8px;
+  text-align: center;
+  background-color: red;
+  color: white;
+  font-weight: 900;
+  font-size: large;
+  height: 80px;
+  width: 80px;
+  float: right;
+  margin-top: 2rem;
+  margin-inline: 2rem;
+}
+
+.dialogclose:hover {
+  background-color: darkred;
+}
+
+
+/* dialog button save */
+.dialogSave {
+  border-radius: 8px;
+  text-align: center;
+  background-color: seagreen;
+  color: white;
+  font-weight: 900;
+  font-size: large;
+  height: 80px;
+  width: 80px;
+  float: right;
+  margin-top: 2rem;
+}
+
+.dialogSave:hover {
+  background-color: darkgreen;
+}
+
+.dialogAddName {
+  border-radius: 8px;
+  text-align: center;
+  background-color: green;
+  color: white;
+  font-weight: 900;
+  font-size: large;
+}
+
+.dialogAddName:hover {
+  background-color: darkgreen;
+}
+
+
+/*  */
+
+.menuTitelEditDialog {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+
+.gruppEditItem {
+  display: inline;
+  margin-inline: auto;
+  text-align: center;
+  font-size: 2rem;
+  width: 100%;
+}
+
+.nameEditItem {
+  padding: 10px;
+  text-align: center;
+  font-size: 2rem;
+  width: 200px;
+}
+
+#nameEditContainer {
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 20px;
+}
+
+.removeNameInArray {
+  background-color: red;
+  color: black;
+}
+
+
+.dialogButtonPrintOld {
+  border-radius: 8px;
+  font-weight: 900;
+  font-size: large;
+  text-align: center;
+  background-color: orange;
+  color: black;
+  padding: 0.1rem;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.dialogButtonPrintOld:hover {
+  background-color: darkorange;
+}
+
+.dialogButtonPrintCurrent {
+  border-radius: 8px;
+  font-weight: 900;
+  font-size: large;
+  text-align: center;
+  width: 100%;
+  background-color: green;
+  color: black;
+  padding: 1rem;
+}
+
+.dialogButtonPrintCurrent:hover {
+  background-color: darkgreen;
+}
+
+.prinDialogTitel {
+  text-align: center;
+  margin: 0;
+}
+
+.viktigtMedelande {
+  border-radius: 8px;
+  background-color: #bf616a;
+  color: white;
+  padding: 5px;
+  margin-inline: auto;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+}
+
+#layoutMain {
+  width: 100%;
+  max-height: 100vh;
+  /* Limit height to viewport height */
+  overflow-y: auto;
+  /* Enable vertical scrolling */
+  background-color: white;
+}
