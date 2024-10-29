@@ -14,7 +14,6 @@
 </head>
 
 <body>
-
   <header id="menuTopButtons" class="dont-print-that">
 
     <button class="MenuButtons dont-print-that" onclick="dialogEditTopBar()">Redigera</button>
@@ -97,22 +96,24 @@
       <dialog id="MenuButtonEditDialog">
 
         <h1 class="menuTitelEditDialog">Redigera</h1>
-        <br>
+
         <h2 class="menuTitelEditDialog">Grupp namn</h2>
         <p class="viktigtMedelande">Max 90 tecken</p>
         <div id="gruppEditContainer"></div>
-        <br>
+
         <h2 class="menuTitelEditDialog">Deltagare</h2>
         <p class="viktigtMedelande">Mer än 21 deltagare kan orsaka visuella problem vid ut skrift!</p>
+
         <div class="AddNames">
           <input type="text" id="newNameInput" placeholder="Deltagareens namn">
           <button class="dialogAddName" id="MenuButtonEditDialogAdd" onclick="addNameInArray()">Lägg till
             deltagare</button>
         </div>
-        <div id="nameEditContainer"></div>
+        <div id="AddNamesBox">
+          <div id="nameEditContainer"></div>
+        </div>
 
         <button class="dialogclose" id="MenuButtonEditDialogclose">Stäng</button>
-        <button class="dialogSave" id="MenuButtonEditDialogSave">Spara</button>
       </dialog>
 
       <!-- Print menu -->

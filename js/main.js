@@ -349,10 +349,13 @@ function removeNameInArray(index, element) {
 function addNameInArray() {
   newNameInput = document.getElementById("newNameInput").value;
 
-  namesData.push(newNameInput);
+  if (newNameInput.trim().length !== 0) {
 
-  document.getElementById("nameEditContainer").innerHTML = "";
-  namesData.forEach(displayEditNameArry);
+    namesData.push(newNameInput);
+
+    document.getElementById("nameEditContainer").innerHTML = "";
+    namesData.forEach(displayEditNameArry);
+  }
 }
 
 function dialogEditTopBar() {
@@ -363,7 +366,7 @@ function dialogEditTopBar() {
   document.body.style.overflow = "hidden";
 
 
-  document.getElementById("MenuButtonEditDialogSave").addEventListener("click", function () {
+  document.getElementById("MenuButtonEditDialogclose").addEventListener("click", function () {
     let titelData = document.getElementById("grupp_NameInput").value;
     localStorage.setItem("titelData", titelData)
     document.getElementById("titelDataTitel").innerHTML = titelData;
@@ -375,11 +378,6 @@ function dialogEditTopBar() {
     }
 
     main(namesData);
-    dialogEditTopBar.close();
-    document.body.style.overflow = "auto";
-  });
-
-  document.getElementById("MenuButtonEditDialogclose").addEventListener("click", function () {
     dialogEditTopBar.close();
     document.body.style.overflow = "auto";
   });
