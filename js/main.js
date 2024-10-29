@@ -348,8 +348,8 @@ function removeNameInArray(index, element) {
 
 function addNameInArray() {
   newNameInput = document.getElementById("newNameInput").value;
-
-  if (newNameInput.trim().length !== 0) {
+  const exists = namesData.find(item => item === newNameInput) !== undefined;
+  if (newNameInput.trim().length !== 0 && exists === false) {
 
     namesData.push(newNameInput);
 
