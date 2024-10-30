@@ -107,15 +107,15 @@ body {
   display: inline-block;
   width: 110px;
   height: 45px;
-
 }
 
 .name {
   margin: auto;
   text-align: center;
   font-weight: 900;
-  word-break: break-all;
-  word-wrap: break-word;
+  width: fit-content;
+  block-size: fit-content;
+  display: flex;
 }
 
 .Row {
@@ -294,6 +294,7 @@ input[type=button]::-moz-focus-inner {
   float: right;
   margin-top: 2rem;
   margin-inline: 2rem;
+
 }
 
 .dialogclose:hover {
@@ -351,10 +352,10 @@ input[type=button]::-moz-focus-inner {
 }
 
 .nameEditItem {
-  padding: 10px;
   text-align: center;
   font-size: 2rem;
-  width: 200px;
+  width: 400px;
+  height: 68px;
 }
 
 #nameEditContainer {
@@ -367,6 +368,10 @@ input[type=button]::-moz-focus-inner {
 .removeNameInArray {
   background-color: red;
   color: black;
+  font-weight: 900;
+  font-size: 2rem;
+  height: 68px;
+  width: 68px;
 }
 
 

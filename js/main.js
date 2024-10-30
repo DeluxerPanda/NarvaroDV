@@ -123,7 +123,8 @@ function main(namesData) {
       output.style.fontSize = fontSize + 'px';
     }
 
-    output.style.fontSize = '15px';
+    console.log(output.clientHeight)
+
 
     for (let j = 1; j <= daysInNumbers; j++) {
 
@@ -335,14 +336,18 @@ function displayEditNameArry(element, index) {
 function removeNameInArray(index, element) {
 
   if (index != "undefined" && index > -1) {
-    namesData.splice(index, 1);
-    document.getElementById("nameEditContainer").innerHTML = "";
-    for (var key in localStorage) {
-      if (key.startsWith("buttonData_" + element + "_")) {
-        localStorage.removeItem(key);
+    if (confirm("Vill du verkligen ta bort " + element + "?")) {
+      namesData.splice(index, 1);
+      document.getElementById("nameEditContainer").innerHTML = "";
+      for (var key in localStorage) {
+        if (key.startsWith("buttonData_" + element + "_")) {
+          if (confirm("vill du ta bort " + element + "'s närvaro?")) {
+            localStorage.removeItem(key);
+          }
+        }
       }
+      namesData.forEach(displayEditNameArry);
     }
-    namesData.forEach(displayEditNameArry);
   }
 }
 
@@ -355,6 +360,7 @@ function addNameInArray() {
 
     document.getElementById("nameEditContainer").innerHTML = "";
     namesData.forEach(displayEditNameArry);
+    document.getElementById("newNameInput").value = "";
   }
 }
 
