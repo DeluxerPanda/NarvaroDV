@@ -13,16 +13,15 @@ let namesData = [];
 let storageType;
 let index;
 
-hasNetworkCheck();
+// hasNetworkCheck();
 
-function hasNetworkCheck() {
-  if (navigator.onLine) {
-    document.getElementById("NoNetworkDiv").style.display = "none"
-  } else {
-    document.getElementById("NoNetworkDiv").style.display = "flex"
-  }
-
-}
+// function hasNetworkCheck() {
+//   if (navigator.onLine) {
+//     document.getElementById("NoNetworkDiv").style.display = "none"
+//   } else {
+//     document.getElementById("NoNetworkDiv").style.display = "flex"
+//   }
+// }
 
 function checkMonthChange() {
   const newMonth = new Date().getMonth();
