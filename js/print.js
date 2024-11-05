@@ -3,6 +3,12 @@ function dialogPrint() {
 
   const dialogPrintTopBar = document.getElementById("MenuButtonPrintDialog");
 
+  dialogPrintTopBar.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+    }
+  });
+
   for (var key in localStorage) {
     if (key.startsWith('OLD_')) {
       ButtonPrintOldExist = true;

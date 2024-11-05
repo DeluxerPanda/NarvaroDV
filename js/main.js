@@ -23,6 +23,7 @@ let index;
 //   }
 // }
 
+
 function checkMonthChange() {
   const newMonth = new Date().getMonth();
   if (newMonth !== month) {
@@ -90,6 +91,9 @@ function loadDate() {
 
   document.getElementById("gruppEditContainer").innerHTML =
     '<input type="text" maxlength="90" id="grupp_NameInput" placeholder="Gruppens namn" value="' + storageType.getItem("titelData") + '" class="gruppEditItem"></input>';
+
+
+  let inputElement = document.getElementById("grupp_NameInput");
 
   document.getElementById("titleDate").innerHTML = `${setTitelMonth} ${setTitelYear}`;
 
@@ -256,6 +260,12 @@ function dialog(day, name, event) {
   let clickedElement = event.target;
   let id = clickedElement.id;
 
+  dialogElement.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+    }
+  });
+
   document.getElementById("dialogName").innerText = name + " - Dag: " + day
   dialogElement.showModal();
   document.body.style.overflow = "hidden";
@@ -335,14 +345,12 @@ function displayEditNameArry(element, index) {
 function removeNameInArray(index, element) {
 
   if (index != "undefined" && index > -1) {
-    if (confirm("Vill du verkligen ta bort " + element + "?")) {
+    if (confirm("Vill du verkligen ta bort " + element + "? \nAll närvaro för " + element + " kommer att försvinna!")) {
       namesData.splice(index, 1);
       document.getElementById("nameEditContainer").innerHTML = "";
       for (var key in localStorage) {
         if (key.startsWith("buttonData_" + element + "_")) {
-          if (confirm("vill du ta bort " + element + "'s närvaro?")) {
-            localStorage.removeItem(key);
-          }
+          localStorage.removeItem(key);
         }
       }
       namesData.forEach(displayEditNameArry);
@@ -367,23 +375,28 @@ function dialogEditTopBar() {
 
   const dialogEditTopBar = document.getElementById("MenuButtonEditDialog");
   dialogEditTopBar.showModal();
-  deleteNames = -0;
   document.body.style.overflow = "hidden";
 
+  dialogEditTopBar.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+    }
+  });
 
   document.getElementById("MenuButtonEditDialogclose").addEventListener("click", function () {
-    let titelData = document.getElementById("grupp_NameInput").value;
+    dialogEditTopBar.close();
+
+    let titelData = inputElement.value;
     localStorage.setItem("titelData", titelData)
     document.getElementById("titelDataTitel").innerHTML = titelData;
-    document.getElementById("column").innerHTML = "";
     if (namesData === undefined || namesData.length == 0) {
       localStorage.removeItem("namesData")
     } else {
       localStorage.setItem("namesData", JSON.stringify(namesData));
     }
 
+    document.getElementById("column").innerHTML = "";
     main(namesData);
-    dialogEditTopBar.close();
     document.body.style.overflow = "auto";
   });
 }
