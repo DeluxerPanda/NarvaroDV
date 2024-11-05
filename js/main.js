@@ -92,9 +92,6 @@ function loadDate() {
   document.getElementById("gruppEditContainer").innerHTML =
     '<input type="text" maxlength="90" id="grupp_NameInput" placeholder="Gruppens namn" value="' + storageType.getItem("titelData") + '" class="gruppEditItem"></input>';
 
-
-  let inputElement = document.getElementById("grupp_NameInput");
-
   document.getElementById("titleDate").innerHTML = `${setTitelMonth} ${setTitelYear}`;
 
   document.title = `Närvaro lista - ${document.getElementById("titleDate").innerText} `;
@@ -385,6 +382,7 @@ function dialogEditTopBar() {
 
   document.getElementById("MenuButtonEditDialogclose").addEventListener("click", function () {
     dialogEditTopBar.close();
+    const inputElement = document.getElementById("grupp_NameInput");
 
     let titelData = inputElement.value;
     localStorage.setItem("titelData", titelData)
@@ -398,5 +396,6 @@ function dialogEditTopBar() {
     document.getElementById("column").innerHTML = "";
     main(namesData);
     document.body.style.overflow = "auto";
+
   });
 }
