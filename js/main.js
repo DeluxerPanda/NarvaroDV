@@ -123,8 +123,6 @@ function main(namesData) {
       output.style.fontSize = fontSize + 'px';
     }
 
-    console.log(output.clientHeight)
-
 
     for (let j = 1; j <= daysInNumbers; j++) {
 
