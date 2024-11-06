@@ -382,7 +382,7 @@ function dialogEditTopBar() {
 
   document.getElementById("MenuButtonEditDialogclose").addEventListener("click", function () {
     dialogEditTopBar.close();
-    const inputElement = document.getElementById("grupp_NameInput");
+    const titelData = document.getElementById("grupp_NameInput").value
 
     localStorage.setItem("titelData", titelData)
     document.getElementById("titelDataTitel").innerHTML = titelData;
