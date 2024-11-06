@@ -1,5 +1,4 @@
 function fullScreen() {
-     // document.getElementById("layoutMain").requestFullscreen();
      const elem = document.getElementById("layoutMain");
 
      if (elem.requestFullscreen) {
@@ -12,3 +11,11 @@ function fullScreen() {
           elem.msRequestFullscreen();
      }
 }
+
+const bodyElement = document.querySelector("html");
+
+bodyElement.addEventListener('keydown', (event) => {
+     if (event.key === 'F11') {
+          event.preventDefault();
+     }
+});
