@@ -384,18 +384,16 @@ function dialogEditTopBar() {
     dialogEditTopBar.close();
     const inputElement = document.getElementById("grupp_NameInput");
 
-    let titelData = inputElement.value;
     localStorage.setItem("titelData", titelData)
     document.getElementById("titelDataTitel").innerHTML = titelData;
     if (namesData === undefined || namesData.length == 0) {
       localStorage.removeItem("namesData")
     } else {
       localStorage.setItem("namesData", JSON.stringify(namesData));
+      document.getElementById("column").innerHTML = "";
+      main(namesData);
+      document.body.style.overflow = "auto";
     }
-
-    document.getElementById("column").innerHTML = "";
-    main(namesData);
-    document.body.style.overflow = "auto";
 
   });
 }
