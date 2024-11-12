@@ -429,7 +429,7 @@ input[type=button]::-moz-focus-inner {
 
 #layoutMain {
   max-width: 96rem;
-  min-width: 86rem;
+  min-width: 85rem;
   max-height: 100vh;
   background-color: white;
 }
