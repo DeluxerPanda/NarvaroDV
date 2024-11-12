@@ -428,10 +428,14 @@ input[type=button]::-moz-focus-inner {
 }
 
 #layoutMain {
-  width: 100%;
+  max-width: 96rem;
+  min-width: 86rem;
   max-height: 100vh;
-  overflow-y: auto;
   background-color: white;
+}
+
+#layoutMain:fullscreen {
+  overflow-y:scroll;
 }
 
 #MenuButtonEditDialog {
