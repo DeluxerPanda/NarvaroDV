@@ -90,7 +90,7 @@ function loadDate() {
   document.getElementById("titelDataTitel").innerHTML += storageType.getItem("titelData");
 
   document.getElementById("gruppEditContainer").innerHTML =
-    '<input type="text" maxlength="90" id="grupp_NameInput" placeholder="Gruppens namn" value="' + storageType.getItem("titelData") + '" class="gruppEditItem"></input>';
+    '<input type="text" maxlength="90" oninput="checkMaxLength(this)" id="grupp_NameInput" placeholder="Gruppens namn" value="' + storageType.getItem("titelData") + '" class="gruppEditItem"></input>';
 
   document.getElementById("titleDate").innerHTML = `${setTitelMonth} ${setTitelYear}`;
 
@@ -393,4 +393,12 @@ function dialogEditTopBar() {
     }
 
   });
+}
+
+function checkMaxLength(input) {
+  const maxLength = input.getAttribute("maxlength");
+  const currentLength = input.value.length;
+  if (currentLength >= maxLength) {
+      alert(`Du kan inte ha mer än ${maxLength} tecken.`);
+  }
 }

@@ -107,7 +107,7 @@
 
         <h2 class="menuTitelEditDialog">Deltagare</h2>
         <div class="AddNames">
-          <input type="text" id="newNameInput" placeholder="Deltagareens namn" maxlength="23" spellcheck="true">
+          <input type="text" id="newNameInput" placeholder="Deltagareens namn" maxlength="23" oninput="checkMaxLength(this)">
           <button class="dialogAddName" id="MenuButtonEditDialogAdd" onclick="addNameInArray()">Lägg till
             deltagare</button>
         </div>
