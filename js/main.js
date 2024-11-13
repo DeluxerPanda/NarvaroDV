@@ -332,7 +332,6 @@ function displayEditNameArry(element, index) {
         <span id="inputContainer_${index}">
           <input type="text" readonly="readonly" value="${element}" class="nameEditItem">
 <button class="removeNameInArray" onclick="removeNameInArray(${index}, '${element}')">X</button>
-
         </span>`;
 }
 
@@ -381,17 +380,12 @@ function dialogEditTopBar() {
     dialogEditTopBar.close();
     const titelData = document.getElementById("grupp_NameInput").value
 
-    localStorage.setItem("titelData", titelData)
-    document.getElementById("titelDataTitel").innerHTML = titelData;
-    if (namesData === undefined || namesData.length == 0) {
-      localStorage.removeItem("namesData")
-    } else {
+      localStorage.setItem("titelData", titelData)
+      document.getElementById("titelDataTitel").innerHTML = titelData;
       localStorage.setItem("namesData", JSON.stringify(namesData));
       document.getElementById("column").innerHTML = "";
       main(namesData);
       document.body.style.overflow = "auto";
-    }
-
   });
 }
 
