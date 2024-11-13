@@ -66,7 +66,7 @@ function loadDate() {
   localStorage.setItem("storedYear", year);
   localStorage.setItem("storedMonth", month);
 
-  if (localStorage.getItem("namesData") == null || localStorage.getItem("namesData") == "undefined") {
+  if (localStorage.getItem("namesData") == null || localStorage.getItem("namesData") == "undefined" || localStorage.getItem("namesData").length === 0) {
     document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>"
   } else {
 
@@ -104,7 +104,7 @@ function main(namesData) {
 
   let names = namesData
 
-  if (localStorage.getItem("namesData") == null || localStorage.getItem("namesData") == "undefined") {
+  if (localStorage.getItem("namesData") == null || localStorage.getItem("namesData") == "undefined" || localStorage.getItem("namesData").length === 0) {
     document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>"
     return;
   }
@@ -379,13 +379,19 @@ function dialogEditTopBar() {
   document.getElementById("MenuButtonEditDialogclose").addEventListener("click", function () {
     dialogEditTopBar.close();
     const titelData = document.getElementById("grupp_NameInput").value
-
       localStorage.setItem("titelData", titelData)
       document.getElementById("titelDataTitel").innerHTML = titelData;
       localStorage.setItem("namesData", JSON.stringify(namesData));
-      document.getElementById("column").innerHTML = "";
+      if (namesData.length != 0) {
+    document.getElementById("column").innerHTML = ""
+    console.log(namesData)
+
       main(namesData);
       document.body.style.overflow = "auto";
+    }else{
+          document.getElementById("column").innerHTML = "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>"
+    }
+
   });
 }
 
