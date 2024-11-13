@@ -59,6 +59,7 @@ body {
 
 .info-Text {
   padding-left: 40px;
+  font-weight: bold;
 }
 
 .info-Halvdag-Box {
@@ -78,11 +79,10 @@ body {
 
 #column {
   text-align: center;
-  /* 376px */
 }
 
 .numer {
-  font-weight: 900;
+  font-weight: bold;
   text-align: center;
   background-color: white;
   width: 37px;
@@ -92,18 +92,17 @@ body {
 }
 
 .numerCenter {
-  /* padding-left: 110px; */
   text-align: center;
   margin-left: 110px;
 }
 
 .numerRow {
   display: inline-block;
-  border: 1px solid rgba(0, 0, 0, 0.8);
+  border: 1px solid black;
 }
 
 .nameContainer {
-  border: 1px solid rgba(0, 0, 0, 0.8);
+  border: 1px solid black;
   display: inline-block;
   width: 110px;
   height: 45px;
@@ -113,14 +112,15 @@ body {
   margin: auto;
   text-align: center;
   font-weight: 900;
+  font-size: 15px;
   width: fit-content;
-  block-size: fit-content;
   display: flex;
 }
 
+
 .Row {
   display: inline-block;
-  border: 1px solid rgba(0, 0, 0, 0.8);
+  border: 1px solid black;
 }
 
 
@@ -142,11 +142,11 @@ body {
   background-color: red;
   float: left;
   width: 37px;
+  height: 22px;
 }
 
 .full-width-button {
   width: 100%;
-  height: 22px;
   text-align: center;
   display: block;
 }
@@ -430,7 +430,8 @@ input[type=button]::-moz-focus-inner {
 #layoutMain {
   max-width: 96rem;
   min-width: 85rem;
-  max-height: 100vh;
+  height: 100%;
+  padding-bottom: 100px;
   background-color: white;
 }
 

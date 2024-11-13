@@ -50,7 +50,7 @@
     <div class="column">
 
       <div class="numerCenter" id="numer"></div>
-
+      
       <div id="column"></div>
 
       <dialog id="dialog">
@@ -95,6 +95,8 @@
         <button class="dialogclose" id="dialogclose">Stäng</button>
       </dialog>
 
+
+      <!-- Edit page -->
       <dialog id="MenuButtonEditDialog">
 
         <h1 class="menuTitelEditDialog">Redigera</h1>
@@ -105,7 +107,7 @@
 
         <h2 class="menuTitelEditDialog">Deltagare</h2>
         <div class="AddNames">
-          <input type="text" id="newNameInput" placeholder="Deltagareens namn" maxlength="23">
+          <input type="text" id="newNameInput" placeholder="Deltagareens namn" maxlength="23" spellcheck="true">
           <button class="dialogAddName" id="MenuButtonEditDialogAdd" onclick="addNameInArray()">Lägg till
             deltagare</button>
         </div>
@@ -113,7 +115,7 @@
           <div id="nameEditContainer"></div>
         </div>
 
-        <button class="dialogclose" id="MenuButtonEditDialogclose">Stäng</button>
+        <button class="dialogSave" id="MenuButtonEditDialogclose">Spara</button>
       </dialog>
 
       <!-- Print menu -->

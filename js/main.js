@@ -113,16 +113,15 @@ function main(namesData) {
 
     document.getElementById('column').innerHTML += '<div class="nameContainer"><p class="name">' + names[i] + '</p></div>';
 
-    const output = document.querySelectorAll('.name')[i];
-    const outputContainer = document.querySelectorAll('.nameContainer')[i];
+    // const output = document.querySelectorAll('.name')[i];
+    // const outputContainer = document.querySelectorAll('.nameContainer')[i];
 
-    let fontSize = parseFloat(window.getComputedStyle(output).fontSize);
+    // let fontSize = parseFloat(window.getComputedStyle(output).fontSize);
 
-    while (output.clientHeight > outputContainer.clientHeight && fontSize > 1) {
-      fontSize--;
-      output.style.fontSize = fontSize + 'px';
-    }
-
+    // while (output.clientHeight > outputContainer.clientHeight && fontSize > 1) {
+    //   fontSize--;
+    //   output.style.fontSize = fontSize + 'px';
+    // }
 
     for (let j = 1; j <= daysInNumbers; j++) {
 
@@ -152,7 +151,7 @@ function main(namesData) {
         '<a class="full-width-button" id="' + names[i] + '_' + j + '_Heldag"' + onclick + '>' + buttonData_Heldag + '</a>' +
         '</div><br>' +
         '<div class="' + halvdagClass + '">' +
-        '<a class="Halvdag full-width-button" id="' + names[i] + '_' + j + '_Halvdag" ' + onclick + '>' + buttonData_Halvdag + '</a>' +
+        '<a class="full-width-button" id="' + names[i] + '_' + j + '_Halvdag" ' + onclick + '>' + buttonData_Halvdag + '</a>' +
         '</div>' +
         '</div>';
     }
