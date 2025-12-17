@@ -1,6 +1,6 @@
 const currentDate = new Date();
 const year = currentDate.getFullYear();
-let month = currentDate.getMonth()
+let month = currentDate.getMonth();
 const day = currentDate.getDate();
 const setTitelMonth = currentDate.toLocaleString('sv-SE', { month: 'long' });
 const setTitelYear = currentDate.toLocaleString('sv-SE', { year: 'numeric' });
@@ -8,20 +8,71 @@ const daysInMonth = getAllDaysInMonth(year, month);
 const daysInNumbers = new Date(year, month + 1, 0).getDate();
 const storedYear = localStorage.getItem("storedYear");
 const storedMonth = localStorage.getItem("storedMonth");
-
+const Mandag = document.getElementById("Mandag");
+const Tisdag = document.getElementById("Tisdag");
+const Onsdag = document.getElementById("Onsdag");
+const Torsdag = document.getElementById("Torsdag");
+const Fredag = document.getElementById("Fredag");
+const newNameInput = document.getElementById("newNameInput");
+const LoadingBarDialog = document.getElementById("LoadingBarDialog");
 let namesData = [];
-let storageType;
 let index;
 
-// hasNetworkCheck();
+window.onload = (event) => {
+navigator.storage.estimate().then((estimate) => {
+  const usage = estimate.usage;
+  const quota = estimate.quota;
 
-// function hasNetworkCheck() {
-//   if (navigator.onLine) {
-//     document.getElementById("NoNetworkDiv").style.display = "none"
-//   } else {
-//     document.getElementById("NoNetworkDiv").style.display = "flex"
-//   }
-// }
+  const usageGB = usage / (1024 ** 3);
+  const quotaGB = quota / (1024 ** 3);
+
+  const usageMB = usage / (1024 ** 2);
+  const quotaMB = quota / (1024 ** 2);
+
+  const usageKB = usage / (1024 ** 1);
+  const quotaKB = quota / (1024 ** 1);
+
+  let usageText, quotaText;
+
+  if (usageGB >= 1) {
+    usageText = `${usageGB.toFixed(0)} GB`;
+  } else if (usageMB >= 1) {
+    usageText = `${usageMB.toFixed(0)} MB`;
+  } else if (usageKB >= 1) {
+    usageText = `${usageKB.toFixed(5)} KB`;
+  }
+
+  if (quotaGB >= 1) {
+    quotaText = `${quotaGB.toFixed(0)} GB`;
+  } else if (quotaMB >= 1) {
+    quotaText = `${quotaMB.toFixed(0)} MB`;
+  } else if (quotaKB >= 1) {
+    quotaText = `${quotaKB.toFixed(5)} KB`;
+  }
+
+  console.log(`Använd lagring: ${usageText} av ${quotaText}.`);
+});
+
+setInterval(checkMonthChange, 20345);
+
+loadDate()
+
+window.scrollTo({
+  top: 1,
+  left: 1,
+  behavior: "smooth",
+});
+
+window.onbeforeunload = function (e) {
+  if (LoadingBarDialog.showModal == true) {
+  e.preventDefault();
+}
+};
+};
+
+document.addEventListener("DOMContentLoaded", (event) => {
+  LoadingBarDialog.showModal();
+});
 
 
 function checkMonthChange() {
@@ -30,12 +81,10 @@ function checkMonthChange() {
     window.location = window.location
   }
 }
-setInterval(checkMonthChange, 20345);
 
-loadDate();
 
-function loadDate() {
-
+async function loadDate() {
+    LoadingBarDialog.showModal();
   for (let i = 1; i <= daysInMonth.length; i++) {
 
     document.getElementById("numer").innerHTML +=
@@ -58,9 +107,12 @@ function loadDate() {
         const value = localStorage.getItem(key);
         const newKey = key.replace('buttonData_', 'OLD_');
         localStorage.setItem(newKey, value);
-        localStorage.removeItem(key);
-      }
+        // localStorage.removeItem(key);
+      };
     }
+    // let jsonData = JSON.parse(localStorage.getItem("jsonData"));
+    // localStorage.removeItem("namesData")
+    //   lssave(jsonData); 
   }
 
   localStorage.setItem("storedYear", year);
@@ -80,17 +132,13 @@ function loadDate() {
   }
 
   if (localStorage.getItem("titelData") == null) {
-    sessionStorage.setItem("titelData", "Namnlös");
-    storageType = sessionStorage;
-  } else {
-    sessionStorage.removeItem("titelData")
-    storageType = localStorage;
+    localStorage.setItem("titelData", "Namnlös");
   }
 
-  document.getElementById("titelDataTitel").innerHTML += storageType.getItem("titelData");
+  document.getElementById("titelDataTitel").innerHTML += localStorage.getItem("titelData");
 
   document.getElementById("gruppEditContainer").innerHTML =
-    '<input type="text" maxlength="90" oninput="checkMaxLength(this)" id="grupp_NameInput" placeholder="Gruppens namn" value="' + storageType.getItem("titelData") + '" class="gruppEditItem"></input>';
+    '<input type="text" maxlength="50" oninput="checkMaxLength(this)" id="grupp_NameInput" placeholder="Gruppens namn" value="' + localStorage.getItem("titelData") + '" class="gruppEditItem"></input>';
 
   document.getElementById("titleDate").innerHTML = `${setTitelMonth} ${setTitelYear}`;
 
@@ -100,7 +148,7 @@ function loadDate() {
 
 
 
-function main(namesData) {
+async function main(namesData) {
 
   let names = namesData
 
@@ -108,57 +156,112 @@ function main(namesData) {
     document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>"
     return;
   }
-
-  for (let i = 0; i < namesData.length; i++) {
+  LoadingBarDialog.showModal();
+  for (let i = 0; i < names.length; i++) {
 
     document.getElementById('column').innerHTML += '<div class="nameContainer"><p class="name">' + names[i] + '</p></div>';
-
-    // const output = document.querySelectorAll('.name')[i];
-    // const outputContainer = document.querySelectorAll('.nameContainer')[i];
-
-    // let fontSize = parseFloat(window.getComputedStyle(output).fontSize);
-
-    // while (output.clientHeight > outputContainer.clientHeight && fontSize > 1) {
-    //   fontSize--;
-    //   output.style.fontSize = fontSize + 'px';
-    // }
-
+    const date = new Date();
     for (let j = 1; j <= daysInNumbers; j++) {
+         date.setDate(j);
+     let dayName = date.toLocaleDateString('sv-SE', { weekday: 'long' });
 
       const redDay = isRedDay(j);
       const heldagClass = redDay ? 'Row-weekend' : 'Row-Heldag';
       const halvdagClass = redDay ? 'Row-weekend' : 'Row-Halvdag';
 
       const onclick = redDay ? '' : `onclick="dialog(${j}, '${names[i]}', event)"`;
-      let buttonData_Halvdag;
-      let buttonData_Heldag;
-
-      if (localStorage.getItem("buttonData_" + names[i] + "_" + j + "_Heldag") == null) {
-        buttonData_Heldag = "&nbsp;"
-      } else {
-        buttonData_Heldag = localStorage.getItem("buttonData_" + names[i] + "_" + j + "_Heldag");
+      let buttonData_Halvdag ="&nbsp;";
+      let buttonData_Heldag = "&nbsp;";
+if (dayName == "måndag"){
+    if (localStorage.getItem("buttonData_" + names[i] + "_Mandag") == null || localStorage.getItem("buttonData_" + names[i] + "_Mandag") == undefined) {
+        buttonData_Heldag = "&nbsp;"}
+      else {
+        if (localStorage.getItem("buttonData_" + names[i] + "_Mandag") == "HE"){
+        buttonData_Heldag = localStorage.getItem("buttonData_" + names[i] + "_Mandag");}
+      else{
+        buttonData_Halvdag = localStorage.getItem("buttonData_" + names[i] + "_Mandag");}
       }
 
-      if (localStorage.getItem("buttonData_" + names[i] + "_" + j + "_Halvdag") == null) {
-        buttonData_Halvdag = "&nbsp;"
-      } else {
-        buttonData_Halvdag = localStorage.getItem("buttonData_" + names[i] + "_" + j + "_Halvdag");
+      if (localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag") != undefined || localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag") != null){
+        buttonData_Heldag = localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag");
+      }else if (localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag") != undefined || localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag") != null){
+        buttonData_Halvdag = localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag");
       }
-
+}
+if (dayName == "tisdag") {
+    if (localStorage.getItem("buttonData_" + names[i] + "_Tisdag") == null || localStorage.getItem("buttonData_" + names[i] + "_Tisdag") == undefined) {
+        buttonData_Heldag = "&nbsp;"}
+      else {
+        if (localStorage.getItem("buttonData_" + names[i] + "_Tisdag") == "HE"){
+        buttonData_Heldag = localStorage.getItem("buttonData_" + names[i] + "_Tisdag");}
+      else{
+        buttonData_Halvdag = localStorage.getItem("buttonData_" + names[i] + "_Tisdag");}
+      }
+      if (localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag") != undefined || localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag") != null){
+        buttonData_Heldag = localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag");
+      }else if (localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag") != undefined || localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag") != null){
+        buttonData_Halvdag = localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag");
+      }
+}
+if (dayName == "onsdag") {
+    if (localStorage.getItem("buttonData_" + names[i] + "_Onsdag") == null || localStorage.getItem("buttonData_" + names[i] + "_Onsdag") == undefined) {
+        buttonData_Heldag = "&nbsp;"}
+      else {
+        if (localStorage.getItem("buttonData_" + names[i] + "_Onsdag") == "HE"){
+        buttonData_Heldag = localStorage.getItem("buttonData_" + names[i] + "_Onsdag");}
+      else{
+        buttonData_Halvdag = localStorage.getItem("buttonData_" + names[i] + "_Onsdag");}
+      }
+      if (localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag") != undefined || localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag") != null){
+        buttonData_Heldag = localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag");
+      }else if (localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag") != undefined || localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag") != null){
+        buttonData_Halvdag = localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag");
+      }
+}
+if (dayName == "torsdag") {
+      if (localStorage.getItem("buttonData_" + names[i] + "_Torsdag") == null || localStorage.getItem("buttonData_" + names[i] + "_Torsdag") == undefined) {
+        buttonData_Heldag = "&nbsp;"}
+      else {
+        if (localStorage.getItem("buttonData_" + names[i] + "_Torsdag") == "HE"){
+        buttonData_Heldag = localStorage.getItem("buttonData_" + names[i] + "_Torsdag");}
+      else{
+        buttonData_Halvdag = localStorage.getItem("buttonData_" + names[i] + "_Torsdag");}
+      }
+      if (localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag") != undefined || localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag") != null){
+        buttonData_Heldag = localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag");
+      }else if (localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag") != undefined || localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag") != null){
+        buttonData_Halvdag = localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag");
+      }
+}
+if (dayName == "fredag") {
+    if (localStorage.getItem("buttonData_" + names[i] + "_Fredag") == null || localStorage.getItem("buttonData_" + names[i] + "_Fredag") == undefined) {
+        buttonData_Heldag = "&nbsp;"}
+      else {
+        if (localStorage.getItem("buttonData_" + names[i] + "_Fredag") == "HE"){
+        buttonData_Heldag = localStorage.getItem("buttonData_" + names[i] + "_Fredag");}
+      else{
+        buttonData_Halvdag = localStorage.getItem("buttonData_" + names[i] + "_Fredag");}
+      }
+      if (localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag") != undefined || localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag") != null){
+        buttonData_Heldag = localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_heldag");
+      }else if (localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag") != undefined || localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag") != null){
+        buttonData_Halvdag = localStorage.getItem("buttonData_" + names[i] +"_" +j+ "_halvdag");
+      }
+}
       document.getElementById("column").innerHTML +=
         '<div class="Row">' +
         '<div class="' + heldagClass + '">' +
-        '<a class="full-width-button" id="' + names[i] + '_' + j + '_Heldag"' + onclick + '>' + buttonData_Heldag + '</a>' +
+        '<a class="full-width-button" id="' + names[i] + '_' + j + '_heldag"' + onclick + '>' + buttonData_Heldag + '</a>' +
         '</div><br>' +
         '<div class="' + halvdagClass + '">' +
-        '<a class="full-width-button" id="' + names[i] + '_' + j + '_Halvdag" ' + onclick + '>' + buttonData_Halvdag + '</a>' +
+        '<a class="full-width-button" id="' + names[i] + '_' + j + '_halvdag" ' + onclick + '>' + buttonData_Halvdag + '</a>' +
         '</div>' +
         '</div>';
     }
 
     document.getElementById("column").innerHTML += "<br>";
   }
-
+  LoadingBarDialog.close();
 }
 
 function getAllDaysInMonth(year, month) {
@@ -246,19 +349,12 @@ function isRedDay(day) {
 
 
 
-
 //Dialog boxes
 
 function dialog(day, name, event) {
   let dialogElement = document.getElementById("dialog");
   let clickedElement = event.target;
   let id = clickedElement.id;
-
-  dialogElement.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      event.preventDefault();
-    }
-  });
 
   document.getElementById("dialogName").innerText = name + " - Dag: " + day
   dialogElement.showModal();
@@ -309,6 +405,24 @@ function dialog(day, name, event) {
     document.body.style.overflow = "auto";
   });
 
+  document.getElementById("dialogH").addEventListener("click", function () {
+    document.getElementById(id).innerHTML = "HE"
+    localStorage.setItem("buttonData_" + id, "HE");
+    dialogElement.close();
+    id = null
+    clickedElement = null
+    document.body.style.overflow = "auto";
+  });
+
+    document.getElementById("dialogF").addEventListener("click", function () {
+    document.getElementById(id).innerHTML = "HA"
+    localStorage.setItem("buttonData_" + id, "HA");
+    dialogElement.close();
+    id = null
+    clickedElement = null
+    document.body.style.overflow = "auto";
+  });
+
   document.getElementById("dialogRensa").addEventListener("click", function () {
     document.getElementById(id).innerHTML = "&nbsp;"
     localStorage.removeItem("buttonData_" + id);
@@ -329,10 +443,11 @@ function dialog(day, name, event) {
 
 function displayEditNameArry(element, index) {
   document.getElementById("nameEditContainer").innerHTML += `
-        <span id="inputContainer_${index}">
-          <input type="text" readonly="readonly" value="${element}" class="nameEditItem">
-<button class="removeNameInArray" onclick="removeNameInArray(${index}, '${element}')">X</button>
-        </span>`;
+        <div id="inputContainer_${index}" style="display: flex; align-items: center; justify-content: center; width: max-content; margin-inline: auto; margin-bottom: 10px; padding: 10px; border-radius: 25px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
+          <p class="nameEditItem">${element}</p>
+          <button class="editNameInArray material-icons" onclick="editNameInArray(${index}, '${element}')"><i class="material-icons" style="vertical-align:middle; font-size: 2rem;">settings</i></button>
+          <button class="removeNameInArray" onclick="removeNameInArray(${index}, '${element}')"><i class="material-icons" style="vertical-align:middle; font-size: 2rem;">delete</i></button>
+        </div>`;
 }
 
 function removeNameInArray(index, element) {
@@ -351,13 +466,108 @@ function removeNameInArray(index, element) {
   }
 }
 
+function createName() {
+document.getElementById("createNameBox").style.display = "block";
+document.getElementById("AddNamesBox").style.display = "none";
+document.getElementById("menuTitelEditDialog").textContent= "Lägg till deltagare";
+document.getElementById("menuSubTitelEditDialog").textContent= "Välj arbetsdagar";
+document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i>Gå tillbaka`;
+document.getElementById("MenuButtonDialogEditTopBar").onclick = createNameCancel;
+document.getElementById("gruppEditContainer").style.display = "none";
+document.getElementById("AddNames").style.display = "none";
+document.getElementById("ladda_deltagare_eller").style.display = "none";
+document.getElementById("newNameInput").value = "";
+document.getElementById("newNameInput").focus();
+
+Mandag.value = "Mandag-heldag";
+Tisdag.value = "Tisdag-heldag";
+Onsdag.value = "Onsdag-heldag";
+Torsdag.value = "Torsdag-heldag";
+Fredag.value = "Fredag-heldag";
+}
+
+const realFileBtn = document.getElementById("real-file");
+const customBtn = document.getElementById("MenuButtonEditDialogAddByFile");
+
+function uploadName() {
+    realFileBtn.click();
+    realFileBtn.addEventListener("change", function() {
+                LoadingBarDialog.showModal();
+            let fileReader = new FileReader();
+            fileReader.onload = function () {
+                let parsedJSON = JSON.parse(fileReader.result);
+                lssave(parsedJSON);                 
+            }
+            fileReader.readAsText(document.querySelector('.file').files[0]);
+            
+    });
+}
+
+function createNameCancel() {
+document.getElementById("createNameBox").style.display = "none";
+document.getElementById("AddNamesBox").style.display = "block";
+document.getElementById("menuTitelEditDialog").textContent= "Grupp namn";
+document.getElementById("menuSubTitelEditDialog").textContent= "Deltagare";
+document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i> Spara och gå tillbaka`;
+document.getElementById("MenuButtonDialogEditTopBar").onclick = ButtonEditSwishToMain;
+document.getElementById("gruppEditContainer").style.display = "block";
+document.getElementById("AddNames").style.display = "block";
+document.getElementById("ladda_deltagare_eller").style.display = "inline";
+}
+
 function addNameInArray() {
-  newNameInput = document.getElementById("newNameInput").value;
-  const exists = namesData.find(item => item === newNameInput) !== undefined;
-  if (newNameInput.trim().length !== 0 && exists === false) {
+  const exists = namesData.find(item => item === newNameInput.value) !== undefined;
+  if (exists === false) {
+    if (newNameInput.value.length === 0) {
+      alert("Namnet kan inte vara tomt.");
+      return;
+    }
+    if (newNameInput.value.length > newNameInput.maxLength) {
+      alert(`Namnet är för långt, max ${newNameInput.maxLength} tecken.`);
+      return;
+    }
+    let id_name = newNameInput.value;
+    createNameCancel();
+    namesData.push(newNameInput.value);
 
-    namesData.push(newNameInput);
+    if (Mandag.value === "Mandag-heldag"){
+            localStorage.setItem("buttonData_" + id_name + "_Mandag", "HE");}
+      else if (Mandag.value === "Mandag-halvdag"){
+            localStorage.setItem("buttonData_" + id_name + "_Mandag", "HA");}
+      else if (Mandag.value === "Mandag-ledig"){
+            localStorage.setItem("buttonData_" + id_name + "_Mandag", "L");}
 
+    if (Tisdag.value === "Tisdag-heldag"){
+            localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HE");}
+      else if (Tisdag.value === "Tisdag-halvdag"){
+            localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HA");}
+      else if (Tisdag.value === "Tisdag-ledig"){
+            localStorage.setItem("buttonData_" + id_name + "_Tisdag", "L");}
+
+      if (Onsdag.value === "Onsdag-heldag"){
+            localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HE");}
+      else if (Onsdag.value === "Onsdag-halvdag"){
+            localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HA");}
+      else if (Onsdag.value === "Onsdag-ledig"){
+            localStorage.setItem("buttonData_" + id_name + "_Onsdag", "L");}
+
+
+    if (Torsdag.value === "Torsdag-heldag"){
+            localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HE");}
+      else if (Torsdag.value === "Torsdag-halvdag"){
+            localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HA");}
+      else if (Torsdag.value === "Torsdag-ledig"){
+            localStorage.setItem("buttonData_" + id_name + "_Torsdag", "L");}
+
+
+    if (Fredag.value === "Fredag-heldag"){
+            localStorage.setItem("buttonData_" + id_name + "_Fredag", "HE");}
+      else if (Fredag.value === "Fredag-halvdag"){
+            localStorage.setItem("buttonData_" + id_name + "_Fredag", "HA");}
+      else if (Fredag.value === "Fredag-ledig"){
+            localStorage.setItem("buttonData_" + id_name + "_Fredag", "L");}
+
+    document.getElementById("createNameBox").style.display = "none";
     document.getElementById("nameEditContainer").innerHTML = "";
     namesData.forEach(displayEditNameArry);
     document.getElementById("newNameInput").value = "";
@@ -365,40 +575,204 @@ function addNameInArray() {
 }
 
 function dialogEditTopBar() {
+document.getElementById("layoutEdit").style.display = "block";
+document.getElementById("AddNamesBox").style.display = "block";
+document.getElementById("menuTitelEditDialog").textContent= "Grupp namn";
+document.getElementById("menuSubTitelEditDialog").textContent= "Deltagare";
+document.getElementById("gruppEditContainer").style.display = "block";
+document.getElementById("AddNames").style.display = "block";
+document.getElementById("ladda_deltagare_eller").style.display = "inline";
+document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i> Spara och gå tillbaka`;
+document.getElementById("MenuButtonDialogEditTopBar").onclick = ButtonEditSwishToMain;
+document.getElementById("MenuButtonDialogPrint").style.display = "none";
+document.getElementById("MenuButtonFullScreen").style.display = "none";
+document.getElementById("MenuButtonGetjsoin").style.display = "none";
+document.querySelector('.swichDateContainer').style.display = "none";
+document.getElementById("createNameBox").style.display = "none";
+document.getElementById("layoutMain").style.display = "none";
+window.scrollTo({
+  top: 1,
+  left: 1,
+  behavior: "smooth",
+});
+}
 
-  const dialogEditTopBar = document.getElementById("MenuButtonEditDialog");
-  dialogEditTopBar.showModal();
-  document.body.style.overflow = "hidden";
-
-  dialogEditTopBar.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      event.preventDefault();
-    }
-  });
-
-  document.getElementById("MenuButtonEditDialogclose").addEventListener("click", function () {
-    dialogEditTopBar.close();
+function ButtonEditSwishToMain() {
+    LoadingBarDialog.showModal();
+     
     const titelData = document.getElementById("grupp_NameInput").value
       localStorage.setItem("titelData", titelData)
       document.getElementById("titelDataTitel").innerHTML = titelData;
       localStorage.setItem("namesData", JSON.stringify(namesData));
-      if (namesData.length != 0) {
-    document.getElementById("column").innerHTML = ""
-    console.log(namesData)
+      
+      document.getElementById("layoutMain").style.display = "block";
+      document.getElementById("layoutEdit").style.display = "none";
+      document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">edit</i> Redigera deltagare`;
+      document.getElementById("MenuButtonDialogEditTopBar").onclick = dialogEditTopBar;
+      document.getElementById("MenuButtonDialogPrint").style.display = "inline";
+      document.getElementById("MenuButtonFullScreen").style.display = "inline";
+      document.getElementById("MenuButtonGetjsoin").style.display = "inline";
+      document.querySelector('.swichDateContainer').style.display = "flex";
+      
+window.scrollTo({
+  top: 1,
+  left: 1,
+  behavior: "smooth",
+});
 
+  setTimeout(() => {
+    document.getElementById("column").innerHTML = "";
+    if (namesData.length !== 0) {
       main(namesData);
-      document.body.style.overflow = "auto";
-    }else{
-          document.getElementById("column").innerHTML = "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>"
+    } else {
+      document.getElementById("column").innerHTML =
+        "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>";
+      LoadingBarDialog.close();
     }
-
-  });
-}
+  }, 50);
+  };
 
 function checkMaxLength(input) {
   const maxLength = input.getAttribute("maxlength");
   const currentLength = input.value.length;
   if (currentLength >= maxLength) {
       alert(`Du kan inte ha mer än ${maxLength} tecken.`);
+      return;
   }
+}
+
+async function lssave(jsonData) {
+
+  if (!Array.isArray(jsonData)) {
+      LoadingBarDialog.close();
+    alert("Felaktigt format: förväntar en lista av objekt.");
+    console.error("lssave: invalid jsonData", jsonData);
+    return;
+  }
+
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith("buttonData_")) {
+      localStorage.removeItem(key);
+    }
+    if (key && key === "titelData") {
+      localStorage.removeItem(key);
+    }
+  }
+
+  namesData = [];
+
+ jsonData.forEach(item => {
+
+if (!item || typeof item.name_Group === "string") {
+      localStorage.setItem("titelData", String(item.name_Group));
+      document.getElementById("grupp_NameInput").value = item.name_Group;
+      document.getElementById("titelDataTitel").innerHTML = item.name_Group;
+}
+    if (!item || typeof item.name !== "string") return;
+
+    const name = item.name;
+    namesData.push(name);
+
+    const arbeteArray = Array.isArray(item.arbetsDagar) ? item.arbetsDagar : [];
+
+    for (let i = 0; i < arbeteArray.length; i++) {
+      let val = arbeteArray[i];
+      let key = "";
+      if (i == 0) {
+          key = `buttonData_${name}_Mandag`;
+      }else if(i == 1){
+          key = `buttonData_${name}_Tisdag`;
+      }else if(i == 2){
+          key = `buttonData_${name}_Onsdag`;
+      }else if(i == 3){
+          key = `buttonData_${name}_Torsdag`;
+      }else if(i == 4){
+          key = `buttonData_${name}_Fredag`;
+      }
+
+
+      if (val === null || val === "" || val === "&nbsp;") {
+        localStorage.removeItem(key);
+      } else {
+        localStorage.setItem(key, String(val));
+      }
+    }
+
+
+        const arbeteArrayOveride = Array.isArray(item.arbetsdagArrOveride) ? item.arbetsdagArrOveride : [];
+    for (let i = 0; i < arbeteArrayOveride.length; i++) {
+      let val = arbeteArrayOveride[i];
+      let key = "";
+      if (val == "null" || val == null || val.length == 0){
+        continue;
+      }else{
+      const [data, value] = val.split(/:(.+)/).filter(Boolean);
+
+      if (value === null || value === "" || value === "&nbsp;") {
+        localStorage.removeItem(data);
+      } else {
+        localStorage.setItem(data, String(value));
+      }
+      }
+    }
+  });
+
+  // Persistenta namn och uppdatera UI
+  localStorage.setItem("namesData", JSON.stringify(namesData));
+   document.getElementById("nameEditContainer").innerHTML = "";
+   document.getElementById("column").innerHTML = "";
+
+  if (namesData.length === 0) {
+    document.getElementById("column").innerHTML = "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>";
+  } else {
+    main(namesData);
+    namesData.forEach(displayEditNameArry);
+  }
+}
+
+
+
+function getjsoin(){
+let names = namesData;
+let output = [];
+output.push({ name_Group: localStorage.getItem("titelData")});
+
+for (let i = 0; i < names.length; i++) {
+    let workDayArr = [];
+       let workDayArrOveride = [];
+        for (let j = 1; j <= daysInNumbers; j++) {
+        if (localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null){
+        workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:`+localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`));
+        }else if (localStorage.getItem(`buttonData_${names[i]}_${j}_halvdag`) != null){
+        workDayArrOveride.push(`buttonData_${names[i]}_${j}_halvdag:`+localStorage.getItem(`buttonData_${names[i]}_${j}_halvdag`));
+        }
+      }
+    workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Mandag`));
+    workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Tisdag`));
+    workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Onsdag`));
+    workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Torsdag`));
+    workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Fredag`));            
+  
+  output.push({
+    name: names[i],
+    arbetsDagar: workDayArr,
+    arbetsdagArrOveride: workDayArrOveride,
+  });
+  console.log(output);
+}
+
+// localStorage.setItem("jsonData", JSON.stringify(output));
+
+  const jsonString = JSON.stringify(output, null, 2);
+  const blob = new Blob([jsonString], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  let name_Group = document.getElementById("titelDataTitel").innerText || "Namnlös";
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${name_Group} (${setTitelMonth} ${setTitelYear}).json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }

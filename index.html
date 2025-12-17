@@ -6,7 +6,8 @@
   <meta name="robots" content="noindex,nofollow" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/styles.css">
-  <link rel="stylesheet" type="text/css" media="print" href="css/print.css">
+  <link rel="stylesheet" href="css/loading.css" media="screen"/>
+  <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
   <link rel="icon" href="#">
   <noscript>
     <title>JavaScript måste vara aktiverat</title>
@@ -16,19 +17,24 @@
 <body>
   <header id="menuTopButtons" class="dont-print-that">
 
-    <button class="MenuButtons dont-print-that" onclick="dialogEditTopBar()">Redigera</button>
+    <button class="MenuButtons" id="MenuButtonDialogEditTopBar" onclick="dialogEditTopBar()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">edit</i> Redigera deltagare</button>
 
-    <button class="MenuButtons dont-print-that" onclick="dialogPrint()">Skriv ut</button>
+    <button class="MenuButtons" id="MenuButtonGetjsoin" onclick="getjsoin()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">save</i> Spara deltagare till fil</button>
 
-    <button class="MenuButtons dont-print-that" onclick="fullScreen()">Fullskärmsläge</button>
+    <button class="MenuButtons" id="MenuButtonDialogPrint" onclick="dialogPrint()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">print</i> Skriv ut</button>
 
+    <button class="MenuButtons" id="MenuButtonFullScreen" onclick="fullScreen()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">fullscreen</i> Fullskärmsläge</button>
+
+    <div class="swichDateContainer">
+      <button class="swichDateButton" id="swichDateButtonLeft" onclick="swichDateLeft()"><i class="material-icons" style="vertical-align:middle; font-size: 25px;">arrow_left</i></button>
+      <h1 id="swichDateText">Byt månad </h1>
+      <button class="swichDateButton" id="swichDateButtonRight" onclick="swichDateRight()"><i class="material-icons" style="vertical-align:middle; font-size: 25px;">arrow_right</i></button>
+    </div>
   </header>
 
   <main id="layoutMain">
-    <!-- <div class="dont-print-that" id="NoNetworkDiv">
-      <h1 id="titelNoNetwork" class="dont-print-that">Du är offline. Kontrollera anslutningen.
-      </h1>
-    </div> -->
+
+    <button id="MenuButtonExitFullScreen" onclick="fullScreen()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">fullscreen_exit</i> Stäng av fullskärmsläge</button>
     <div class="title-container">
       <div class="title title-child">
         <a id="titelDataTitel"></a>
@@ -52,8 +58,15 @@
       <div class="numerCenter" id="numer"></div>
       
       <div id="column"></div>
+      <noscript class="viktigtMedelande">
+        <h1>Tyvärr, din webbläsare stöder inte JavaScript!</h1>
+        <h2>JavaScript måste vara aktiverat för att denna applikation ska fungera korrekt.</h2>
+      </noscript>
+    
+    </div>
+  </main>
 
-      <dialog id="dialog">
+      <dialog id="dialog" closedby="none">
         <h1 id="dialogName"></h1>
 
         <div class="dialogTop">
@@ -91,35 +104,109 @@
           [S]
         </button>
 
+          <br><br>
+
+          <button class="dialogButton_M" id="dialogH">
+            Heldag
+            <br>
+            [HE]
+          </button>
+
+          <button class="dialogButton_M" id="dialogF">
+            Halvdag
+            <br>
+            [HA]
+          </button>
+
         <button id="dialogRensa">Sudda</button>
         <button class="dialogclose" id="dialogclose">Stäng</button>
       </dialog>
 
 
       <!-- Edit page -->
-      <dialog id="MenuButtonEditDialog">
+      <div id="layoutEdit">
 
         <h1 class="menuTitelEditDialog">Redigera</h1>
 
-        <h2 class="menuTitelEditDialog">Grupp namn</h2>
+        <h2 class="menuTitelEditDialog" id="menuTitelEditDialog">Grupp namn</h2>
 
         <div id="gruppEditContainer"></div>
 
-        <h2 class="menuTitelEditDialog">Deltagare</h2>
-        <div class="AddNames">
-          <input type="text" id="newNameInput" placeholder="Deltagareens namn" maxlength="23" oninput="checkMaxLength(this)">
-          <button class="dialogAddName" id="MenuButtonEditDialogAdd" onclick="addNameInArray()">Lägg till
-            deltagare</button>
+        <br>
+        <div class="AddNames" id="AddNames">
+          <button class="dialogAddName" id="MenuButtonEditDialogAdd" onclick="createName()">Lägg till deltagare</button>
+          <br><a style="font-size: large; font-weight: 900;" id="ladda_deltagare_eller">eller</a><br>
+          <input type="file" class="file" id="real-file" hidden="hidden">
+<button type="button" class="dialogAddName" id="MenuButtonEditDialogAddByFile" onclick="uploadName()">Ladda deltagare ifrån fil</button>
+<label for="file-upload" class="custom-file-upload">
+</label>
+
         </div>
+
+        <h2 class="menuTitelEditDialog" id="menuSubTitelEditDialog">Deltagare</h2>
+
+        <div id="createNameBox" style="display:none;">
+
+<div id="createNameSelects">
+  <div class="createNameSelects">
+  <label for="Mandag">Måndag</label>
+  <select name="Mandag" id="Mandag">
+    <option value="Mandag-heldag" selected>Heldag</option>
+    <option value="Mandag-halvdag">Halvdag</option>
+    <option value="Mandag-ledig">Ledig</option>
+  </select>
+  </div>
+  <div class="createNameSelects">
+    <label for="Tisdag">Tisdag</label>
+  <select name="Tisdag" id="Tisdag">
+    <option value="Tisdag-heldag" selected>Heldag</option>
+    <option value="Tisdag-halvdag">Halvdag</option>
+    <option value="Tisdag-ledig">Ledig</option>
+  </select>
+  </div>
+
+  <div class="createNameSelects">
+    <label for="Onsdag">Onsdag</label>
+  <select name="Onsdag" id="Onsdag">
+    <option value="Onsdag-heldag" selected>Heldag</option>
+    <option value="Onsdag-halvdag">Halvdag</option>
+    <option value="Onsdag-ledig">Ledig</option>
+  </select>
+  </div>
+
+  <div class="createNameSelects">
+    <label for="Torsdag">Torsdag</label>
+  <select name="Torsdag" id="Torsdag">
+    <option value="Torsdag-heldag" selected>Heldag</option>
+    <option value="Torsdag-halvdag">Halvdag</option>
+    <option value="Torsdag-ledig">Ledig</option>
+  </select>
+</div>
+
+  <div class="createNameSelects">
+    <label for="Fredag">Fredag</label>
+  <select name="Fredag" id="Fredag">
+    <option value="Fredag-heldag">Heldag</option>
+    <option value="Fredag-halvdag" selected>Halvdag</option>
+    <option value="Fredag-ledig">Ledig</option>
+  </select>
+  </div>
+        </div>
+
+    <form id="createNameForm" action="javascript:;" onsubmit="addNameInArray()">  
+      <label for="newNameInput"> Deltagareens namn:</label>
+        <input type="text" id="newNameInput" placeholder="Deltagareens namn"   minlength="1" maxlength="10" required>
+        <input type="submit" value="Lägg till deltagare">
+    </form>
+          </div>
+
         <div id="AddNamesBox">
           <div id="nameEditContainer"></div>
         </div>
-
-        <button class="dialogSave" id="MenuButtonEditDialogclose">Spara</button>
-      </dialog>
+      </div>
 
       <!-- Print menu -->
-      <dialog id="MenuButtonPrintDialog">
+      <dialog id="MenuButtonPrintDialog" closedby="none">
         <h1 class="prinDialogTitel">Skriv ut <br> för</h1>
 
         <button class="dialogButtonPrintOld" id="MenuButtonPrintOld">
@@ -133,9 +220,10 @@
         <button class="dialogclose" id="MenuButtonPrintDialogclose">Stäng</button>
       </dialog>
 
-      <noscript>Tyvärr, din webbläsare stöder inte JavaScript!</noscript>
-    </div>
-  </main>
+            <!-- Loading bar -->
+      <dialog id="LoadingBarDialog" closedby="none" inert>
+        <span class="loader"></span>
+      </dialog>
 </body>
 <script src="js/main.js"></script>
 <script src="js/print.js"></script>

@@ -3,12 +3,6 @@ function dialogPrint() {
 
   const dialogPrintTopBar = document.getElementById("MenuButtonPrintDialog");
 
-  dialogPrintTopBar.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      event.preventDefault();
-    }
-  });
-
   for (var key in localStorage) {
     if (key.startsWith('OLD_')) {
       ButtonPrintOldExist = true;
@@ -43,22 +37,31 @@ function dialogPrint() {
 
 
 function printMain() {
-  var printContents = document.getElementById("layoutMain").innerHTML;
-  var originalContents = document.body.innerHTML;
-  document.body.innerHTML = printContents;
+  let printNameContainerNumber = 0
+  document.querySelectorAll(".nameContainer").forEach(element => {
+    printNameContainerNumber = printNameContainerNumber + 1
+    console.log(printNameContainerNumber)
+    if (printNameContainerNumber === 18){
+      printNameContainerNumber = 0
+      element.classList.add("page-brake");
+    }
+  });
   window.print();
-  document.body.innerHTML = originalContents;
 }
+
+
+
+
+
+function printOld() {
 const oldDate = new Date();
-oldDate.setMonth(oldDate.getMonth() - 1);
+oldDate.setMonth(oldDate.getMonth() - 2);
 
 const previousMonthDate = new Date(oldDate.getFullYear(), oldDate.getMonth(), 1);
 
 const setTitelMonthOld = previousMonthDate.toLocaleString('sv-SE', { month: 'long' });
 const setTitelYearOld = previousMonthDate.toLocaleString('sv-SE', { year: 'numeric' });
 
-
-function printOld() {
   let originalContents = document.body.innerHTML;
 
   document.body.innerHTML = `

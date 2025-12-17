@@ -1,7 +1,7 @@
 body {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    zoom: 82%;
+    zoom: 80%;
     margin: 0;
     padding: 0;
     page-break-inside: avoid;
@@ -17,4 +17,11 @@ body {
 
 .dont-print-that {
     display: none;
+}
+.title-container {
+  padding-top: 55px;
+}
+
+.page-brake{
+     margin-top: 60px;
 }
