@@ -580,6 +580,7 @@ main:fullscreen, #layoutEdit:fullscreen {
   font-weight: 900;
   cursor:text;
   margin: 10px;
+  font-size: 18px;
 }
 
 

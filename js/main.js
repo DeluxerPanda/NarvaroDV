@@ -8,12 +8,6 @@ const daysInMonth = getAllDaysInMonth(year, month);
 const daysInNumbers = new Date(year, month + 1, 0).getDate();
 const storedYear = localStorage.getItem("storedYear");
 const storedMonth = localStorage.getItem("storedMonth");
-const Mandag = document.getElementById("Mandag");
-const Tisdag = document.getElementById("Tisdag");
-const Onsdag = document.getElementById("Onsdag");
-const Torsdag = document.getElementById("Torsdag");
-const Fredag = document.getElementById("Fredag");
-const newNameInput = document.getElementById("newNameInput");
 const LoadingBarDialog = document.getElementById("LoadingBarDialog");
 let namesData = [];
 let index;
@@ -70,10 +64,6 @@ window.onbeforeunload = function (e) {
 };
 };
 
-document.addEventListener("DOMContentLoaded", (event) => {
-  LoadingBarDialog.showModal();
-});
-
 
 function checkMonthChange() {
   const newMonth = new Date().getMonth();
@@ -83,7 +73,7 @@ function checkMonthChange() {
 }
 
 
-async function loadDate() {
+function loadDate() {
     LoadingBarDialog.showModal();
   for (let i = 1; i <= daysInMonth.length; i++) {
 
@@ -127,7 +117,10 @@ async function loadDate() {
     }
 
     namesData = JSON.parse(localStorage.getItem("namesData"));
-    main(namesData);
+      setTimeout(() => {
+    document.getElementById("column").innerHTML = "";
+      main(namesData);
+  }, 1000);
     namesData.forEach(displayEditNameArry);
   }
 
@@ -148,15 +141,24 @@ async function loadDate() {
 
 
 
-async function main(namesData) {
-
+function main(namesData) {
+  
   let names = namesData
+
+  window.scrollTo({
+  top: 1,
+  left: 1,
+  behavior: "smooth",
+});
+
+  names.sort((a, b) => a.localeCompare(b, 'sv'));
 
   if (localStorage.getItem("namesData") == null || localStorage.getItem("namesData") == "undefined" || localStorage.getItem("namesData").length === 0) {
     document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>"
     return;
   }
   LoadingBarDialog.showModal();
+
   for (let i = 0; i < names.length; i++) {
 
     document.getElementById('column').innerHTML += '<div class="nameContainer"><p class="name">' + names[i] + '</p></div>';
@@ -425,7 +427,7 @@ function dialog(day, name, event) {
 
   document.getElementById("dialogRensa").addEventListener("click", function () {
     document.getElementById(id).innerHTML = "&nbsp;"
-    localStorage.removeItem("buttonData_" + id);
+    localStorage.setItem("buttonData_" + id, " ");
     dialogElement.close();
     id = null
     clickedElement = null
@@ -445,7 +447,7 @@ function displayEditNameArry(element, index) {
   document.getElementById("nameEditContainer").innerHTML += `
         <div id="inputContainer_${index}" style="display: flex; align-items: center; justify-content: center; width: max-content; margin-inline: auto; margin-bottom: 10px; padding: 10px; border-radius: 25px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
           <p class="nameEditItem">${element}</p>
-          <button class="editNameInArray material-icons" onclick="editNameInArray(${index}, '${element}')"><i class="material-icons" style="vertical-align:middle; font-size: 2rem;">settings</i></button>
+          <button class="editNameInArray material-icons" onclick="createNameEdit(${index}, '${element}')"><i class="material-icons" style="vertical-align:middle; font-size: 2rem;">settings</i></button>
           <button class="removeNameInArray" onclick="removeNameInArray(${index}, '${element}')"><i class="material-icons" style="vertical-align:middle; font-size: 2rem;">delete</i></button>
         </div>`;
 }
@@ -476,14 +478,20 @@ document.getElementById("MenuButtonDialogEditTopBar").onclick = createNameCancel
 document.getElementById("gruppEditContainer").style.display = "none";
 document.getElementById("AddNames").style.display = "none";
 document.getElementById("ladda_deltagare_eller").style.display = "none";
-document.getElementById("newNameInput").value = "";
-document.getElementById("newNameInput").focus();
+document.getElementById("createNameForm").onsubmit = addNameInArray;
+ const newNameInput = document.getElementById("newNameInput");
+ const Mandag = document.getElementById("Mandag");
+ const Tisdag = document.getElementById("Tisdag");
+ const Onsdag = document.getElementById("Onsdag");
+ const Torsdag = document.getElementById("Torsdag");
+ const Fredag = document.getElementById("Fredag");
+ newNameInput.value = "";
 
 Mandag.value = "Mandag-heldag";
 Tisdag.value = "Tisdag-heldag";
 Onsdag.value = "Onsdag-heldag";
 Torsdag.value = "Torsdag-heldag";
-Fredag.value = "Fredag-heldag";
+Fredag.value = "Fredag-halvdag";
 }
 
 const realFileBtn = document.getElementById("real-file");
@@ -503,6 +511,82 @@ function uploadName() {
     });
 }
 
+function createNameEdit(index,name) {
+ const newNameInput = document.getElementById("newNameInput");
+newNameInput.value = name;
+document.getElementById("createNameBox").style.display = "block";
+document.getElementById("AddNamesBox").style.display = "none";
+document.getElementById("menuTitelEditDialog").textContent= "Redigera deltagare";
+document.getElementById("menuSubTitelEditDialog").textContent= "Välj arbetsdagar";
+document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i>Gå tillbaka`;
+document.getElementById("MenuButtonDialogEditTopBar").onclick = createNameCancel;
+document.getElementById("gruppEditContainer").style.display = "none";
+document.getElementById("AddNames").style.display = "none";
+document.getElementById("ladda_deltagare_eller").style.display = "none";
+document.getElementById("createNameSubmit").value = "Ändra deltagare"
+const form = document.getElementById("createNameForm");
+const Mandag = document.getElementById("Mandag");
+const Tisdag = document.getElementById("Tisdag");
+const Onsdag = document.getElementById("Onsdag");
+const Torsdag = document.getElementById("Torsdag");
+const Fredag = document.getElementById("Fredag");
+form.onsubmit = function (event) {
+event.preventDefault();
+const newNameInput = document.getElementById("newNameInput");
+if (newNameInput.value.trim().length === 0) {
+alert("Namnet kan inte vara tomt.");
+return;
+}
+editNameInArray(index);
+};
+
+
+  
+    if (localStorage.getItem(`buttonData_${name}_Mandag`) === "HE"){
+        Mandag.value = "Mandag-heldag";
+    }else if (localStorage.getItem(`buttonData_${name}_Mandag`) === "HA"){
+        Mandag.value = "Mandag-halvdag";
+    }else if (localStorage.getItem(`buttonData_${name}_Mandag`) === "L"){
+        Mandag.value = "Mandag-ledig";
+    }
+
+    if (localStorage.getItem(`buttonData_${name}_Tisdag`) === "HE"){
+      Tisdag.value = "Tisdag-heldag";
+    }else if (localStorage.getItem(`buttonData_${name}_Tisdag`) === "HA"){
+      Tisdag.value = "Tisdag-halvdag";
+    }else if (localStorage.getItem(`buttonData_${name}_Tisdag`) === "L"){
+      Tisdag.value = "Tisdag-ledig";
+    }
+
+    if (localStorage.getItem(`buttonData_${name}_Onsdag`) === "HE"){
+      Onsdag.value = "Onsdag-heldag";
+    }else if (localStorage.getItem(`buttonData_${name}_Onsdag`) === "HA"){
+      Onsdag.value = "Onsdag-halvdag";
+    }else if (localStorage.getItem(`buttonData_${name}_Onsdag`) === "L"){
+      Onsdag.value = "Onsdag-ledig";
+    }
+
+    if (localStorage.getItem(`buttonData_${name}_Torsdag`) === "HE"){
+      Torsdag.value = "Torsdag-heldag";
+    }else if (localStorage.getItem(`buttonData_${name}_Torsdag`) === "HA"){
+      Torsdag.value = "Torsdag-halvdag";
+    }else if (localStorage.getItem(`buttonData_${name}_Torsdag`) === "L"){
+      Torsdag.value = "Torsdag-ledig";
+    }
+
+    if (localStorage.getItem(`buttonData_${name}_Fredag`) === "HE"){
+      Fredag.value = "Fredag-heldag";
+    }else if (localStorage.getItem(`buttonData_${name}_Fredag`) === "HA"){
+      Fredag.value = "Fredag-halvdag";
+    }else if (localStorage.getItem(`buttonData_${name}_Fredag`) === "L"){
+      Fredag.value = "Fredag-ledig";
+    }
+
+  }
+
+
+
+
 function createNameCancel() {
 document.getElementById("createNameBox").style.display = "none";
 document.getElementById("AddNamesBox").style.display = "block";
@@ -516,6 +600,12 @@ document.getElementById("ladda_deltagare_eller").style.display = "inline";
 }
 
 function addNameInArray() {
+   const newNameInput = document.getElementById("newNameInput");
+   const Mandag = document.getElementById("Mandag");
+   const Tisdag = document.getElementById("Tisdag");
+   const Onsdag = document.getElementById("Onsdag");
+   const Torsdag = document.getElementById("Torsdag");
+   const Fredag = document.getElementById("Fredag");
   const exists = namesData.find(item => item === newNameInput.value) !== undefined;
   if (exists === false) {
     if (newNameInput.value.length === 0) {
@@ -570,8 +660,93 @@ function addNameInArray() {
     document.getElementById("createNameBox").style.display = "none";
     document.getElementById("nameEditContainer").innerHTML = "";
     namesData.forEach(displayEditNameArry);
-    document.getElementById("newNameInput").value = "";
+    newNameInput.value = "";
   }
+}
+
+function editNameInArray(index){
+const newNameInput = document.getElementById("newNameInput");
+const Mandag = document.getElementById("Mandag");
+const Tisdag = document.getElementById("Tisdag");
+const Onsdag = document.getElementById("Onsdag");
+const Torsdag = document.getElementById("Torsdag");
+const Fredag = document.getElementById("Fredag");
+let strName = newNameInput.value
+   for (let i = 1; i <= daysInMonth.length; i++) {
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+ for (let j = 1; j <= daysInNumbers; j++) {
+        if (key === "buttonData_" + strName + "_"+j+"_heldag" || key === "buttonData_" + strName + "_"+j+"_halvdag"){
+            const value = localStorage.getItem(key);
+            localStorage.removeItem(key);
+            localStorage.setItem(key, value);
+        }
+        }
+    }
+  }
+
+      namesData.splice(index, 1);
+      document.getElementById("nameEditContainer").innerHTML = "";
+      for (var key in localStorage) {
+        if (key.startsWith("buttonData_" + strName + "_Mandag") || key.startsWith("buttonData_" + strName + "_Tisdag") || key.startsWith("buttonData_" + strName + "_Onsdag") || key.startsWith("buttonData_" + strName + "_Torsdag") || key.startsWith("buttonData_" + strName + "_Fredag" )) {
+          localStorage.removeItem(key);
+        }
+      }
+
+
+const exists = namesData.find(item => item === newNameInput.value) !== undefined;
+  if (exists === false) {
+
+    let id_name = newNameInput.value;
+    createNameCancel();
+    namesData.push(newNameInput.value);
+
+    if (Mandag.value === "Mandag-heldag"){
+            localStorage.setItem("buttonData_" + id_name + "_Mandag", "HE");}
+      else if (Mandag.value === "Mandag-halvdag"){
+            localStorage.setItem("buttonData_" + id_name + "_Mandag", "HA");}
+      else if (Mandag.value === "Mandag-ledig"){
+            localStorage.setItem("buttonData_" + id_name + "_Mandag", "L");}
+
+    if (Tisdag.value === "Tisdag-heldag"){
+            localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HE");}
+      else if (Tisdag.value === "Tisdag-halvdag"){
+            localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HA");}
+      else if (Tisdag.value === "Tisdag-ledig"){
+            localStorage.setItem("buttonData_" + id_name + "_Tisdag", "L");}
+
+      if (Onsdag.value === "Onsdag-heldag"){
+            localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HE");}
+      else if (Onsdag.value === "Onsdag-halvdag"){
+            localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HA");}
+      else if (Onsdag.value === "Onsdag-ledig"){
+            localStorage.setItem("buttonData_" + id_name + "_Onsdag", "L");}
+
+
+    if (Torsdag.value === "Torsdag-heldag"){
+            localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HE");}
+      else if (Torsdag.value === "Torsdag-halvdag"){
+            localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HA");}
+      else if (Torsdag.value === "Torsdag-ledig"){
+            localStorage.setItem("buttonData_" + id_name + "_Torsdag", "L");}
+
+
+    if (Fredag.value === "Fredag-heldag"){
+            localStorage.setItem("buttonData_" + id_name + "_Fredag", "HE");}
+      else if (Fredag.value === "Fredag-halvdag"){
+            localStorage.setItem("buttonData_" + id_name + "_Fredag", "HA");}
+      else if (Fredag.value === "Fredag-ledig"){
+            localStorage.setItem("buttonData_" + id_name + "_Fredag", "L");}
+
+    document.getElementById("createNameBox").style.display = "none";
+    document.getElementById("nameEditContainer").innerHTML = "";
+    namesData.sort((a, b) => a.localeCompare(b, 'sv'));
+    namesData.forEach(displayEditNameArry);
+    newNameInput.value = "";
+
+
+}
 }
 
 function dialogEditTopBar() {
@@ -598,13 +773,10 @@ window.scrollTo({
 }
 
 function ButtonEditSwishToMain() {
-    LoadingBarDialog.showModal();
-     
     const titelData = document.getElementById("grupp_NameInput").value
       localStorage.setItem("titelData", titelData)
       document.getElementById("titelDataTitel").innerHTML = titelData;
       localStorage.setItem("namesData", JSON.stringify(namesData));
-      
       document.getElementById("layoutMain").style.display = "block";
       document.getElementById("layoutEdit").style.display = "none";
       document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">edit</i> Redigera deltagare`;
@@ -613,23 +785,7 @@ function ButtonEditSwishToMain() {
       document.getElementById("MenuButtonFullScreen").style.display = "inline";
       document.getElementById("MenuButtonGetjsoin").style.display = "inline";
       document.querySelector('.swichDateContainer').style.display = "flex";
-      
-window.scrollTo({
-  top: 1,
-  left: 1,
-  behavior: "smooth",
-});
-
-  setTimeout(() => {
-    document.getElementById("column").innerHTML = "";
-    if (namesData.length !== 0) {
-      main(namesData);
-    } else {
-      document.getElementById("column").innerHTML =
-        "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>";
-      LoadingBarDialog.close();
-    }
-  }, 50);
+      window.location = window.location;
   };
 
 function checkMaxLength(input) {
@@ -641,7 +797,7 @@ function checkMaxLength(input) {
   }
 }
 
-async function lssave(jsonData) {
+function lssave(jsonData) {
 
   if (!Array.isArray(jsonData)) {
       LoadingBarDialog.close();
@@ -703,7 +859,6 @@ if (!item || typeof item.name_Group === "string") {
         const arbeteArrayOveride = Array.isArray(item.arbetsdagArrOveride) ? item.arbetsdagArrOveride : [];
     for (let i = 0; i < arbeteArrayOveride.length; i++) {
       let val = arbeteArrayOveride[i];
-      let key = "";
       if (val == "null" || val == null || val.length == 0){
         continue;
       }else{
@@ -726,7 +881,10 @@ if (!item || typeof item.name_Group === "string") {
   if (namesData.length === 0) {
     document.getElementById("column").innerHTML = "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>";
   } else {
-    main(namesData);
+  setTimeout(() => {
+    document.getElementById("column").innerHTML = "";
+      main(namesData);
+  }, 1000);
     namesData.forEach(displayEditNameArry);
   }
 }
