@@ -11,41 +11,7 @@ const storedMonth = localStorage.getItem("storedMonth");
 const LoadingBarDialog = document.getElementById("LoadingBarDialog");
 let namesData = [];
 let index;
-
 window.onload = (event) => {
-navigator.storage.estimate().then((estimate) => {
-  const usage = estimate.usage;
-  const quota = estimate.quota;
-
-  const usageGB = usage / (1024 ** 3);
-  const quotaGB = quota / (1024 ** 3);
-
-  const usageMB = usage / (1024 ** 2);
-  const quotaMB = quota / (1024 ** 2);
-
-  const usageKB = usage / (1024 ** 1);
-  const quotaKB = quota / (1024 ** 1);
-
-  let usageText, quotaText;
-
-  if (usageGB >= 1) {
-    usageText = `${usageGB.toFixed(0)} GB`;
-  } else if (usageMB >= 1) {
-    usageText = `${usageMB.toFixed(0)} MB`;
-  } else if (usageKB >= 1) {
-    usageText = `${usageKB.toFixed(5)} KB`;
-  }
-
-  if (quotaGB >= 1) {
-    quotaText = `${quotaGB.toFixed(0)} GB`;
-  } else if (quotaMB >= 1) {
-    quotaText = `${quotaMB.toFixed(0)} MB`;
-  } else if (quotaKB >= 1) {
-    quotaText = `${quotaKB.toFixed(5)} KB`;
-  }
-
-  console.log(`Använd lagring: ${usageText} av ${quotaText}.`);
-});
 
 setInterval(checkMonthChange, 20345);
 
@@ -64,6 +30,90 @@ window.onbeforeunload = function (e) {
 };
 };
 
+const DB_NAME = "NarvaroDB";
+const DB_VERSION = 1;
+const STORE_NAME = `${setTitelMonth} ${setTitelYear}`;
+let db
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onupgradeneeded = (event) => {
+       db = event.target.result;
+
+      // Create object store if it doesn't exist
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, {
+          keyPath: "name", // use "name" as primary key
+        });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+
+async function removeDB() {
+  const db = await openDB();
+ db.close();
+
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.deleteDatabase(DB_NAME);
+
+    request.onsuccess = () => {
+      console.log("IndexedDB deleted");
+      resolve(true);
+    };
+
+    request.onerror = () => {
+      console.error("Failed to delete IndexedDB", request.error);
+      reject(request.error);
+    };
+
+    request.onblocked = () => {
+      console.warn("Delete blocked: another tab or connection is open");
+    };
+  });
+}
+
+
+async function saveData(dataArray) {
+  const db = await openDB();
+  const tx = db.transaction(STORE_NAME, "readwrite");
+  const store = tx.objectStore(STORE_NAME);
+
+  dataArray.forEach(item => {
+    // Handle the group object (no "name")
+    if (!item.name && item.name_Group) {
+      store.put({
+        name: "name_Group",
+        name_Group: item.name_Group
+      });
+    } else {
+      store.put(item);
+    }
+  });
+
+  return tx.complete;
+}
+
+async function getAllData() {
+  const db = await openDB();
+  const tx = db.transaction(STORE_NAME, "readonly");
+  const store = tx.objectStore(STORE_NAME);
+
+  return new Promise((resolve, reject) => {
+    const request = store.getAll();
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+
+//
 
 function checkMonthChange() {
   const newMonth = new Date().getMonth();
@@ -110,6 +160,7 @@ function loadDate() {
 
   if (localStorage.getItem("namesData") == null || localStorage.getItem("namesData") == "undefined" || localStorage.getItem("namesData").length === 0) {
     document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>"
+      LoadingBarDialog.close();
   } else {
 
     if (storedMonth != null && (storedYear != year || storedMonth != month)) {
@@ -144,7 +195,6 @@ function loadDate() {
 function main(namesData) {
   
   let names = namesData
-
   window.scrollTo({
   top: 1,
   left: 1,
@@ -155,6 +205,7 @@ function main(namesData) {
 
   if (localStorage.getItem("namesData") == null || localStorage.getItem("namesData") == "undefined" || localStorage.getItem("namesData").length === 0) {
     document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>"
+    LoadingBarDialog.close();
     return;
   }
   LoadingBarDialog.showModal();
@@ -797,6 +848,7 @@ function checkMaxLength(input) {
   }
 }
 
+
 function lssave(jsonData) {
 
   if (!Array.isArray(jsonData)) {
@@ -827,6 +879,11 @@ if (!item || typeof item.name_Group === "string") {
 }
     if (!item || typeof item.name !== "string") return;
 
+    if (item.name === "name_Group"){
+      localStorage.setItem("titelData", String(item.name_Group));
+      document.getElementById("grupp_NameInput").value = item.name_Group;
+      document.getElementById("titelDataTitel").innerHTML = item.name_Group;
+    }else{
     const name = item.name;
     namesData.push(name);
 
@@ -871,6 +928,7 @@ if (!item || typeof item.name_Group === "string") {
       }
       }
     }
+    }
   });
 
   // Persistenta namn och uppdatera UI
@@ -880,6 +938,7 @@ if (!item || typeof item.name_Group === "string") {
 
   if (namesData.length === 0) {
     document.getElementById("column").innerHTML = "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>";
+    LoadingBarDialog.close();
   } else {
   setTimeout(() => {
     document.getElementById("column").innerHTML = "";
@@ -888,6 +947,7 @@ if (!item || typeof item.name_Group === "string") {
     namesData.forEach(displayEditNameArry);
   }
 }
+
 
 
 
@@ -917,8 +977,11 @@ for (let i = 0; i < names.length; i++) {
     arbetsDagar: workDayArr,
     arbetsdagArrOveride: workDayArrOveride,
   });
-  console.log(output);
 }
+
+saveData(output)
+  .then(() => console.log("Data saved to IndexedDB"))
+  .catch(err => console.error("IndexedDB error:", err));
 
 // localStorage.setItem("jsonData", JSON.stringify(output));
 

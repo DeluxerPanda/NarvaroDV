@@ -141,6 +141,7 @@ button{
   font-size: 15px;
   width: fit-content;
   display: flex;
+  text-transform: uppercase;
 }
 
 
@@ -426,6 +427,7 @@ input[type=button]::-moz-focus-inner {
 }
 
 .nameEditItem {
+  text-transform: uppercase;
   text-align: center;
   cursor: default;
   font-size: 2rem;

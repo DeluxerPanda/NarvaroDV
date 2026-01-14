@@ -21,7 +21,7 @@
 
     <button class="MenuButtons" id="MenuButtonGetjsoin" onclick="getjsoin()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">save</i> Spara deltagare till fil</button>
 
-    <button class="MenuButtons" id="MenuButtonDialogPrint" onclick="dialogPrint()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">print</i> Skriv ut</button>
+    <button class="MenuButtons" id="MenuButtonDialogPrint" onclick="printMain()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">print</i> Skriv ut</button>
 
     <button class="MenuButtons" id="MenuButtonFullScreen" onclick="fullScreen()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">fullscreen</i> Fullskärmsläge</button>
 
@@ -206,25 +206,12 @@
         </div>
       </div>
 
-      <!-- Print menu -->
-      <dialog id="MenuButtonPrintDialog" closedby="none">
-        <h1 class="prinDialogTitel">Skriv ut <br> för</h1>
-
-        <button class="dialogButtonPrintOld" id="MenuButtonPrintOld">
-          Föra måndaden
-        </button>
-
-        <button class="dialogButtonPrintCurrent" id="MenuButtonPrintCurrent">
-          Denna måndaden
-        </button>
-
-        <button class="dialogclose" id="MenuButtonPrintDialogclose">Stäng</button>
-      </dialog>
-
             <!-- Loading bar -->
       <dialog id="LoadingBarDialog" closedby="none" inert>
         <span class="loader"></span>
       </dialog>
+
+
 </body>
 <script src="js/main.js"></script>
 <script src="js/print.js"></script>

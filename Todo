@@ -1,0 +1,32 @@
+HE = Heldag
+HA = Förmiddag/Eftermiddag
+
+[✅] = klart
+[⛔️] = nästan klart
+[❌] = inte klart
+
+----------
+
+[✅] Ladda deltagare data från fil på datorn
+
+[✅] Spara deltagare data som fil till datorn
+
+[✅] Aktuell månad
+
+[✅] Röda dagar och helgdagar
+
+[✅] Automatisk ifyllnad av schema
+
+[✅] Kunna ändra den automatiska ifyllnaden
+
+[✅] Ta bort i ifyllnaden
+
+[✅] Lägg till / Ta bort deltagare
+
+[⛔️] Redigera deltagare
+
+[❌] Kunna gå tillbaka till alla föregående månader
+
+[❌] kunna skriva ut nuvarande och alla föregående månader
+
+----------
