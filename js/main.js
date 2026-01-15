@@ -30,91 +30,6 @@ window.onbeforeunload = function (e) {
 };
 };
 
-const DB_NAME = "NarvaroDB";
-const DB_VERSION = 1;
-const STORE_NAME = `${setTitelMonth} ${setTitelYear}`;
-let db
-
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-    request.onupgradeneeded = (event) => {
-       db = event.target.result;
-
-      // Create object store if it doesn't exist
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, {
-          keyPath: "name", // use "name" as primary key
-        });
-      }
-    };
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-
-async function removeDB() {
-  const db = await openDB();
- db.close();
-
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.deleteDatabase(DB_NAME);
-
-    request.onsuccess = () => {
-      console.log("IndexedDB deleted");
-      resolve(true);
-    };
-
-    request.onerror = () => {
-      console.error("Failed to delete IndexedDB", request.error);
-      reject(request.error);
-    };
-
-    request.onblocked = () => {
-      console.warn("Delete blocked: another tab or connection is open");
-    };
-  });
-}
-
-
-async function saveData(dataArray) {
-  const db = await openDB();
-  const tx = db.transaction(STORE_NAME, "readwrite");
-  const store = tx.objectStore(STORE_NAME);
-
-  dataArray.forEach(item => {
-    // Handle the group object (no "name")
-    if (!item.name && item.name_Group) {
-      store.put({
-        name: "name_Group",
-        name_Group: item.name_Group
-      });
-    } else {
-      store.put(item);
-    }
-  });
-
-  return tx.complete;
-}
-
-async function getAllData() {
-  const db = await openDB();
-  const tx = db.transaction(STORE_NAME, "readonly");
-  const store = tx.objectStore(STORE_NAME);
-
-  return new Promise((resolve, reject) => {
-    const request = store.getAll();
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-
-//
-
 function checkMonthChange() {
   const newMonth = new Date().getMonth();
   if (newMonth !== month) {
@@ -494,6 +409,64 @@ function dialog(day, name, event) {
 
 }
 
+//Dialog boxe Swich Date
+
+function dialogSwichDate() {
+  let dialogElement = document.getElementById("dialogSwichDate");
+
+for (let i = 0; i < 12; i++) {
+
+  document.getElementById("dialogSwichDateBox").innerHTML += `
+            <button class="dialogButtonSwichDate" id="SwichDate">
+            <br>
+            [X]
+          </button>
+  `;
+  }
+
+  document.getElementById("dialogName").innerText = name + " - Dag: " + day
+  dialogElement.showModal();
+  document.body.style.overflow = "hidden";
+
+  document.getElementById("dialogM").addEventListener("click", function () {
+    dialogElement.close();
+  });
+
+  document.getElementById("dialogX").addEventListener("click", function () {
+    dialogElement.close();
+  });
+
+  document.getElementById("dialog-").addEventListener("click", function () {
+    dialogElement.close();
+  });
+
+  document.getElementById("dialogL").addEventListener("click", function () {
+    dialogElement.close();
+  });
+
+  document.getElementById("dialogS").addEventListener("click", function () {
+    dialogElement.close();
+  });
+
+  document.getElementById("dialogH").addEventListener("click", function () {
+    dialogElement.close();
+  });
+
+    document.getElementById("dialogF").addEventListener("click", function () {
+    dialogElement.close();
+  });
+
+  document.getElementById("dialogRensa").addEventListener("click", function () {
+    dialogElement.close();
+  });
+
+  document.getElementById("dialogclose").addEventListener("click", function () {
+    dialogElement.close();
+  });
+
+}
+
+
 function displayEditNameArry(element, index) {
   document.getElementById("nameEditContainer").innerHTML += `
         <div id="inputContainer_${index}" style="display: flex; align-items: center; justify-content: center; width: max-content; margin-inline: auto; margin-bottom: 10px; padding: 10px; border-radius: 25px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
@@ -812,8 +785,6 @@ document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="mat
 document.getElementById("MenuButtonDialogEditTopBar").onclick = ButtonEditSwishToMain;
 document.getElementById("MenuButtonDialogPrint").style.display = "none";
 document.getElementById("MenuButtonFullScreen").style.display = "none";
-document.getElementById("MenuButtonGetjsoin").style.display = "none";
-document.querySelector('.swichDateContainer').style.display = "none";
 document.getElementById("createNameBox").style.display = "none";
 document.getElementById("layoutMain").style.display = "none";
 window.scrollTo({
@@ -834,8 +805,6 @@ function ButtonEditSwishToMain() {
       document.getElementById("MenuButtonDialogEditTopBar").onclick = dialogEditTopBar;
       document.getElementById("MenuButtonDialogPrint").style.display = "inline";
       document.getElementById("MenuButtonFullScreen").style.display = "inline";
-      document.getElementById("MenuButtonGetjsoin").style.display = "inline";
-      document.querySelector('.swichDateContainer').style.display = "flex";
       window.location = window.location;
   };
 

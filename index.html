@@ -19,17 +19,14 @@
 
     <button class="MenuButtons" id="MenuButtonDialogEditTopBar" onclick="dialogEditTopBar()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">edit</i> Redigera deltagare</button>
 
-    <button class="MenuButtons" id="MenuButtonGetjsoin" onclick="getjsoin()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">save</i> Spara deltagare till fil</button>
+    <!-- <button class="MenuButtons" id="MenuButtonGetjsoin" onclick="getjsoin()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">save</i> Spara deltagare till fil</button> -->
 
     <button class="MenuButtons" id="MenuButtonDialogPrint" onclick="printMain()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">print</i> Skriv ut</button>
 
     <button class="MenuButtons" id="MenuButtonFullScreen" onclick="fullScreen()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">fullscreen</i> Fullskärmsläge</button>
 
-    <div class="swichDateContainer">
-      <button class="swichDateButton" id="swichDateButtonLeft" onclick="swichDateLeft()"><i class="material-icons" style="vertical-align:middle; font-size: 25px;">arrow_left</i></button>
-      <h1 id="swichDateText">Byt månad </h1>
-      <button class="swichDateButton" id="swichDateButtonRight" onclick="swichDateRight()"><i class="material-icons" style="vertical-align:middle; font-size: 25px;">arrow_right</i></button>
-    </div>
+    <button class="MenuButtons" id="MenuButtonSwichDate" onclick="fullScreen()"><i class="material-icons" style="vertical-align:middle; font-size: 15px;">calendar_month</i> Byt månad</button>
+
   </header>
 
   <main id="layoutMain">
@@ -123,6 +120,12 @@
       </dialog>
 
 
+        <dialog id="dialogSwichDate" closedby="none">
+        <h1 class="dialogName">Byt månad</h1>
+        <div id="dialogSwichDateBox"></div>
+        <button class="dialogclose" id="dialogclose">Stäng</button>
+      </dialog>
+
       <!-- Edit page -->
       <div id="layoutEdit">
 
@@ -214,6 +217,7 @@
 
 </body>
 <script src="js/main.js"></script>
+<script src="js/indexedDB.js"></script>
 <script src="js/print.js"></script>
 <script src="js/fullscreen.js"></script>
 </html>

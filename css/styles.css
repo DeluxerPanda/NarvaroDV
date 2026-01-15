@@ -176,8 +176,13 @@ button{
 
 .full-width-button {
   width: 100%;
+  height: 100%;
   text-align: center;
   display: block;
+}
+
+.Row-weekend .full-width-button {
+  background-color: red;
 }
 
 .MenuButtons {
@@ -208,36 +213,6 @@ button{
   font-weight: 900;
   right: 0%;
   cursor: pointer;
-}
-
-.swichDateContainer {
-  display: flex;
-  margin-inline: auto;
-  justify-content: center;
-  align-items: center;
-  transform: translateY(-50%);
-  width: fit-content;
-  gap: 10px;
-  border-radius: 8px;
-  background-color: #d8dee9;
-  padding: 5px;
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
-}
-.swichDateButton {
-  border-radius: 8px;
-  color: #434c5e;
-  font-weight: 900;
-  background-color: #d8dee9;
-  cursor: pointer;
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
-  width: 33px;
-}
-.swichDateButton:hover {
-  color: #bfb9b9;
-}
-
-#swichDateText{
-  margin: 0;
 }
 
 dialog::backdrop {
@@ -408,6 +383,17 @@ input[type=button]::-moz-focus-inner {
   background-color: darkgreen;
 }
 
+
+.dialogButtonSwichDate{
+  border-radius: 8px;
+  text-align: center;
+  background-color: green;
+  color: white;
+  font-weight: 900;
+  height: 100px;
+  flex: 6rem;
+  margin: 5px;
+}
 
 /*  */
 
@@ -649,4 +635,11 @@ font-weight: 900;
 #createNameSelects select#Fredag {
   color: black;
   background-color: yellow;
+}
+
+#dialogSwichDateBox{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: fit-content;
 }

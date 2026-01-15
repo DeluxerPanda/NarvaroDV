@@ -7,13 +7,13 @@ function fullScreen() {
       return;
     }
      document.getElementById("MenuButtonExitFullScreen").style.display = "block";  
-    elem.requestFullscreen().catch((err) => {
-      console.error(`Error enabling fullscreen: ${err.message}`);
-    });
+      elem.requestFullscreen();
 
 }
 
-document.addEventListener("keydown", (event) => {
-  if (event.key === "F11") {
-     event.preventDefault();
-}});
+document.addEventListener("fullscreenchange", (event) => {
+        event.preventDefault();
+    if (!document.fullscreenElement) {
+        document.getElementById("MenuButtonExitFullScreen").style.display = "none";  
+    }
+});
