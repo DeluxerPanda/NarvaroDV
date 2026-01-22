@@ -12,9 +12,11 @@ body {
   vertical-align: middle;
   background-color: #d8dee9;
 }
-button{
-    border: none;
+
+button {
+  border: none;
 }
+
 /* fallback */
 @font-face {
   font-family: 'Material Icons';
@@ -195,13 +197,17 @@ button{
   cursor: pointer;
 }
 
-.MenuButtons:hover, #MenuButtonExitFullScreen:hover {
-  color: #bfb9b9; 
+.MenuButtons:hover,
+#MenuButtonExitFullScreen:hover {
+  color: #bfb9b9;
 }
-#MenuButtonFullScreen, #MenuButtonExitFullScreen{
+
+#MenuButtonFullScreen,
+#MenuButtonExitFullScreen {
   float: right;
 }
-#MenuButtonExitFullScreen{
+
+#MenuButtonExitFullScreen {
   display: none;
   position: fixed;
   color: #e5e9f0;
@@ -332,7 +338,8 @@ input[type=button]::-moz-focus-inner {
   background-color: #555;
 }
 
-.dialogclose {
+.dialogclose,
+.dialogSwichDateclose {
   border-radius: 8px;
   text-align: center;
   background-color: crimson;
@@ -344,13 +351,19 @@ input[type=button]::-moz-focus-inner {
   float: right;
   margin-top: 2rem;
   margin-inline: 2rem;
-
+  cursor: pointer;
 }
 
-.dialogclose:hover {
+.dialogclose:hover,
+.dialogSwichDateclose:hover {
   background-color: darkred;
 }
 
+.dialogSwichDateclose {
+  width: 100%;
+  margin-inline: auto;
+  float: none;
+}
 
 /* dialog button save */
 .dialogSave {
@@ -384,15 +397,36 @@ input[type=button]::-moz-focus-inner {
 }
 
 
-.dialogButtonSwichDate{
+.dialogButtonSwichDate {
   border-radius: 8px;
   text-align: center;
-  background-color: green;
+  background-color: gray;
+  cursor: not-allowed;
   color: white;
   font-weight: 900;
   height: 100px;
-  flex: 6rem;
+  flex: 7rem;
   margin: 5px;
+}
+
+.dialogButtonSwichDate:hover {
+  background-color: darkgray;
+}
+
+.dialogButtonSwichDate_isInDB {
+  background-color: green;
+  cursor: pointer;
+  border-radius: 8px;
+  text-align: center;
+  color: white;
+  font-weight: 900;
+  height: 100px;
+  flex: 7rem;
+  margin: 5px;
+}
+
+.dialogButtonSwichDate_isInDB:hover {
+  background-color: darkgreen;
 }
 
 /*  */
@@ -432,17 +466,18 @@ input[type=button]::-moz-focus-inner {
   margin-top: 20px;
 }
 
-.editNameInArray{
-    background-color: #434c5e;
-    color: orange;
-    cursor: pointer;
-    height: 45px;
-    margin-inline: 10px;
-    border-radius: 25px;
-    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+.editNameInArray {
+  background-color: #434c5e;
+  color: orange;
+  cursor: pointer;
+  height: 45px;
+  margin-inline: 10px;
+  border-radius: 25px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
+
 .editNameInArray:hover {
-   color: darkorange;
+  color: darkorange;
 }
 
 .removeNameInArray {
@@ -453,6 +488,7 @@ input[type=button]::-moz-focus-inner {
   border-radius: 25px;
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
+
 .removeNameInArray:hover {
   color: darkred;
 }
@@ -519,8 +555,9 @@ main {
   background-color: white;
 }
 
-main:fullscreen, #layoutEdit:fullscreen {
-  overflow-y:scroll;
+main:fullscreen,
+#layoutEdit:fullscreen {
+  overflow-y: scroll;
 }
 
 #layoutEdit {
@@ -532,9 +569,11 @@ main:fullscreen, #layoutEdit:fullscreen {
   background-color: white;
   text-align: center;
 }
-.AddNames{
+
+.AddNames {
   text-align: center;
 }
+
 #AddNamesBox {
   background-color: #d8dee9;
   width: 50rem;
@@ -544,7 +583,8 @@ main:fullscreen, #layoutEdit:fullscreen {
   padding-bottom: 20px;
   margin-top: 10px;
 }
- noscript.viktigtMedelande{
+
+noscript.viktigtMedelande {
   text-align: center;
   display: block;
 }
@@ -566,7 +606,7 @@ main:fullscreen, #layoutEdit:fullscreen {
   padding: 5px;
   text-align: center;
   font-weight: 900;
-  cursor:text;
+  cursor: text;
   margin: 10px;
   font-size: 18px;
 }
@@ -592,7 +632,8 @@ form button {
   cursor: pointer;
 }
 
-form button:hover, #createNameForm input[type="submit"]:hover {
+form button:hover,
+#createNameForm input[type="submit"]:hover {
   color: #bfb9b9;
 }
 
@@ -602,6 +643,7 @@ form button:hover, #createNameForm input[type="submit"]:hover {
   text-align: center;
   justify-content: center;
 }
+
 #createNameSelects select {
   font-size: 1rem;
   margin: 5px;
@@ -613,7 +655,7 @@ form button:hover, #createNameForm input[type="submit"]:hover {
 }
 
 #createNameSelects label {
-font-weight: 900;
+  font-weight: 900;
   display: block;
   width: max-content;
   margin-inline: auto;
@@ -622,22 +664,26 @@ font-weight: 900;
 #createNameSelects select#Mandag {
   background-color: green;
 }
+
 #createNameSelects select#Tisdag {
   background-color: blue;
 }
+
 #createNameSelects select#Onsdag {
   color: black;
   background-color: white;
 }
+
 #createNameSelects select#Torsdag {
   background-color: red;
 }
+
 #createNameSelects select#Fredag {
   color: black;
   background-color: yellow;
 }
 
-#dialogSwichDateBox{
+#dialogSwichDateBox {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

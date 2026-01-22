@@ -18,10 +18,11 @@ body {
 .dont-print-that {
     display: none;
 }
+
 .title-container {
-  padding-top: 55px;
+    padding-top: 55px;
 }
 
-.page-brake{
-     margin-top: 60px;
+.page-brake {
+    margin-top: 60px;
 }
