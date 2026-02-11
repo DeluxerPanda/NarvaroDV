@@ -6,17 +6,22 @@ const setTitelMonth = currentDate.toLocaleString('sv-SE', { month: 'long' });
 const setTitelYear = currentDate.toLocaleString('sv-SE', { year: 'numeric' });
 const daysInMonth = getAllDaysInMonth(year, month);
 const daysInNumbers = new Date(year, month + 1, 0).getDate();
-const storedYear = localStorage.getItem("storedYear");
-const storedMonth = localStorage.getItem("storedMonth");
 const LoadingBarDialog = document.getElementById("LoadingBarDialog");
 let namesData = [];
 let index;
 
 window.onload = (event) => {
+  if (localStorage.getItem("storedMonth") == undefined) {
+  localStorage.setItem("storedMonth", month);
+}
+if (localStorage.getItem("storedYear") == undefined) {
+  localStorage.setItem("storedYear", year);
+}
 
+  checkMonthChange();
   setInterval(checkMonthChange, 20345);
 
-  loadDate()
+  loadDate();
 
   window.scrollTo({
     top: 1,
@@ -32,8 +37,7 @@ window.onload = (event) => {
 };
 
 async function checkMonthChange() {
-  const newMonth = new Date().getMonth();
-  if (newMonth !== month) {
+  if (localStorage.getItem("storedMonth") !== month.toString()) {
     namesData = JSON.parse(localStorage.getItem("namesData"));
     let names = namesData;
     let output = [];
@@ -61,18 +65,16 @@ async function checkMonthChange() {
         arbetsdagArrOveride: workDayArrOveride,
       });
     }
-
     await saveData(output).then(() => {
 
-      for (var key in localStorage) {
-        if (key.startsWith('buttonData_')) {
-          const value = localStorage.getItem(key);
-          const newKey = key.replace('buttonData_', 'OLD_');
-          localStorage.setItem(newKey, value);
-          localStorage.removeItem(key);
-        };
-      }
-    }).then(() => { window.location = window.location });
+      localStorage.setItem("storedMonth", month);
+   
+    if (localStorage.getItem("storedYear") !== year.toString()) {
+      localStorage.setItem("storedYear", year);
+  }
+    //  window.location = window.location;
+
+    });
   }
 }
 
@@ -86,16 +88,10 @@ function loadDate() {
       '</span>';
   }
 
-  localStorage.setItem("storedYear", year);
-  localStorage.setItem("storedMonth", month);
-
   if (localStorage.getItem("namesData") == null || localStorage.getItem("namesData") == "undefined" || localStorage.getItem("namesData").length === 0) {
     document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på redigera</h2>"
     LoadingBarDialog.close();
   } else {
-    if (storedMonth != null && (storedYear != year || storedMonth != month)) {
-      localStorage.setItem("namesDataOld", localStorage.getItem("namesData"));
-    }
 
     namesData = JSON.parse(localStorage.getItem("namesData"));
     document.getElementById("column").innerHTML = "";
@@ -120,7 +116,7 @@ function loadDate() {
 
 
 
-function main(namesData) {
+async function main(namesData) {
   let names = namesData;
   window.scrollTo({
     top: 1,
@@ -260,13 +256,10 @@ function main(namesData) {
 
   // Set innerHTML once
   document.getElementById("column").innerHTML = columnHTML;
-
   LoadingBarDialog.close();
-
-  // Defer checkMonthChange to avoid blocking
-  setTimeout(() => {
-    checkMonthChange();
-  }, 0);
+  PreloadSwichDate().then(() => {
+    document.getElementById("MenuButtonSwichDate").style.cursor = "pointer";
+  });
 }
 
 function getAllDaysInMonth(year, month) {
@@ -445,42 +438,41 @@ function dialog(day, name, event) {
   });
 }
 
-//Dialog boxe Swich Date
-async function dialogSwichDate() {
-  LoadingBarDialog.showModal();
-  const dialogElement = document.getElementById("dialogSwichDate");
+async function PreloadSwichDate() {
+  const box = document.getElementById("dialogSwichDateBox");
+  box.innerHTML = "";
+
   const months = Array.from({ length: 12 }, (_, i) =>
     new Date(year, i).toLocaleString("sv-SE", { month: "long" })
   );
-  await getAllNarvaroDBNames().then((names) => {
-    console.log(names);
-    for (let i = 0; i < months.length; i++) {
 
-      if (names.includes(`${months[i]} ${year}`)) {
-        document.getElementById("dialogSwichDateBox").innerHTML += `
-            <button class="dialogButtonSwichDate_isInDB" id="SwichDate">
-            ${year}
-            <br>
-            ${months[i]}
-          </button>`;
-      } else {
-        document.getElementById("dialogSwichDateBox").innerHTML += `
-            <button class="dialogButtonSwichDate" id="SwichDate">
-            ${year}
-            <br>
-            ${months[i]}
-          </button>`;
-      }
-    }
-  }).then(() => {
-    LoadingBarDialog.close();
-    dialogElement.showModal();
-  });
-  document.getElementById("dialogSwichDateclose").addEventListener("click", function () {
-    dialogElement.close();
-  });
+  const names = await getAllNarvaroDBNames();
+  const nameSet = new Set(names); // O(1) lookups
 
+  let html = ""; // build once
+
+  for (let i = 0; i < months.length; i++) {
+    const key = `${months[i]} ${year}`;
+    const inDB = nameSet.has(key);
+
+    html += `
+      <button class="${inDB ? "dialogButtonSwichDate_isInDB" : "dialogButtonSwichDate"}" id="SwichDate">
+        ${year}<br>${months[i]}
+      </button>`;
+  }
+
+  box.innerHTML = html; // single DOM write
 }
+
+//Dialog boxe Swich Date
+async function dialogSwichDate() {
+    const dialogElement = document.getElementById("dialogSwichDate");
+  dialogElement.showModal();
+
+  document.getElementById("dialogSwichDateclose")
+    .addEventListener("click", () => dialogElement.close());
+}
+
 
 
 function displayEditNameArry(element, index) {

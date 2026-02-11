@@ -1,27 +1,23 @@
-const DB_Name_Month = currentDate.toLocaleString('sv-SE', { month: 'long' });
-const DB_Name_Year = currentDate.toLocaleString('sv-SE', { year: 'numeric' });
+const date = new Date(year, Number(localStorage.getItem("storedMonth")));
 const DB_NAME = "NarvaroDB";
+let STORE_NAME = `${date.toLocaleString("sv-SE", { month: "long" })} ${localStorage.getItem("storedYear")}`;
 
-let DB_VERSION = 0;
-let STORE_NAME = `${DB_Name_Month} ${DB_Name_Year}`;
-
-checkVersion();
 function checkVersion() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME);
     request.onsuccess = () => {
       const db = request.result;
-      DB_VERSION = db.version + 1;
-      resolve(DB_VERSION);
+      resolve(db.version + 1);
     };
     request.onerror = () => reject(request.error);
   });
 };
 
-function openDB(makeDB = false) {
+async function openDB(makeDB = false) {
+   const currentVersion = await checkVersion();
   return new Promise((resolve, reject) => {
 
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    const request = indexedDB.open(DB_NAME, currentVersion);
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
       if (makeDB) {

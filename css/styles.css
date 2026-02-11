@@ -220,6 +220,9 @@ button {
   right: 0%;
   cursor: pointer;
 }
+#MenuButtonSwichDate{
+  cursor: wait;
+}
 
 dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.4);
@@ -549,7 +552,6 @@ input[type=button]::-moz-focus-inner {
 
 main {
   max-width: 96rem;
-  min-width: 85rem;
   height: 100%;
   padding-bottom: 100px;
   background-color: white;
