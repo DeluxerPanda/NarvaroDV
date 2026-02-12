@@ -402,34 +402,22 @@ input[type=button]::-moz-focus-inner {
 
 .dialogButtonSwichDate {
   border-radius: 8px;
+  cursor: not-allowed;
+  border-radius: 8px;
   text-align: center;
   background-color: gray;
-  cursor: not-allowed;
   color: white;
   font-weight: 900;
-  height: 100px;
-  flex: 7rem;
-  margin: 5px;
+  padding: 15px;
+  margin: 0;
 }
 
 .dialogButtonSwichDate:hover {
   background-color: darkgray;
 }
 
-.dialogButtonSwichDate_isInDB {
-  background-color: green;
-  cursor: pointer;
-  border-radius: 8px;
-  text-align: center;
-  color: white;
-  font-weight: 900;
-  height: 100px;
-  flex: 7rem;
-  margin: 5px;
-}
-
-.dialogButtonSwichDate_isInDB:hover {
-  background-color: darkgreen;
+#dialogSwichDateButtons{
+  visibility: hidden;
 }
 
 /*  */

@@ -109,7 +109,7 @@ function loadDate() {
     '<input type="text" maxlength="50" oninput="checkMaxLength(this)" id="grupp_NameInput" placeholder="Gruppens namn" value="' + localStorage.getItem("titelData") + '" class="gruppEditItem"></input>';
 
   document.getElementById("titleDate").innerHTML = `${setTitelMonth} ${setTitelYear}`;
-
+  document.getElementById("dialogNameYear").innerHTML = `${year}`;
   document.title = `Närvaro lista - ${document.getElementById("titleDate").innerText} `;
 }
 
@@ -259,6 +259,8 @@ async function main(namesData) {
   LoadingBarDialog.close();
   PreloadSwichDate().then(() => {
     document.getElementById("MenuButtonSwichDate").style.cursor = "pointer";
+    document.getElementById("dialogSwichDateButtons").style.visibility = "visible";
+    document.getElementById("dialogSwichDateLoader").remove();
   });
 }
 
@@ -439,29 +441,12 @@ function dialog(day, name, event) {
 }
 
 async function PreloadSwichDate() {
-  const box = document.getElementById("dialogSwichDateBox");
-  box.innerHTML = "";
-
-  const months = Array.from({ length: 12 }, (_, i) =>
-    new Date(year, i).toLocaleString("sv-SE", { month: "long" })
-  );
-
-  const names = await getAllNarvaroDBNames();
-  const nameSet = new Set(names); // O(1) lookups
-
-  let html = ""; // build once
-
-  for (let i = 0; i < months.length; i++) {
-    const key = `${months[i]} ${year}`;
-    const inDB = nameSet.has(key);
-
-    html += `
-      <button class="${inDB ? "dialogButtonSwichDate_isInDB" : "dialogButtonSwichDate"}" id="SwichDate">
-        ${year}<br>${months[i]}
-      </button>`;
-  }
-
-  box.innerHTML = html; // single DOM write
+const names = await getAllNarvaroDBNames();
+names.forEach(item => {
+document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).style.background = "green";
+document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).style.cursor = "pointer";
+document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).addEventListener("click", function() {loadSwitchData(item);});
+});
 }
 
 //Dialog boxe Swich Date
@@ -473,7 +458,14 @@ async function dialogSwichDate() {
     .addEventListener("click", () => dialogElement.close());
 }
 
-
+function loadSwitchData(name) {
+getNarvaro(name).then(data => {
+  console.log(data);
+}).catch(error => {
+  alert("Ett fel uppstod vid hämtning av data.",error);
+  console.error("Error loading data:", error);
+});
+}
 
 function displayEditNameArry(element, index) {
   document.getElementById("nameEditContainer").innerHTML += `

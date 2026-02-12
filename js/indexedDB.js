@@ -14,7 +14,7 @@ function checkVersion() {
 };
 
 async function openDB(makeDB = false) {
-   const currentVersion = await checkVersion();
+  const currentVersion = await checkVersion();
   return new Promise((resolve, reject) => {
 
     const request = indexedDB.open(DB_NAME, currentVersion);
@@ -23,7 +23,7 @@ async function openDB(makeDB = false) {
       if (makeDB) {
         if (!db.objectStoreNames.contains(STORE_NAME)) {
           db.createObjectStore(STORE_NAME, {
-            keyPath: "name", // use "name" as primary key
+            keyPath: "name"
           });
         }
       }
@@ -57,9 +57,7 @@ async function saveData(dataArray) {
 async function getAllNarvaroDBNames() {
   const db = await openDB(false);
   let names = [];
-  console.log(db.objectStoreNames)
   for (let i = 0; i < db.objectStoreNames.length; i++) {
-    console.log(db.objectStoreNames[i]);
     names.push(db.objectStoreNames[i]);
   }
   return names;
@@ -70,25 +68,39 @@ async function getAllNarvaro() {
 
   return new Promise((resolve, reject) => {
     for (let i = 0; i < db.objectStoreNames.length; i++) {
-
-      console.log(`Getting all students from store: ${db.objectStoreNames[i]}`);
       const tx = db.transaction(db.objectStoreNames[i], "readonly");
       const store = tx.objectStore(db.objectStoreNames[i]);
       const request = store.getAll();
 
       request.onsuccess = () => {
         const students = request.result;
-        console.log('Got all the students');
-        console.table(students);
         resolve(students);
       };
 
       request.onerror = (err) => {
-        console.error(`Error to get all students: ${err}`);
         reject(err);
       };
     }
   });
+}
+
+async function getNarvaro(name) {
+  const db = await openDB(false);
+
+  return new Promise((resolve, reject) => {
+      const tx = db.transaction(name, "readonly");
+      const store = tx.objectStore(name);
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        const students = request.result;
+        resolve(students);
+      };
+
+      request.onerror = (err) => {
+        reject(err);
+      };
+    });
 }
 
 async function removeDB() {
