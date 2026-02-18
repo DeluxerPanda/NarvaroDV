@@ -351,6 +351,13 @@ function isRedDay(day) {
 
 //Dialog boxes
 
+function closeDialog(dialogName) {
+  const dialogElement = document.getElementById(dialogName);
+  if (dialogElement) {
+    dialogElement.close();
+  }
+}
+
 function dialog(day, name, event) {
   let dialogElement = document.getElementById("dialog");
   let clickedElement = event.target;
@@ -445,7 +452,7 @@ const names = await getAllNarvaroDBNames();
 names.forEach(item => {
 document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).style.background = "green";
 document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).style.cursor = "pointer";
-document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).addEventListener("click", function() {loadSwitchData(item);});
+document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).onclick = function() {dialogSwichDateLoad(item,item.split(" ")[0]);};
 });
 }
 
@@ -453,18 +460,54 @@ document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).addEventLi
 async function dialogSwichDate() {
     const dialogElement = document.getElementById("dialogSwichDate");
   dialogElement.showModal();
-
-  document.getElementById("dialogSwichDateclose")
-    .addEventListener("click", () => dialogElement.close());
 }
 
-function loadSwitchData(name) {
-getNarvaro(name).then(data => {
-  console.log(data);
+let monthData = [];
+
+function dialogSwichDateLoad(item, monthName) {
+  const dialogElement = document.getElementById("dialogSwichDate");
+  dialogElement.close();
+   LoadingBarDialog.showModal();
+  let name_Group;
+  
+  if (monthData[monthName] == null) {
+getNarvaro(item).then(data => { 
+ 
+monthData[monthName] = data;
+      if (item.name) {
+        name_Group = item.name_Group || "Namnlös";
+      };
+lssave(monthData[monthName], true,monthName,name_Group).then(() => {
+  LoadingBarDialog.close();
 }).catch(error => {
-  alert("Ett fel uppstod vid hämtning av data.",error);
-  console.error("Error loading data:", error);
+  return ("Ett fel uppstod vid lssave  data.",error);
+});;
+
+}).catch(error => {
+  return ("Ett fel uppstod vid hämtning av data.",error);
 });
+  } else {
+
+      if (item.name) {
+        name_Group = item.name_Group || "Namnlös";
+      };
+lssave(monthData[monthName], true,monthName,name_Group).then(() => {
+  LoadingBarDialog.close();
+}).catch(error => {
+  return ("Ett fel uppstod vid lssave data.",error);
+});;
+
+    console.log(monthData);
+  }
+
+
+//    document.getElementById("dialogSwichDateMonad_sparaFil").addEventListener("click", function () {
+//      monthData[monthName].forEach(item => {
+//      if (item.name) {
+//        name_Group = item.name_Group || "Namnlös";
+//      }});
+//        saveDataToAsFile(JSON.stringify(monthData[monthName], null, 2),monthName,name_Group);
+//    });
 }
 
 function displayEditNameArry(element, index) {
@@ -535,7 +578,7 @@ function uploadName() {
     let fileReader = new FileReader();
     fileReader.onload = function () {
       let parsedJSON = JSON.parse(fileReader.result);
-      lssave(parsedJSON);
+      lssave(parsedJSON, false,null,null);
     }
     fileReader.readAsText(file);
   });
@@ -856,7 +899,13 @@ function checkMaxLength(input) {
 }
 
 
-function lssave(jsonData) {
+function lssave(jsonData, temp, monthName, name_Group) {
+
+  if(monthName != null && name_Group != null){
+    document.getElementById("titelDataTitel").innerHTML = name_Group;
+    document.getElementById("titleDate").innerHTML = monthName;
+  }
+
 
   if (!Array.isArray(jsonData)) {
     LoadingBarDialog.close();
@@ -865,6 +914,7 @@ function lssave(jsonData) {
     return;
   }
 
+  if(temp == false){
   for (let i = localStorage.length - 1; i >= 0; i--) {
     const key = localStorage.key(i);
     if (key && key.startsWith("buttonData_")) {
@@ -874,20 +924,24 @@ function lssave(jsonData) {
       localStorage.removeItem(key);
     }
   }
-
+}
   namesData = [];
 
   jsonData.forEach(item => {
 
     if (!item || typeof item.name_Group === "string") {
+        if(temp == false){
       localStorage.setItem("titelData", String(item.name_Group));
+        }
       document.getElementById("grupp_NameInput").value = item.name_Group;
       document.getElementById("titelDataTitel").innerHTML = item.name_Group;
     }
     if (!item || typeof item.name !== "string") return;
 
     if (item.name === "name_Group") {
+        if(temp == false){
       localStorage.setItem("titelData", String(item.name_Group));
+        }
       document.getElementById("grupp_NameInput").value = item.name_Group;
       document.getElementById("titelDataTitel").innerHTML = item.name_Group;
     } else {
@@ -911,13 +965,14 @@ function lssave(jsonData) {
           key = `buttonData_${name}_Fredag`;
         }
 
-
+  if(temp == false){
         if (val === null || val === "" || val === "&nbsp;") {
           localStorage.removeItem(key);
         } else {
           localStorage.setItem(key, String(val));
         }
       }
+    }
 
 
       const arbeteArrayOveride = Array.isArray(item.arbetsdagArrOveride) ? item.arbetsdagArrOveride : [];
@@ -927,19 +982,22 @@ function lssave(jsonData) {
           continue;
         } else {
           const [data, value] = val.split(/:(.+)/).filter(Boolean);
-
+        if(temp == false){
           if (value === null || value === "" || value === "&nbsp;") {
             localStorage.removeItem(data);
           } else {
             localStorage.setItem(data, String(value));
           }
         }
+        }
       }
     }
   });
 
   // Persistenta namn och uppdatera UI
+    if(temp == false){
   localStorage.setItem("namesData", JSON.stringify(namesData));
+    }
   document.getElementById("nameEditContainer").innerHTML = "";
   document.getElementById("column").innerHTML = "";
 
@@ -990,15 +1048,16 @@ function getjsoin() {
     .then(() => console.log("Data saved to IndexedDB"))
     .catch(err => console.error("IndexedDB error:", err));
 
-  // localStorage.setItem("jsonData", JSON.stringify(output));
+   let name_Group = document.getElementById("titelDataTitel").innerText || "Namnlös";
+  saveDataToAsFile(JSON.stringify(output, null, 2),setTitelMonth,name_Group);
+}
 
-  const jsonString = JSON.stringify(output, null, 2);
-  const blob = new Blob([jsonString], { type: "application/json" });
+function saveDataToAsFile(jsonString, monthName,name_Group) {
+    const blob = new Blob([jsonString], { type: "application/json" });
   const url = URL.createObjectURL(blob);
-  let name_Group = document.getElementById("titelDataTitel").innerText || "Namnlös";
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${name_Group} (${setTitelMonth} ${setTitelYear}).json`;
+  a.download = `${name_Group} (${monthName} ${setTitelYear}).json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

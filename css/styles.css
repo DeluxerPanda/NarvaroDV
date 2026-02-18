@@ -543,6 +543,7 @@ main {
   height: 100%;
   padding-bottom: 100px;
   background-color: white;
+  width: max-content;
 }
 
 main:fullscreen,
