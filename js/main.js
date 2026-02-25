@@ -4,17 +4,16 @@ let month = currentDate.getMonth();
 const day = currentDate.getDate();
 const setTitelMonth = currentDate.toLocaleString('sv-SE', { month: 'long' });
 const setTitelYear = currentDate.toLocaleString('sv-SE', { year: 'numeric' });
-const daysInMonth = getAllDaysInMonth(year, month);
-const daysInNumbers = new Date(year, month + 1, 0).getDate();
 const LoadingBarDialog = document.getElementById("LoadingBarDialog");
 let namesData = [];
 let index;
 let isTemp = false;
 let stroage = localStorage;
+const daysInMonth = getAllDaysInMonth(year, month);
 
 window.onload = (event) => {
   if (localStorage.getItem("storedMonth") == undefined) {
-  localStorage.setItem("storedMonth", month);
+  localStorage.setItem("storedMonth", month + 1);
 }
 if (localStorage.getItem("storedYear") == undefined) {
   localStorage.setItem("storedYear", year);
@@ -81,7 +80,7 @@ async function checkMonthChange() {
     for (let i = 0; i < names.length; i++) {
       let workDayArr = [];
       let workDayArrOveride = [];
-      for (let j = 1; j <= daysInNumbers; j++) {
+        for (let j = 1; j <= daysInMonth.length; j++) {
         if (localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
           workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`));
         } else if (localStorage.getItem(`buttonData_${names[i]}_${j}_halvdag`) != null) {
@@ -171,7 +170,7 @@ async function main(namesData) {
   for (let i = 0; i < names.length; i++) {
     columnHTML += '<div class="nameContainer"><p class="name">' + names[i] + '</p></div>';
     const date = new Date();
-    for (let j = 1; j <= daysInNumbers; j++) {
+    for (let j = 1; j <= daysInMonth.length; j++) {
       date.setDate(j);
       let dayName = date.toLocaleDateString('sv-SE', { weekday: 'long' });
 
@@ -291,9 +290,9 @@ async function main(namesData) {
 }
 
 function getAllDaysInMonth(year, month) {
-  const days = [];
+const days = [];
 
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+const daysInMonth = new Date(year, month + 1, 0).getDate();
 
 
   for (let day = 1; day <= daysInMonth; day++) {
@@ -651,7 +650,7 @@ function getjsoin() {
   for (let i = 0; i < names.length; i++) {
     let workDayArr = [];
     let workDayArrOveride = [];
-    for (let j = 1; j <= daysInNumbers; j++) {
+    for (let j = 1; j <= daysInMonth.length; j++) {
       if (stroage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
         workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + stroage.getItem(`buttonData_${names[i]}_${j}_heldag`));
       } else if (stroage.getItem(`buttonData_${names[i]}_${j}_halvdag`) != null) {

@@ -1,43 +1,67 @@
-const date = new Date(year, Number(localStorage.getItem("storedMonth")));
 const DB_NAME = "NarvaroDB";
-let STORE_NAME = `${date.toLocaleString("sv-SE", { month: "long" })} ${localStorage.getItem("storedYear")}`;
 
-function checkVersion() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME);
-    request.onsuccess = () => {
-      const db = request.result;
-      resolve(db.version + 1);
-    };
-    request.onerror = () => reject(request.error);
-  });
-};
+// Connection cache for better performance
+let cachedDB = null;
+
+// Dynamically get current store name based on localStorage
+function getStoreName() {
+  const year = Number(localStorage.getItem("storedYear")) || new Date().getFullYear();
+  const month = Number(localStorage.getItem("storedMonth")) || new Date().getMonth();
+  const date = new Date(year, month);
+  return `${date.toLocaleString("sv-SE", { month: "long" })} ${year}`;
+}
+
+// Get or increment the DB version counter
+function getNextDBVersion() {
+  let version = Number(localStorage.getItem("dbVersion")) || 1;
+  version++;
+  localStorage.setItem("dbVersion", version);
+  return version;
+}
 
 async function openDB(makeDB = false) {
-  const currentVersion = await checkVersion();
-  return new Promise((resolve, reject) => {
+  // If trying to create DB and cache is open, close it
+  if (makeDB && cachedDB) {
+    cachedDB.close();
+    cachedDB = null;
+  }
 
-    const request = indexedDB.open(DB_NAME, currentVersion);
+  // Return cached connection if available and not creating
+  if (cachedDB && !makeDB) {
+    return cachedDB;
+  }
+
+  return new Promise((resolve, reject) => {
+    const storeName = getStoreName();
+    
+    // Get version - if creating, get next version; otherwise use current
+    const version = makeDB ? getNextDBVersion() : undefined;
+    const request = version ? indexedDB.open(DB_NAME, version) : indexedDB.open(DB_NAME);
+    
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      if (makeDB) {
-        if (!db.objectStoreNames.contains(STORE_NAME)) {
-          db.createObjectStore(STORE_NAME, {
-            keyPath: "name"
-          });
-        }
+      if (makeDB && !db.objectStoreNames.contains(storeName)) {
+        db.createObjectStore(storeName, {
+          keyPath: "name"
+        });
       }
     };
 
-    request.onsuccess = () => resolve(request.result);
+    request.onsuccess = () => {
+      const resultDB = request.result;
+      cachedDB = resultDB;
+      resolve(resultDB);
+    };
+    
     request.onerror = () => reject(request.error);
   });
 }
 
 async function saveData(dataArray) {
   const db = await openDB(true);
-  const tx = db.transaction(STORE_NAME, "readwrite");
-  const store = tx.objectStore(STORE_NAME);
+  const storeName = getStoreName();
+  const tx = db.transaction(storeName, "readwrite");
+  const store = tx.objectStore(storeName);
 
   dataArray.forEach(item => {
     // Handle the group object (no "name")
@@ -67,18 +91,33 @@ async function getAllNarvaro() {
   const db = await openDB(false);
 
   return new Promise((resolve, reject) => {
-    for (let i = 0; i < db.objectStoreNames.length; i++) {
+    const allData = [];
+    const storeCount = db.objectStoreNames.length;
+    let completedStores = 0;
+
+    if (storeCount === 0) {
+      resolve([]);
+      return;
+    }
+
+    // Query all stores in parallel
+    for (let i = 0; i < storeCount; i++) {
       const tx = db.transaction(db.objectStoreNames[i], "readonly");
       const store = tx.objectStore(db.objectStoreNames[i]);
       const request = store.getAll();
 
       request.onsuccess = () => {
-        const students = request.result;
-        resolve(students);
+        allData.push(...request.result);
+        completedStores++;
+        
+        // Resolve when all stores are complete
+        if (completedStores === storeCount) {
+          resolve(allData);
+        }
       };
 
-      request.onerror = (err) => {
-        reject(err);
+      request.onerror = () => {
+        reject(request.error);
       };
     }
   });
@@ -104,10 +143,14 @@ async function getNarvaro(name) {
 }
 
 async function removeDB() {
-  const db = await openDB(false);
+  // Close cached connection
+  if (cachedDB) {
+    cachedDB.close();
+    cachedDB = null;
+    dbVersion = null;
+  }
 
   return new Promise((resolve, reject) => {
-    db.close();
     const request = indexedDB.deleteDatabase(DB_NAME);
 
     request.onsuccess = () => {
@@ -124,4 +167,13 @@ async function removeDB() {
       console.warn("Delete blocked: another tab or connection is open");
     };
   });
+}
+
+// Clear the connection cache when STORE_NAME changes
+function clearDBCache() {
+  if (cachedDB) {
+    cachedDB.close();
+    cachedDB = null;
+    dbVersion = null;
+  }
 }
