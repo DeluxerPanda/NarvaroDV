@@ -1,43 +1,124 @@
-const currentDate = new Date();
-const year = currentDate.getFullYear();
-let month = currentDate.getMonth();
-const day = currentDate.getDate();
-const setTitelMonth = currentDate.toLocaleString('sv-SE', { month: 'long' });
-const setTitelYear = currentDate.toLocaleString('sv-SE', { year: 'numeric' });
 const LoadingBarDialog = document.getElementById("LoadingBarDialog");
+const Months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December"];
+const tihisDate = new Date();
+let currentDate;
+let stroage = localStorage;
+let isTemp = false;
 let namesData = [];
 let index;
-let isTemp = false;
-let stroage = localStorage;
-const daysInMonth = getAllDaysInMonth(year, month);
+let year;
+let month;
+let  day;
+window.onload = function() {
+  
+  let Year = tihisDate.getFullYear();
+  let month = tihisDate.getMonth();
+  if (isTemp) {
+    if (sessionStorage.getItem("storedMonth") !== null) {
+      month = parseInt(sessionStorage.getItem("storedMonth"));
+    }
+    if (sessionStorage.getItem("storedYear") !== null) {
+      Year = parseInt(sessionStorage.getItem("storedYear"));
+    }
+  }
+  updateUI(Year, month).then(() => {
+    setInterval(checkMonthChange, 10345);
+    checkMonthChange();
+  });
+}
 
-window.onload = (event) => {
-  if (localStorage.getItem("storedMonth") == undefined) {
+async function updateUI(Year, Month) {
+const daysInMonth = getAllDaysInMonth(Year, Month);
+  LoadingBarDialog.showModal();
+  currentDate = new Date(Year, Month, 1);
+  year = currentDate.getFullYear();
+  month = currentDate.getMonth();
+  day = currentDate.getDate();
+document.getElementById("numer").innerHTML = "";
+
+if (localStorage.getItem("storedMonth") == undefined) {
   localStorage.setItem("storedMonth", month + 1);
 }
 if (localStorage.getItem("storedYear") == undefined) {
   localStorage.setItem("storedYear", year);
-}
+} 
 
-  setTemp(false);
-
-  checkMonthChange();
-  setInterval(checkMonthChange, 20345);
- 
-  loadDate();
-
-  window.scrollTo({
-    top: 1,
-    left: 1,
-    behavior: "smooth",
+  PreloadSwichDate().then(() => {
+    document.getElementById("MenuButtonSwichDate").style.cursor = "pointer";
+    document.getElementById("dialogSwichDateButtons").style.visibility = "visible";
+    document.getElementById("dialogSwichDateLoader").style.display = "none";
   });
 
-  window.onbeforeunload = function (e) {
-    if (LoadingBarDialog.showModal == true) {
-      e.preventDefault();
-    }
-  };
-};
+  if (stroage.getItem("titelData") == null) {
+    stroage.setItem("titelData", "Namnlös");
+  }
+
+  document.getElementById("titelDataTitel").innerHTML = stroage.getItem("titelData");
+
+  document.getElementById("gruppEditContainer").innerHTML =
+    '<input type="text" maxlength="50" oninput="checkMaxLength(this)" id="grupp_NameInput" placeholder="Gruppens namn" value="' + stroage.getItem("titelData") + '" class="gruppEditItem"></input>';
+
+  document.getElementById("titleDate").innerHTML = `${Months[Month]} ${Year}`;
+  document.getElementById("dialogNameYear").innerHTML = `${Year}`;
+  document.title = `Närvaro lista - ${document.getElementById("titleDate").innerText} `;
+
+
+    for (let i = 1; i <= daysInMonth.length; i++) {
+    document.getElementById("numer").innerHTML +=
+      '<span class="numerRow">' +
+      '<p class="numer">' + i + '</p>' +
+      '</span>';
+  }
+
+  if (stroage.getItem("namesData") == null || stroage.getItem("namesData") == undefined || stroage.getItem("namesData").length === 0) {
+    document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>"
+    LoadingBarDialog.close();
+    return;
+  }
+
+  namesData = JSON.parse(stroage.getItem("namesData"));
+    
+  if (namesData == null || namesData == undefined || namesData.length === 0) {
+      document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>"
+      LoadingBarDialog.close();
+    return;
+  }
+
+    document.getElementById("column").innerHTML = "";
+    main(namesData).then(() => {
+        namesData.forEach(displayEditNameArry);
+      });
+}
+
+//window.onload = (event) => {
+//
+//if (localStorage.getItem("currentDate") === undefined) {
+//  localStorage.setItem("currentDate", currentDate);
+//}
+//if (sessionStorage.getItem("currentDate") != undefined) {
+//  newCurrentDate = new Date(sessionStorage.getItem("currentDate"));
+//}
+//
+//
+//  setTemp(false);
+//
+//  loadDate().then(() => {
+//  setInterval(checkMonthChange, 10345);
+//  checkMonthChange();
+//
+//  window.scrollTo({
+//    top: 1,
+//    left: 1,
+//    behavior: "smooth",
+//  });
+//
+//  window.onbeforeunload = function (e) {
+//    if (LoadingBarDialog.showModal == true) {
+//      e.preventDefault();
+//    }
+//  };
+//  });
+//};
 
 function setTemp(value){
   if(value){
@@ -71,7 +152,8 @@ function setTemp(value){
 }
 
 async function checkMonthChange() {
-  if (localStorage.getItem("storedMonth") !== month.toString()) {
+  if (!isTemp) {
+  if (localStorage.getItem("storedMonth") !== tihisDate.getMonth().toString()) {
     namesData = JSON.parse(localStorage.getItem("namesData"));
     let names = namesData;
     let output = [];
@@ -80,6 +162,7 @@ async function checkMonthChange() {
     for (let i = 0; i < names.length; i++) {
       let workDayArr = [];
       let workDayArrOveride = [];
+      const daysInMonth = getAllDaysInMonth(tihisDate.getFullYear(), tihisDate.getMonth());
         for (let j = 1; j <= daysInMonth.length; j++) {
         if (localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
           workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`));
@@ -102,56 +185,70 @@ async function checkMonthChange() {
   }
     await saveData(output).then(() => {
 
+      localStorage.setItem("currentDate", new Date());
       localStorage.setItem("storedMonth", month);
-   
-    if (localStorage.getItem("storedYear") !== year.toString()) {
       localStorage.setItem("storedYear", year);
-  }
-    //  window.location = window.location;
-
+      
+      window.location = window.location;
     });
   }
 }
-
-function loadDate() {
-  LoadingBarDialog.showModal();
-  for (let i = 1; i <= daysInMonth.length; i++) {
-    document.getElementById("numer").innerHTML +=
-      '<span class="numerRow">' +
-      '<p class="numer">' + i + '</p>' +
-      '</span>';
-  }
-
-  PreloadSwichDate().then(() => {
-    document.getElementById("MenuButtonSwichDate").style.cursor = "pointer";
-    document.getElementById("dialogSwichDateButtons").style.visibility = "visible";
-    document.getElementById("dialogSwichDateLoader").remove();
-  });
-
-  if (stroage.getItem("namesData") == null || stroage.getItem("namesData") == "undefined" || stroage.getItem("namesData").length === 0) {
-    document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>"
-    LoadingBarDialog.close();
-  } else {
-
-    namesData = JSON.parse(stroage.getItem("namesData"));
-    document.getElementById("column").innerHTML = "";
-    main(namesData);
-    namesData.forEach(displayEditNameArry);
-  }
-
-  if (stroage.getItem("titelData") == null) {
-    stroage.setItem("titelData", "Namnlös");
-  }
-
-  document.getElementById("titelDataTitel").innerHTML += stroage.getItem("titelData");
-
-  document.getElementById("gruppEditContainer").innerHTML =
-    '<input type="text" maxlength="50" oninput="checkMaxLength(this)" id="grupp_NameInput" placeholder="Gruppens namn" value="' + stroage.getItem("titelData") + '" class="gruppEditItem"></input>';
-
-  document.getElementById("titleDate").innerHTML = `${setTitelMonth} ${setTitelYear}`;
-  document.getElementById("dialogNameYear").innerHTML = `${year}`;
-  document.title = `Närvaro lista - ${document.getElementById("titleDate").innerText} `;
 }
+//async function loadDate() {
+//  LoadingBarDialog.showModal();
+//
+//if (localStorage.getItem("storedMonth") == undefined) {
+//  localStorage.setItem("storedMonth", month + 1);
+//}
+//if (localStorage.getItem("storedYear") == undefined) {
+//  localStorage.setItem("storedYear", year);
+//} 
+//
+//  PreloadSwichDate().then(() => {
+//    document.getElementById("MenuButtonSwichDate").style.cursor = "pointer";
+//    document.getElementById("dialogSwichDateButtons").style.visibility = "visible";
+//    document.getElementById("dialogSwichDateLoader").style.display = "none";
+//  });
+//
+//  for (let i = 1; i <= daysInMonth.length; i++) {
+//    document.getElementById("numer").innerHTML +=
+//      '<span class="numerRow">' +
+//      '<p class="numer">' + i + '</p>' +
+//      '</span>';
+//  }
+//
+//  if (stroage.getItem("titelData") == null) {
+//    stroage.setItem("titelData", "Namnlös");
+//  }
+//
+//  document.getElementById("titelDataTitel").innerHTML += stroage.getItem("titelData");
+//
+//  document.getElementById("gruppEditContainer").innerHTML =
+//    '<input type="text" maxlength="50" oninput="checkMaxLength(this)" id="grupp_NameInput" placeholder="Gruppens namn" value="' + stroage.getItem("titelData") + '" class="gruppEditItem"></input>';
+//
+//  document.getElementById("titleDate").innerHTML = `${currentDate.toLocaleString('sv-SE', { month: 'long' })} ${currentDate.toLocaleString('sv-SE', { year: 'numeric' })}`;
+//  document.getElementById("dialogNameYear").innerHTML = `${year}`;
+//  document.title = `Närvaro lista - ${document.getElementById("titleDate").innerText} `;
+//
+//  if (stroage.getItem("namesData") == null || stroage.getItem("namesData") == undefined || stroage.getItem("namesData").length === 0) {
+//    document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>"
+//    LoadingBarDialog.close();
+//    return;
+//  }
+//
+//  namesData = JSON.parse(stroage.getItem("namesData"));
+//    
+//  if (namesData == null || namesData == undefined || namesData.length === 0) {
+//      document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>"
+//      LoadingBarDialog.close();
+//    return;
+//  }
+//
+//    document.getElementById("column").innerHTML = "";
+//    main(namesData).then(() => {
+//        namesData.forEach(displayEditNameArry);
+//      });
+//}
 
 
 
@@ -169,10 +266,10 @@ async function main(namesData) {
   let columnHTML = '';
   for (let i = 0; i < names.length; i++) {
     columnHTML += '<div class="nameContainer"><p class="name">' + names[i] + '</p></div>';
-    const date = new Date();
+    const daysInMonth = getAllDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
     for (let j = 1; j <= daysInMonth.length; j++) {
-      date.setDate(j);
-      let dayName = date.toLocaleDateString('sv-SE', { weekday: 'long' });
+      currentDate.setDate(j);
+      let dayName = currentDate.toLocaleDateString('sv-SE', { weekday: 'long' });
 
       const redDay = isRedDay(j);
       const heldagClass = redDay ? 'Row-weekend' : 'Row-Heldag';
@@ -303,8 +400,6 @@ const daysInMonth = new Date(year, month + 1, 0).getDate();
 }
 
 function getEaster() {
-  const date = new Date();  // dagens datum
-
   // Beräkna datumet för påskdagen
   const f = Math.floor,
     G = year % 19,
@@ -320,10 +415,9 @@ function getEaster() {
 }
 
 function isRedDay(day) {
-  const date = new Date(); // dagens datum
-  date.setDate(day); // Sätt dagen att kontrollera
-  const dayName = date.toLocaleDateString('sv-SE', { weekday: 'long' });
-  const dayAndMonth = date.toLocaleDateString('sv-SE', { month: "numeric", day: "numeric" });
+  currentDate.setDate(day); // Sätt dagen att kontrollera
+  const dayName = currentDate.toLocaleDateString('sv-SE', { weekday: 'long' });
+  const dayAndMonth = currentDate.toLocaleDateString('sv-SE', { month: "numeric", day: "numeric" });
 
   // Fasta röda dagar
   const fixedRedDays = [
@@ -477,7 +571,7 @@ const names = await getAllNarvaroDBNames();
 names.forEach(item => {
 document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).style.background = "green";
 document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).style.cursor = "pointer";
-document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).onclick = function() {dialogSwichDateLoad(item,item.split(" ")[0]);};
+document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).onclick = function() {dialogSwichDateLoad(item,item.split(" ")[0])};
 });
 }
 
@@ -491,7 +585,13 @@ let monthData = [];
 
 function dialogSwichDateLoad(item, monthName) {
   const dialogElement = document.getElementById("dialogSwichDate");
-  document.getElementById("titleDate").innerText = `${monthName} ${setTitelYear}`;
+
+Months.forEach((month, index) => {
+  if (month.toLowerCase() === monthName.toLowerCase()) {
+    updateUI(item.split(" ")[1], index);
+}
+});
+
   dialogElement.close();
    LoadingBarDialog.showModal();
   let name_Group;
@@ -524,8 +624,6 @@ lssave(monthData[monthName],monthName,name_Group).then(() => {
 }).catch(error => {
   return ("Ett fel uppstod vid lssave data.",error);
 });;
-
-    console.log(monthData);
   }
 
 
@@ -567,6 +665,10 @@ function lssave(jsonData, monthName, name_Group) {
   namesData = [];
 
   jsonData.forEach(item => {
+
+    if (item.currentDate) {
+    stroage.setItem("currentDate",item.currentDate);
+}
 
     if (!item || typeof item.name_Group === "string") {
       stroage.setItem("titelData", String(item.name_Group));
@@ -634,11 +736,10 @@ function lssave(jsonData, monthName, name_Group) {
     document.getElementById("column").innerHTML = "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>";
     LoadingBarDialog.close();
   } else {
-    setTimeout(() => {
       document.getElementById("column").innerHTML = "";
-      main(namesData);
-    }, 1000);
-    namesData.forEach(displayEditNameArry);
+      main(namesData).then(() => {
+        namesData.forEach(displayEditNameArry);
+      });
   }
 }
 
@@ -650,6 +751,7 @@ function getjsoin() {
   for (let i = 0; i < names.length; i++) {
     let workDayArr = [];
     let workDayArrOveride = [];
+    const daysInMonth = getAllDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
     for (let j = 1; j <= daysInMonth.length; j++) {
       if (stroage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
         workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + stroage.getItem(`buttonData_${names[i]}_${j}_heldag`));
@@ -690,3 +792,4 @@ function saveDataToAsFile(jsonString, monthName,name_Group) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
