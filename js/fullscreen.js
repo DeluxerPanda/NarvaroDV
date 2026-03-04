@@ -17,3 +17,19 @@ document.addEventListener("fullscreenchange", (event) => {
         document.getElementById("MenuButtonExitFullScreen").style.display = "none";
     }
 });
+
+window.addEventListener("beforeunload", (event) => { 
+if (document.fullscreenElement) {
+  event.preventDefault();
+  event.returnValue = '';
+  event.return
+  }
+})
+
+window.onbeforeunload = (event) => {
+if (document.fullscreenElement) {
+  event.preventDefault();
+  event.returnValue = '';
+  event.return
+  }
+}

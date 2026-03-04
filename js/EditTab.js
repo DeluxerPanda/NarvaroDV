@@ -27,7 +27,7 @@ function createName() {
   document.getElementById("createNameBox").style.display = "block";
   document.getElementById("AddNamesBox").style.display = "none";
   document.getElementById("menuTitelEditDialog").textContent = "Lägg till deltagare";
-  document.getElementById("menuSubTitelEditDialog").textContent = "Välj arbetsdagar";
+//  document.getElementById("menuSubTitelEditDialog").textContent = "Välj arbetsdagar";
   document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i>Gå tillbaka`;
   document.getElementById("MenuButtonDialogEditTopBar").onclick = createNameCancel;
   document.getElementById("gruppEditContainer").style.display = "none";
@@ -35,18 +35,18 @@ function createName() {
   document.getElementById("ladda_deltagare_eller").style.display = "none";
   document.getElementById("createNameForm").onsubmit = addNameInArray;
   const newNameInput = document.getElementById("newNameInput");
-  const Mandag = document.getElementById("Mandag");
-  const Tisdag = document.getElementById("Tisdag");
-  const Onsdag = document.getElementById("Onsdag");
-  const Torsdag = document.getElementById("Torsdag");
-  const Fredag = document.getElementById("Fredag");
+//  const Mandag = document.getElementById("Mandag");
+//  const Tisdag = document.getElementById("Tisdag");
+//  const Onsdag = document.getElementById("Onsdag");
+//  const Torsdag = document.getElementById("Torsdag");
+//  const Fredag = document.getElementById("Fredag");
   newNameInput.value = "";
 
-  Mandag.value = "Mandag-heldag";
-  Tisdag.value = "Tisdag-heldag";
-  Onsdag.value = "Onsdag-heldag";
-  Torsdag.value = "Torsdag-heldag";
-  Fredag.value = "Fredag-halvdag";
+//  Mandag.value = "Mandag-heldag";
+//  Tisdag.value = "Tisdag-heldag";
+//  Onsdag.value = "Onsdag-heldag";
+//  Torsdag.value = "Torsdag-heldag";
+//  Fredag.value = "Fredag-halvdag";
 }
 
 const realFileBtn = document.getElementById("real-file");
@@ -79,7 +79,7 @@ function createNameEdit(index, name) {
   document.getElementById("createNameBox").style.display = "block";
   document.getElementById("AddNamesBox").style.display = "none";
   document.getElementById("menuTitelEditDialog").textContent = "Redigera deltagare";
-  document.getElementById("menuSubTitelEditDialog").textContent = "Välj arbetsdagar";
+//  document.getElementById("menuSubTitelEditDialog").textContent = "Välj arbetsdagar";
   document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i>Gå tillbaka`;
   document.getElementById("MenuButtonDialogEditTopBar").onclick = createNameCancel;
   document.getElementById("gruppEditContainer").style.display = "none";
@@ -87,11 +87,11 @@ function createNameEdit(index, name) {
   document.getElementById("ladda_deltagare_eller").style.display = "none";
   document.getElementById("createNameSubmit").value = "Ändra deltagare"
   const form = document.getElementById("createNameForm");
-  const Mandag = document.getElementById("Mandag");
-  const Tisdag = document.getElementById("Tisdag");
-  const Onsdag = document.getElementById("Onsdag");
-  const Torsdag = document.getElementById("Torsdag");
-  const Fredag = document.getElementById("Fredag");
+//  const Mandag = document.getElementById("Mandag");
+//  const Tisdag = document.getElementById("Tisdag");
+//  const Onsdag = document.getElementById("Onsdag");
+//  const Torsdag = document.getElementById("Torsdag");
+//  const Fredag = document.getElementById("Fredag");
   form.onsubmit = function (event) {
     event.preventDefault();
     const newNameInput = document.getElementById("newNameInput");
@@ -99,50 +99,50 @@ function createNameEdit(index, name) {
       alert("Namnet kan inte vara tomt.");
       return;
     }
-    editNameInArray(index);
+    editNameInArray(index, name);
   };
 
 
 
-  if (localStorage.getItem(`buttonData_${name}_Mandag`) === "HE") {
-    Mandag.value = "Mandag-heldag";
-  } else if (localStorage.getItem(`buttonData_${name}_Mandag`) === "HA") {
-    Mandag.value = "Mandag-halvdag";
-  } else if (localStorage.getItem(`buttonData_${name}_Mandag`) === "L") {
-    Mandag.value = "Mandag-ledig";
-  }
-
-  if (localStorage.getItem(`buttonData_${name}_Tisdag`) === "HE") {
-    Tisdag.value = "Tisdag-heldag";
-  } else if (localStorage.getItem(`buttonData_${name}_Tisdag`) === "HA") {
-    Tisdag.value = "Tisdag-halvdag";
-  } else if (localStorage.getItem(`buttonData_${name}_Tisdag`) === "L") {
-    Tisdag.value = "Tisdag-ledig";
-  }
-
-  if (localStorage.getItem(`buttonData_${name}_Onsdag`) === "HE") {
-    Onsdag.value = "Onsdag-heldag";
-  } else if (localStorage.getItem(`buttonData_${name}_Onsdag`) === "HA") {
-    Onsdag.value = "Onsdag-halvdag";
-  } else if (localStorage.getItem(`buttonData_${name}_Onsdag`) === "L") {
-    Onsdag.value = "Onsdag-ledig";
-  }
-
-  if (localStorage.getItem(`buttonData_${name}_Torsdag`) === "HE") {
-    Torsdag.value = "Torsdag-heldag";
-  } else if (localStorage.getItem(`buttonData_${name}_Torsdag`) === "HA") {
-    Torsdag.value = "Torsdag-halvdag";
-  } else if (localStorage.getItem(`buttonData_${name}_Torsdag`) === "L") {
-    Torsdag.value = "Torsdag-ledig";
-  }
-
-  if (localStorage.getItem(`buttonData_${name}_Fredag`) === "HE") {
-    Fredag.value = "Fredag-heldag";
-  } else if (localStorage.getItem(`buttonData_${name}_Fredag`) === "HA") {
-    Fredag.value = "Fredag-halvdag";
-  } else if (localStorage.getItem(`buttonData_${name}_Fredag`) === "L") {
-    Fredag.value = "Fredag-ledig";
-  }
+//  if (localStorage.getItem(`buttonData_${name}_Mandag`) === "HE") {
+//    Mandag.value = "Mandag-heldag";
+//  } else if (localStorage.getItem(`buttonData_${name}_Mandag`) === "HA") {
+//    Mandag.value = "Mandag-halvdag";
+//  } else if (localStorage.getItem(`buttonData_${name}_Mandag`) === "L") {
+//    Mandag.value = "Mandag-ledig";
+//  }
+//
+//  if (localStorage.getItem(`buttonData_${name}_Tisdag`) === "HE") {
+//    Tisdag.value = "Tisdag-heldag";
+//  } else if (localStorage.getItem(`buttonData_${name}_Tisdag`) === "HA") {
+//    Tisdag.value = "Tisdag-halvdag";
+//  } else if (localStorage.getItem(`buttonData_${name}_Tisdag`) === "L") {
+//    Tisdag.value = "Tisdag-ledig";
+//  }
+//
+//  if (localStorage.getItem(`buttonData_${name}_Onsdag`) === "HE") {
+//    Onsdag.value = "Onsdag-heldag";
+//  } else if (localStorage.getItem(`buttonData_${name}_Onsdag`) === "HA") {
+//    Onsdag.value = "Onsdag-halvdag";
+//  } else if (localStorage.getItem(`buttonData_${name}_Onsdag`) === "L") {
+//    Onsdag.value = "Onsdag-ledig";
+//  }
+//
+//  if (localStorage.getItem(`buttonData_${name}_Torsdag`) === "HE") {
+//    Torsdag.value = "Torsdag-heldag";
+//  } else if (localStorage.getItem(`buttonData_${name}_Torsdag`) === "HA") {
+//    Torsdag.value = "Torsdag-halvdag";
+//  } else if (localStorage.getItem(`buttonData_${name}_Torsdag`) === "L") {
+//    Torsdag.value = "Torsdag-ledig";
+//  }
+//
+//  if (localStorage.getItem(`buttonData_${name}_Fredag`) === "HE") {
+//    Fredag.value = "Fredag-heldag";
+//  } else if (localStorage.getItem(`buttonData_${name}_Fredag`) === "HA") {
+//    Fredag.value = "Fredag-halvdag";
+//  } else if (localStorage.getItem(`buttonData_${name}_Fredag`) === "L") {
+//    Fredag.value = "Fredag-ledig";
+//  }
 
 }
 
@@ -163,12 +163,12 @@ function createNameCancel() {
 
 function addNameInArray() {
   const newNameInput = document.getElementById("newNameInput");
-  const Mandag = document.getElementById("Mandag");
-  const Tisdag = document.getElementById("Tisdag");
-  const Onsdag = document.getElementById("Onsdag");
-  const Torsdag = document.getElementById("Torsdag");
-  const Fredag = document.getElementById("Fredag");
-  const exists = namesData.find(item => item === newNameInput.value) !== undefined;
+//  const Mandag = document.getElementById("Mandag");
+//  const Tisdag = document.getElementById("Tisdag");
+//  const Onsdag = document.getElementById("Onsdag");
+//  const Torsdag = document.getElementById("Torsdag");
+//  const Fredag = document.getElementById("Fredag");
+const exists = namesData.find(item => item === newNameInput.value) !== undefined;
   if (exists === false) {
     if (newNameInput.value.length === 0) {
       alert("Namnet kan inte vara tomt.");
@@ -182,57 +182,57 @@ function addNameInArray() {
     createNameCancel();
     namesData.push(newNameInput.value);
 
-    if (Mandag.value === "Mandag-heldag") {
-      localStorage.setItem("buttonData_" + id_name + "_Mandag", "HE");
-    }
-    else if (Mandag.value === "Mandag-halvdag") {
-      localStorage.setItem("buttonData_" + id_name + "_Mandag", "HA");
-    }
-    else if (Mandag.value === "Mandag-ledig") {
-      localStorage.setItem("buttonData_" + id_name + "_Mandag", "L");
-    }
-
-    if (Tisdag.value === "Tisdag-heldag") {
-      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HE");
-    }
-    else if (Tisdag.value === "Tisdag-halvdag") {
-      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HA");
-    }
-    else if (Tisdag.value === "Tisdag-ledig") {
-      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "L");
-    }
-
-    if (Onsdag.value === "Onsdag-heldag") {
-      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HE");
-    }
-    else if (Onsdag.value === "Onsdag-halvdag") {
-      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HA");
-    }
-    else if (Onsdag.value === "Onsdag-ledig") {
-      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "L");
-    }
-
-
-    if (Torsdag.value === "Torsdag-heldag") {
-      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HE");
-    }
-    else if (Torsdag.value === "Torsdag-halvdag") {
-      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HA");
-    }
-    else if (Torsdag.value === "Torsdag-ledig") {
-      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "L");
-    }
-
-
-    if (Fredag.value === "Fredag-heldag") {
-      localStorage.setItem("buttonData_" + id_name + "_Fredag", "HE");
-    }
-    else if (Fredag.value === "Fredag-halvdag") {
-      localStorage.setItem("buttonData_" + id_name + "_Fredag", "HA");
-    }
-    else if (Fredag.value === "Fredag-ledig") {
-      localStorage.setItem("buttonData_" + id_name + "_Fredag", "L");
-    }
+//    if (Mandag.value === "Mandag-heldag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Mandag", "HE");
+//    }
+//    else if (Mandag.value === "Mandag-halvdag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Mandag", "HA");
+//    }
+//    else if (Mandag.value === "Mandag-ledig") {
+//      localStorage.setItem("buttonData_" + id_name + "_Mandag", "L");
+//    }
+//
+//    if (Tisdag.value === "Tisdag-heldag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HE");
+//    }
+//    else if (Tisdag.value === "Tisdag-halvdag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HA");
+//    }
+//    else if (Tisdag.value === "Tisdag-ledig") {
+//      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "L");
+//    }
+//
+//    if (Onsdag.value === "Onsdag-heldag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HE");
+//    }
+//    else if (Onsdag.value === "Onsdag-halvdag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HA");
+//    }
+//    else if (Onsdag.value === "Onsdag-ledig") {
+//      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "L");
+//    }
+//
+//
+//    if (Torsdag.value === "Torsdag-heldag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HE");
+//    }
+//    else if (Torsdag.value === "Torsdag-halvdag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HA");
+//    }
+//    else if (Torsdag.value === "Torsdag-ledig") {
+//      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "L");
+//    }
+//
+//
+//    if (Fredag.value === "Fredag-heldag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Fredag", "HE");
+//    }
+//    else if (Fredag.value === "Fredag-halvdag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Fredag", "HA");
+//    }
+//    else if (Fredag.value === "Fredag-ledig") {
+//      localStorage.setItem("buttonData_" + id_name + "_Fredag", "L");
+//    }
 
     document.getElementById("createNameBox").style.display = "none";
     document.getElementById("nameEditContainer").innerHTML = "";
@@ -241,26 +241,31 @@ function addNameInArray() {
   }
 }
 
-function editNameInArray(index) {
+function editNameInArray(index, oldName) {
   const newNameInput = document.getElementById("newNameInput");
-  const Mandag = document.getElementById("Mandag");
-  const Tisdag = document.getElementById("Tisdag");
-  const Onsdag = document.getElementById("Onsdag");
-  const Torsdag = document.getElementById("Torsdag");
-  const Fredag = document.getElementById("Fredag");
+//  const Mandag = document.getElementById("Mandag");
+//  const Tisdag = document.getElementById("Tisdag");
+//  const Onsdag = document.getElementById("Onsdag");
+//  const Torsdag = document.getElementById("Torsdag");
+//  const Fredag = document.getElementById("Fredag");
   let strName = newNameInput.value
-  for (let i = 1; i <= daysInMonth.length; i++) {
 
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      for (let j = 1; j <= daysInNumbers; j++) {
-        if (key === "buttonData_" + strName + "_" + j + "_heldag" || key === "buttonData_" + strName + "_" + j + "_halvdag") {
+      
+      for (let j = 1; j <= 32; j++) {
+        if (key === "buttonData_" + oldName + "_" + j + "_heldag")
+        {
           const value = localStorage.getItem(key);
           localStorage.removeItem(key);
-          localStorage.setItem(key, value);
+          localStorage.setItem("buttonData_" + strName + "_" + j + "_heldag", value);
+        }else if (key === "buttonData_" + oldName + "_" + j + "_halvdag")
+        {
+          const value = localStorage.getItem(key);
+          localStorage.removeItem(key);
+          localStorage.setItem("buttonData_" + strName + "_" + j + "_halvdag", value);
         }
       }
-    }
   }
 
   namesData.splice(index, 1);
@@ -274,70 +279,66 @@ function editNameInArray(index) {
 
   const exists = namesData.find(item => item === newNameInput.value) !== undefined;
   if (exists === false) {
-
-    let id_name = newNameInput.value;
     createNameCancel();
     namesData.push(newNameInput.value);
 
-    if (Mandag.value === "Mandag-heldag") {
-      localStorage.setItem("buttonData_" + id_name + "_Mandag", "HE");
-    }
-    else if (Mandag.value === "Mandag-halvdag") {
-      localStorage.setItem("buttonData_" + id_name + "_Mandag", "HA");
-    }
-    else if (Mandag.value === "Mandag-ledig") {
-      localStorage.setItem("buttonData_" + id_name + "_Mandag", "L");
-    }
-
-    if (Tisdag.value === "Tisdag-heldag") {
-      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HE");
-    }
-    else if (Tisdag.value === "Tisdag-halvdag") {
-      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HA");
-    }
-    else if (Tisdag.value === "Tisdag-ledig") {
-      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "L");
-    }
-
-    if (Onsdag.value === "Onsdag-heldag") {
-      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HE");
-    }
-    else if (Onsdag.value === "Onsdag-halvdag") {
-      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HA");
-    }
-    else if (Onsdag.value === "Onsdag-ledig") {
-      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "L");
-    }
-
-
-    if (Torsdag.value === "Torsdag-heldag") {
-      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HE");
-    }
-    else if (Torsdag.value === "Torsdag-halvdag") {
-      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HA");
-    }
-    else if (Torsdag.value === "Torsdag-ledig") {
-      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "L");
-    }
-
-
-    if (Fredag.value === "Fredag-heldag") {
-      localStorage.setItem("buttonData_" + id_name + "_Fredag", "HE");
-    }
-    else if (Fredag.value === "Fredag-halvdag") {
-      localStorage.setItem("buttonData_" + id_name + "_Fredag", "HA");
-    }
-    else if (Fredag.value === "Fredag-ledig") {
-      localStorage.setItem("buttonData_" + id_name + "_Fredag", "L");
-    }
+//    if (Mandag.value === "Mandag-heldag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Mandag", "HE");
+//    }
+//    else if (Mandag.value === "Mandag-halvdag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Mandag", "HA");
+//    }
+//    else if (Mandag.value === "Mandag-ledig") {
+//      localStorage.setItem("buttonData_" + id_name + "_Mandag", "L");
+//    }
+//
+//    if (Tisdag.value === "Tisdag-heldag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HE");
+//    }
+//    else if (Tisdag.value === "Tisdag-halvdag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "HA");
+//    }
+//    else if (Tisdag.value === "Tisdag-ledig") {
+//      localStorage.setItem("buttonData_" + id_name + "_Tisdag", "L");
+//    }
+//
+//    if (Onsdag.value === "Onsdag-heldag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HE");
+//    }
+//    else if (Onsdag.value === "Onsdag-halvdag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "HA");
+//    }
+//    else if (Onsdag.value === "Onsdag-ledig") {
+//      localStorage.setItem("buttonData_" + id_name + "_Onsdag", "L");
+//    }
+//
+//
+//    if (Torsdag.value === "Torsdag-heldag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HE");
+//    }
+//    else if (Torsdag.value === "Torsdag-halvdag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "HA");
+//    }
+//    else if (Torsdag.value === "Torsdag-ledig") {
+//      localStorage.setItem("buttonData_" + id_name + "_Torsdag", "L");
+//    }
+//
+//
+//    if (Fredag.value === "Fredag-heldag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Fredag", "HE");
+//    }
+//    else if (Fredag.value === "Fredag-halvdag") {
+//      localStorage.setItem("buttonData_" + id_name + "_Fredag", "HA");
+//    }
+//    else if (Fredag.value === "Fredag-ledig") {
+//      localStorage.setItem("buttonData_" + id_name + "_Fredag", "L");
+//    }
 
     document.getElementById("createNameBox").style.display = "none";
     document.getElementById("nameEditContainer").innerHTML = "";
     namesData.sort((a, b) => a.localeCompare(b, 'sv'));
     namesData.forEach(displayEditNameArry);
     newNameInput.value = "";
-
-
   }
 }
 

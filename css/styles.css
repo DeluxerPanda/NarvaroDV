@@ -182,9 +182,16 @@ button {
   text-align: center;
   display: block;
 }
+.full-width-button:hover {
+  cursor: pointer;
+}
 
 .Row-weekend .full-width-button {
   background-color: red;
+}
+.Row-weekend .full-width-button:hover {
+  background-color: red;
+  cursor: default;
 }
 
 .MenuButtons {

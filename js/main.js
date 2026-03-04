@@ -9,6 +9,7 @@ let index;
 let year;
 let month;
 let  day;
+
 window.onload = function() {
   
   let Year = tihisDate.getFullYear();
@@ -153,14 +154,14 @@ function setTemp(value){
 
 async function checkMonthChange() {
   if (!isTemp) {
-  if (localStorage.getItem("storedMonth") !== tihisDate.getMonth().toString()) {
+  if (localStorage.getItem("storedMonth").toString !== tihisDate.getMonth().toString()) {
     namesData = JSON.parse(localStorage.getItem("namesData"));
     let names = namesData;
     let output = [];
     output.push({ name_Group: localStorage.getItem("titelData") });
     if (namesData !== null){
     for (let i = 0; i < names.length; i++) {
-      let workDayArr = [];
+//      let workDayArr = [];
       let workDayArrOveride = [];
       const daysInMonth = getAllDaysInMonth(tihisDate.getFullYear(), tihisDate.getMonth());
         for (let j = 1; j <= daysInMonth.length; j++) {
@@ -170,15 +171,15 @@ async function checkMonthChange() {
           workDayArrOveride.push(`buttonData_${names[i]}_${j}_halvdag:` + localStorage.getItem(`buttonData_${names[i]}_${j}_halvdag`));
         }
       }
-      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Mandag`));
-      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Tisdag`));
-      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Onsdag`));
-      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Torsdag`));
-      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Fredag`));
+//      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Mandag`));
+//      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Tisdag`));
+//      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Onsdag`));
+//      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Torsdag`));
+//      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Fredag`));
 
       output.push({
         name: names[i],
-        arbetsDagar: workDayArr,
+//        arbetsDagar: workDayArr,
         arbetsdagArrOveride: workDayArrOveride,
       });
     }
@@ -685,29 +686,29 @@ function lssave(jsonData, monthName, name_Group) {
       const name = item.name;
       namesData.push(name);
 
-      const arbeteArray = Array.isArray(item.arbetsDagar) ? item.arbetsDagar : [];
-
-      for (let i = 0; i < arbeteArray.length; i++) {
-        let val = arbeteArray[i];
-        let key = "";
-        if (i == 0) {
-          key = `buttonData_${name}_Mandag`;
-        } else if (i == 1) {
-          key = `buttonData_${name}_Tisdag`;
-        } else if (i == 2) {
-          key = `buttonData_${name}_Onsdag`;
-        } else if (i == 3) {
-          key = `buttonData_${name}_Torsdag`;
-        } else if (i == 4) {
-          key = `buttonData_${name}_Fredag`;
-        }
-
-        if (val === null || val === "" || val === "&nbsp;") {
-          stroage.removeItem(key);
-        } else {
-          stroage.setItem(key, String(val));
-        }
-    }
+//      const arbeteArray = Array.isArray(item.arbetsDagar) ? item.arbetsDagar : [];
+//
+//      for (let i = 0; i < arbeteArray.length; i++) {
+//        let val = arbeteArray[i];
+//        let key = "";
+//        if (i == 0) {
+//          key = `buttonData_${name}_Mandag`;
+//        } else if (i == 1) {
+//          key = `buttonData_${name}_Tisdag`;
+//        } else if (i == 2) {
+//          key = `buttonData_${name}_Onsdag`;
+//        } else if (i == 3) {
+//          key = `buttonData_${name}_Torsdag`;
+//        } else if (i == 4) {
+//          key = `buttonData_${name}_Fredag`;
+//        }
+//
+//        if (val === null || val === "" || val === "&nbsp;") {
+//          stroage.removeItem(key);
+//        } else {
+//          stroage.setItem(key, String(val));
+//        }
+//    }
 
 
       const arbeteArrayOveride = Array.isArray(item.arbetsdagArrOveride) ? item.arbetsdagArrOveride : [];
@@ -749,7 +750,7 @@ function getjsoin() {
   let output = [];
   output.push({ name_Group: stroage.getItem("titelData") });
   for (let i = 0; i < names.length; i++) {
-    let workDayArr = [];
+//    let workDayArr = [];
     let workDayArrOveride = [];
     const daysInMonth = getAllDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
     for (let j = 1; j <= daysInMonth.length; j++) {
@@ -759,15 +760,15 @@ function getjsoin() {
         workDayArrOveride.push(`buttonData_${names[i]}_${j}_halvdag:` + stroage.getItem(`buttonData_${names[i]}_${j}_halvdag`));
       }
     }
-    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Mandag`));
-    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Tisdag`));
-    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Onsdag`));
-    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Torsdag`));
-    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Fredag`));
+//    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Mandag`));
+//    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Tisdag`));
+//    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Onsdag`));
+//    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Torsdag`));
+//    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Fredag`));
 
     output.push({
       name: names[i],
-      arbetsDagar: workDayArr,
+//      arbetsDagar: workDayArr,
       arbetsdagArrOveride: workDayArrOveride,
     });
   }
@@ -791,5 +792,38 @@ function saveDataToAsFile(jsonString, monthName,name_Group) {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+
+
+
+
+
+// await clearAllData();
+async function clearAllData() {
+  try {
+
+        // Clear localStorage
+    localStorage.clear();
+    console.log("LocalStorage cleared");
+
+    // Clear sessionStorage
+    sessionStorage.clear();
+    console.log("SessionStorage cleared");
+
+      const Year = tihisDate.getFullYear();
+      const month = tihisDate.getMonth();
+    updateUI(Year, month)
+    // Clear indexedDB
+    removeDB();
+    console.log("IndexedDB cleared");
+
+    console.log("All data cleared successfully");
+
+    return true;
+  } catch (error) {
+    console.error("Error clearing data:", error);
+    return false;
+  }
 }
 
