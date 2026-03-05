@@ -168,7 +168,7 @@ function addNameInArray() {
 //  const Onsdag = document.getElementById("Onsdag");
 //  const Torsdag = document.getElementById("Torsdag");
 //  const Fredag = document.getElementById("Fredag");
-const exists = namesData.find(item => item === newNameInput.value) !== undefined;
+const exists = namesData.find(item => item === newNameInput.value.toUpperCase()) !== undefined;
   if (exists === false) {
     if (newNameInput.value.length === 0) {
       alert("Namnet kan inte vara tomt.");
@@ -178,9 +178,9 @@ const exists = namesData.find(item => item === newNameInput.value) !== undefined
       alert(`Namnet är för långt, max ${newNameInput.maxLength} tecken.`);
       return;
     }
-    let id_name = newNameInput.value;
+    let id_name = newNameInput.value.toUpperCase();
     createNameCancel();
-    namesData.push(newNameInput.value);
+    namesData.push(id_name);
 
 //    if (Mandag.value === "Mandag-heldag") {
 //      localStorage.setItem("buttonData_" + id_name + "_Mandag", "HE");
@@ -248,7 +248,7 @@ function editNameInArray(index, oldName) {
 //  const Onsdag = document.getElementById("Onsdag");
 //  const Torsdag = document.getElementById("Torsdag");
 //  const Fredag = document.getElementById("Fredag");
-  let strName = newNameInput.value
+  let strName = newNameInput.value;
 
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -277,10 +277,10 @@ function editNameInArray(index, oldName) {
   }
 
 
-  const exists = namesData.find(item => item === newNameInput.value) !== undefined;
+  const exists = namesData.find(item => item === newNameInput.value.toUpperCase()) !== undefined;
   if (exists === false) {
     createNameCancel();
-    namesData.push(newNameInput.value);
+    namesData.push(newNameInput.value.toUpperCase());
 
 //    if (Mandag.value === "Mandag-heldag") {
 //      localStorage.setItem("buttonData_" + id_name + "_Mandag", "HE");

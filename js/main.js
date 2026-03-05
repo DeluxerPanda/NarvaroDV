@@ -1,6 +1,6 @@
 const LoadingBarDialog = document.getElementById("LoadingBarDialog");
 const Months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December"];
-const tihisDate = new Date();
+const thisDate = new Date();
 let currentDate;
 let stroage = localStorage;
 let isTemp = false;
@@ -12,17 +12,17 @@ let  day;
 
 window.onload = function() {
   
-  let Year = tihisDate.getFullYear();
-  let month = tihisDate.getMonth();
+  let this_Year = thisDate.getFullYear();
+  let this_month = thisDate.getMonth();
   if (isTemp) {
     if (sessionStorage.getItem("storedMonth") !== null) {
-      month = parseInt(sessionStorage.getItem("storedMonth"));
+      this_month = parseInt(sessionStorage.getItem("storedMonth"));
     }
     if (sessionStorage.getItem("storedYear") !== null) {
-      Year = parseInt(sessionStorage.getItem("storedYear"));
+      this_Year = parseInt(sessionStorage.getItem("storedYear"));
     }
   }
-  updateUI(Year, month).then(() => {
+  updateUI(this_Year, this_month).then(() => {
     setInterval(checkMonthChange, 10345);
     checkMonthChange();
   });
@@ -37,10 +37,10 @@ const daysInMonth = getAllDaysInMonth(Year, Month);
   day = currentDate.getDate();
 document.getElementById("numer").innerHTML = "";
 
-if (localStorage.getItem("storedMonth") == undefined) {
+if (localStorage.getItem("storedMonth") == undefined || localStorage.getItem("storedMonth") == null) {
   localStorage.setItem("storedMonth", month + 1);
 }
-if (localStorage.getItem("storedYear") == undefined) {
+if (localStorage.getItem("storedYear") == undefined || localStorage.getItem("storedYear") == null) {
   localStorage.setItem("storedYear", year);
 } 
 
@@ -91,36 +91,6 @@ if (localStorage.getItem("storedYear") == undefined) {
       });
 }
 
-//window.onload = (event) => {
-//
-//if (localStorage.getItem("currentDate") === undefined) {
-//  localStorage.setItem("currentDate", currentDate);
-//}
-//if (sessionStorage.getItem("currentDate") != undefined) {
-//  newCurrentDate = new Date(sessionStorage.getItem("currentDate"));
-//}
-//
-//
-//  setTemp(false);
-//
-//  loadDate().then(() => {
-//  setInterval(checkMonthChange, 10345);
-//  checkMonthChange();
-//
-//  window.scrollTo({
-//    top: 1,
-//    left: 1,
-//    behavior: "smooth",
-//  });
-//
-//  window.onbeforeunload = function (e) {
-//    if (LoadingBarDialog.showModal == true) {
-//      e.preventDefault();
-//    }
-//  };
-//  });
-//};
-
 function setTemp(value){
   if(value){
     stroage = sessionStorage;
@@ -153,8 +123,21 @@ function setTemp(value){
 }
 
 async function checkMonthChange() {
+  console.log("Checking for month change...");
   if (!isTemp) {
-  if (localStorage.getItem("storedMonth").toString !== tihisDate.getMonth().toString()) {
+    if (localStorage.getItem("storedYear") !== thisDate.getFullYear().toString())
+    {
+       for (let i = 1; i <= Months.length; i++) {
+        removeSpecificDB(Months[i] + " " + localStorage.getItem("storedYear")).then(() => {
+            localStorage.setItem("currentDate", new Date());
+            localStorage.setItem("storedMonth", month);
+            localStorage.setItem("storedYear", year);
+            window.location = window.location;
+        });
+      }
+    }
+  if (localStorage.getItem("storedMonth") !== thisDate.getMonth().toString()) {
+    console.log(localStorage.getItem("storedMonth") + " vs " + thisDate.getMonth().toString());
     namesData = JSON.parse(localStorage.getItem("namesData"));
     let names = namesData;
     let output = [];
@@ -163,7 +146,7 @@ async function checkMonthChange() {
     for (let i = 0; i < names.length; i++) {
 //      let workDayArr = [];
       let workDayArrOveride = [];
-      const daysInMonth = getAllDaysInMonth(tihisDate.getFullYear(), tihisDate.getMonth());
+      const daysInMonth = getAllDaysInMonth(thisDate.getFullYear(), thisDate.getMonth());
         for (let j = 1; j <= daysInMonth.length; j++) {
         if (localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
           workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`));
@@ -195,64 +178,6 @@ async function checkMonthChange() {
   }
 }
 }
-//async function loadDate() {
-//  LoadingBarDialog.showModal();
-//
-//if (localStorage.getItem("storedMonth") == undefined) {
-//  localStorage.setItem("storedMonth", month + 1);
-//}
-//if (localStorage.getItem("storedYear") == undefined) {
-//  localStorage.setItem("storedYear", year);
-//} 
-//
-//  PreloadSwichDate().then(() => {
-//    document.getElementById("MenuButtonSwichDate").style.cursor = "pointer";
-//    document.getElementById("dialogSwichDateButtons").style.visibility = "visible";
-//    document.getElementById("dialogSwichDateLoader").style.display = "none";
-//  });
-//
-//  for (let i = 1; i <= daysInMonth.length; i++) {
-//    document.getElementById("numer").innerHTML +=
-//      '<span class="numerRow">' +
-//      '<p class="numer">' + i + '</p>' +
-//      '</span>';
-//  }
-//
-//  if (stroage.getItem("titelData") == null) {
-//    stroage.setItem("titelData", "Namnlös");
-//  }
-//
-//  document.getElementById("titelDataTitel").innerHTML += stroage.getItem("titelData");
-//
-//  document.getElementById("gruppEditContainer").innerHTML =
-//    '<input type="text" maxlength="50" oninput="checkMaxLength(this)" id="grupp_NameInput" placeholder="Gruppens namn" value="' + stroage.getItem("titelData") + '" class="gruppEditItem"></input>';
-//
-//  document.getElementById("titleDate").innerHTML = `${currentDate.toLocaleString('sv-SE', { month: 'long' })} ${currentDate.toLocaleString('sv-SE', { year: 'numeric' })}`;
-//  document.getElementById("dialogNameYear").innerHTML = `${year}`;
-//  document.title = `Närvaro lista - ${document.getElementById("titleDate").innerText} `;
-//
-//  if (stroage.getItem("namesData") == null || stroage.getItem("namesData") == undefined || stroage.getItem("namesData").length === 0) {
-//    document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>"
-//    LoadingBarDialog.close();
-//    return;
-//  }
-//
-//  namesData = JSON.parse(stroage.getItem("namesData"));
-//    
-//  if (namesData == null || namesData == undefined || namesData.length === 0) {
-//      document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>"
-//      LoadingBarDialog.close();
-//    return;
-//  }
-//
-//    document.getElementById("column").innerHTML = "";
-//    main(namesData).then(() => {
-//        namesData.forEach(displayEditNameArry);
-//      });
-//}
-
-
-
 
 async function main(namesData) {
   let names = namesData;
@@ -483,7 +408,7 @@ function dialog(day, name, event) {
   let clickedElement = event.target;
   let id = clickedElement.id;
 
-  document.getElementById("dialogName").innerText = name + " - Dag: " + day
+  document.getElementById("dialogName").innerText = name.toUpperCase() + " - Dag: " + day
   dialogElement.showModal();
   document.body.style.overflow = "hidden";
 
@@ -532,23 +457,23 @@ function dialog(day, name, event) {
     document.body.style.overflow = "auto";
   });
 
-  document.getElementById("dialogH").addEventListener("click", function () {
-    document.getElementById(id).innerHTML = "HE"
-    stroage.setItem("buttonData_" + id, "HE");
-    dialogElement.close();
-    id = null
-    clickedElement = null
-    document.body.style.overflow = "auto";
-  });
-
-  document.getElementById("dialogF").addEventListener("click", function () {
-    document.getElementById(id).innerHTML = "HA"
-    stroage.setItem("buttonData_" + id, "HA");
-    dialogElement.close();
-    id = null
-    clickedElement = null
-    document.body.style.overflow = "auto";
-  });
+//  document.getElementById("dialogH").addEventListener("click", function () {
+//    document.getElementById(id).innerHTML = "HE"
+//    stroage.setItem("buttonData_" + id, "HE");
+//    dialogElement.close();
+//    id = null
+//    clickedElement = null
+//    document.body.style.overflow = "auto";
+//  });
+//
+//  document.getElementById("dialogF").addEventListener("click", function () {
+//    document.getElementById(id).innerHTML = "HA"
+//    stroage.setItem("buttonData_" + id, "HA");
+//    dialogElement.close();
+//    id = null
+//    clickedElement = null
+//    document.body.style.overflow = "auto";
+//  });
 
   document.getElementById("dialogRensa").addEventListener("click", function () {
     document.getElementById(id).innerHTML = "&nbsp;"
@@ -802,7 +727,9 @@ function saveDataToAsFile(jsonString, monthName,name_Group) {
 // await clearAllData();
 async function clearAllData() {
   try {
-
+  let this_Year = thisDate.getFullYear();
+  let this_month = thisDate.getMonth();
+  isTemp = true;
         // Clear localStorage
     localStorage.clear();
     console.log("LocalStorage cleared");
@@ -811,16 +738,19 @@ async function clearAllData() {
     sessionStorage.clear();
     console.log("SessionStorage cleared");
 
-      const Year = tihisDate.getFullYear();
-      const month = tihisDate.getMonth();
-    updateUI(Year, month)
     // Clear indexedDB
-    removeDB();
-    console.log("IndexedDB cleared");
 
+      for (let i = 1; i <= Months.length; i++) {
+        removeSpecificDB(Months[i] + " " + localStorage.getItem("storedYear"));
+      }
+
+    updateUI(this_Year, this_month).then(() => {
+      isTemp = false;
+    });
     console.log("All data cleared successfully");
 
     return true;
+  
   } catch (error) {
     console.error("Error clearing data:", error);
     return false;
