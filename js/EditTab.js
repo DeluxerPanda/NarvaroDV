@@ -65,9 +65,14 @@ function uploadName() {
     LoadingBarDialog.showModal();
     let fileReader = new FileReader();
     fileReader.onload = function () {
+      try {
       let parsedJSON = JSON.parse(fileReader.result);
       isTemp = false;
       lssave(parsedJSON,null,null);
+    } catch (error) {
+      alert("Fel vid parsning av JSON. Se console för mer info.");
+      console.error("Fel vid parsning av JSON:", error);
+    }
     }
     fileReader.readAsText(file);
   });

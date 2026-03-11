@@ -5,15 +5,15 @@ let cachedDB = null;
 
 // Dynamically get current store name based on localStorage
 function getStoreName() {
-  const year = Number(localStorage.getItem("storedYear")) || new Date().getFullYear();
-  const month = Number(localStorage.getItem("storedMonth")) || new Date().getMonth();
+  const year = localStorage.getItem("storedYear");
+  const month = localStorage.getItem("storedMonth");
   const date = new Date(year, month);
   return `${date.toLocaleString("sv-SE", { month: "long" })} ${year}`;
 }
 
 // Get or increment the DB version counter
 function getNextDBVersion() {
-  let version = Number(localStorage.getItem("dbVersion")) || 1;
+  let version = localStorage.getItem("dbVersion") || 1;
   version++;
   localStorage.setItem("dbVersion", version);
   return version;
@@ -163,69 +163,6 @@ async function removeSpecificDB(storeName) {
       // Clear the store
       store.clear();
       await tx.complete;
-    
-    db.close();
-    console.log("All stores cleared successfully");
-  } catch (error) {
-    console.warn("Error clearing stores:", error);
-  }
-
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.deleteDatabase(DB_NAME);
-
-    request.onsuccess = () => {
-      console.log("IndexedDB deleted");
-      resolve(true);
-    };
-
-    request.onerror = () => {
-      console.error("Failed to delete IndexedDB", request.error);
-      reject(request.error);
-    };
-
-    request.onblocked = () => {
-      console.warn("Delete blocked: another tab or connection is open");
-    };
-  });
-}
-
-async function removeDB() {
-  // Close cached connection
-  if (cachedDB) {
-    cachedDB.close();
-    cachedDB = null;
-    dbVersion = null;
-  }
-
-  try {
-    const db = await openDB(false);
-    const storeNames = [];
-    
-    // Get all store names
-    for (let i = 0; i < db.objectStoreNames.length; i++) {
-      storeNames.push(db.objectStoreNames[i]);
-    }
-    
-    console.log("Clearing stores:", storeNames);
-    
-    // Get all entries and delete them
-    for (const storeName of storeNames) {
-      const tx = db.transaction(storeName, "readwrite");
-      const store = tx.objectStore(storeName);
-      
-      // Get all entries
-      const allEntries = await new Promise((resolve, reject) => {
-        const request = store.getAll();
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-      
-      console.log(`${storeName} entries retrieved:`, allEntries);
-      
-      // Clear the store
-      store.clear();
-      await tx.complete;
-    }
     
     db.close();
     console.log("All stores cleared successfully");

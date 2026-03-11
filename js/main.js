@@ -2,7 +2,7 @@ const LoadingBarDialog = document.getElementById("LoadingBarDialog");
 const Months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December"];
 const thisDate = new Date();
 let currentDate;
-let stroage = localStorage;
+let storage = localStorage;
 let isTemp = false;
 let namesData = [];
 let index;
@@ -23,7 +23,7 @@ window.onload = function() {
     }
   }
   updateUI(this_Year, this_month).then(() => {
-    setInterval(checkMonthChange, 10345);
+    setInterval(checkMonthChange, 10000);
     checkMonthChange();
   });
 }
@@ -50,14 +50,14 @@ if (localStorage.getItem("storedYear") == undefined || localStorage.getItem("sto
     document.getElementById("dialogSwichDateLoader").style.display = "none";
   });
 
-  if (stroage.getItem("titelData") == null) {
-    stroage.setItem("titelData", "Namnlös");
+  if (storage.getItem("titelData") == null || storage.getItem("titelData") == undefined) {
+    storage.setItem("titelData", "Namnlös");
   }
 
-  document.getElementById("titelDataTitel").innerHTML = stroage.getItem("titelData");
+  document.getElementById("titelDataTitel").innerHTML = storage.getItem("titelData");
 
   document.getElementById("gruppEditContainer").innerHTML =
-    '<input type="text" maxlength="50" oninput="checkMaxLength(this)" id="grupp_NameInput" placeholder="Gruppens namn" value="' + stroage.getItem("titelData") + '" class="gruppEditItem"></input>';
+    '<input type="text" maxlength="50" oninput="checkMaxLength(this)" id="grupp_NameInput" placeholder="Gruppens namn" value="' + storage.getItem("titelData") + '" class="gruppEditItem"></input>';
 
   document.getElementById("titleDate").innerHTML = `${Months[Month]} ${Year}`;
   document.getElementById("dialogNameYear").innerHTML = `${Year}`;
@@ -71,14 +71,18 @@ if (localStorage.getItem("storedYear") == undefined || localStorage.getItem("sto
       '</span>';
   }
 
-  if (stroage.getItem("namesData") == null || stroage.getItem("namesData") == undefined || stroage.getItem("namesData").length === 0) {
+  if (storage.getItem("namesData") == null || storage.getItem("namesData") == undefined || storage.getItem("namesData").length === 0) {
     document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>"
     LoadingBarDialog.close();
     return;
   }
 
-  namesData = JSON.parse(stroage.getItem("namesData"));
-    
+    try {
+  namesData = JSON.parse(storage.getItem("namesData"));
+    } catch (error) {
+      alert("Fel vid parsning av JSON. Se console för mer info.");
+      console.error("Fel vid parsning av JSON:", error);
+    }
   if (namesData == null || namesData == undefined || namesData.length === 0) {
       document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>"
       LoadingBarDialog.close();
@@ -93,7 +97,7 @@ if (localStorage.getItem("storedYear") == undefined || localStorage.getItem("sto
 
 function setTemp(value){
   if(value){
-    stroage = sessionStorage;
+    storage= sessionStorage;
     isTemp = true;
     document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons"
         style="vertical-align:middle; font-size: 15px;">edit</i> Gå tillbaka`;
@@ -107,7 +111,7 @@ function setTemp(value){
 };
 
 }else{
-    stroage = localStorage;
+    storage= localStorage;
     isTemp = false;
     document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons"
         style="vertical-align:middle; font-size: 15px;">edit</i> Redigera deltagare`;
@@ -123,22 +127,26 @@ function setTemp(value){
 }
 
 async function checkMonthChange() {
-  console.log("Checking for month change...");
   if (!isTemp) {
-    if (localStorage.getItem("storedYear") !== thisDate.getFullYear().toString())
+    const currentDateCheck = new Date();
+    if (localStorage.getItem("storedYear") !== currentDateCheck.getFullYear().toString())
     {
        for (let i = 1; i <= Months.length; i++) {
         removeSpecificDB(Months[i] + " " + localStorage.getItem("storedYear")).then(() => {
-            localStorage.setItem("currentDate", new Date());
-            localStorage.setItem("storedMonth", month);
-            localStorage.setItem("storedYear", year);
-            window.location = window.location;
+            localStorage.setItem("currentDate", currentDateCheck);
+            localStorage.setItem("storedMonth", (currentDateCheck.getMonth() + 1));
+            localStorage.setItem("storedYear", currentDateCheck.getFullYear());
         });
       }
+        window.location = window.location;
     }
-  if (localStorage.getItem("storedMonth") !== thisDate.getMonth().toString()) {
-    console.log(localStorage.getItem("storedMonth") + " vs " + thisDate.getMonth().toString());
+  if (localStorage.getItem("storedMonth") !== (currentDateCheck.getMonth() + 1).toString()) {
+    try {
     namesData = JSON.parse(localStorage.getItem("namesData"));
+    } catch (error) {
+      alert("Fel vid parsning av JSON. Se console för mer info.");
+      console.error("Fel vid parsning av JSON:", error);
+    }
     let names = namesData;
     let output = [];
     output.push({ name_Group: localStorage.getItem("titelData") });
@@ -146,7 +154,7 @@ async function checkMonthChange() {
     for (let i = 0; i < names.length; i++) {
 //      let workDayArr = [];
       let workDayArrOveride = [];
-      const daysInMonth = getAllDaysInMonth(thisDate.getFullYear(), thisDate.getMonth());
+      const daysInMonth = getAllDaysInMonth(currentDateCheck.getFullYear(), currentDateCheck.getMonth());
         for (let j = 1; j <= daysInMonth.length; j++) {
         if (localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
           workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`));
@@ -159,21 +167,28 @@ async function checkMonthChange() {
 //      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Onsdag`));
 //      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Torsdag`));
 //      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Fredag`));
-
+//        arbetsDagar: workDayArr,
       output.push({
         name: names[i],
-//        arbetsDagar: workDayArr,
         arbetsdagArrOveride: workDayArrOveride,
       });
     }
   }
     await saveData(output).then(() => {
-
-      localStorage.setItem("currentDate", new Date());
-      localStorage.setItem("storedMonth", month);
-      localStorage.setItem("storedYear", year);
+      namesData = JSON.parse(localStorage.getItem("namesData"));
+      const name_Group = localStorage.getItem("titelData");
+      const dbVersion = localStorage.getItem("dbVersion");
       
-      window.location = window.location;
+      localStorage.clear();
+
+      localStorage.setItem("namesData", JSON.stringify(namesData));
+      localStorage.setItem("titelData", name_Group);
+      localStorage.setItem("dbVersion", dbVersion);
+      localStorage.setItem("currentDate", currentDateCheck);
+      localStorage.setItem("storedMonth", (currentDateCheck.getMonth() + 1));
+      localStorage.setItem("storedYear", currentDateCheck.getFullYear());
+    
+    window.location = window.location;
     });
   }
 }
@@ -204,97 +219,75 @@ async function main(namesData) {
       const onclick = redDay ? '' : `onclick="dialog(${j}, '${names[i]}', event)"`;
       let buttonData_Halvdag = "&nbsp;";
       let buttonData_Heldag = "&nbsp;";
-
-      // Simplified logic for day-specific data (keeping your original logic intact)
-      if (dayName == "måndag") {
-        if (stroage.getItem("buttonData_" + names[i] + "_Mandag") == null || stroage.getItem("buttonData_" + names[i] + "_Mandag") == undefined) {
-          buttonData_Heldag = "&nbsp;";
-        } else {
-          if (stroage.getItem("buttonData_" + names[i] + "_Mandag") == "HE") {
-            buttonData_Heldag = stroage.getItem("buttonData_" + names[i] + "_Mandag");
-          } else {
-            buttonData_Halvdag = stroage.getItem("buttonData_" + names[i] + "_Mandag");
-          }
-        }
-        // Override checks (unchanged)
-        if (stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != undefined || stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != null) {
-          buttonData_Heldag = stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag");
-        } else if (stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != undefined || stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != null) {
-          buttonData_Halvdag = stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag");
-        }
-      }
-      if (dayName == "tisdag") {
-        if (stroage.getItem("buttonData_" + names[i] + "_Tisdag") == null || stroage.getItem("buttonData_" + names[i] + "_Tisdag") == undefined) {
-          buttonData_Heldag = "&nbsp;"
-        }
-        else {
-          if (stroage.getItem("buttonData_" + names[i] + "_Tisdag") == "HE") {
-            buttonData_Heldag = stroage.getItem("buttonData_" + names[i] + "_Tisdag");
-          }
-          else {
-            buttonData_Halvdag = stroage.getItem("buttonData_" + names[i] + "_Tisdag");
-          }
-        }
-        if (stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != undefined || stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != null) {
-          buttonData_Heldag = stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag");
-        } else if (stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != undefined || stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != null) {
-          buttonData_Halvdag = stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag");
-        }
-      }
-      if (dayName == "onsdag") {
-        if (stroage.getItem("buttonData_" + names[i] + "_Onsdag") == null || stroage.getItem("buttonData_" + names[i] + "_Onsdag") == undefined) {
-          buttonData_Heldag = "&nbsp;"
-        }
-        else {
-          if (stroage.getItem("buttonData_" + names[i] + "_Onsdag") == "HE") {
-            buttonData_Heldag = stroage.getItem("buttonData_" + names[i] + "_Onsdag");
-          }
-          else {
-            buttonData_Halvdag = stroage.getItem("buttonData_" + names[i] + "_Onsdag");
-          }
-        }
-        if (stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != undefined || stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != null) {
-          buttonData_Heldag = stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag");
-        } else if (stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != undefined || stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != null) {
-          buttonData_Halvdag = stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag");
-        }
-      }
-      if (dayName == "torsdag") {
-        if (stroage.getItem("buttonData_" + names[i] + "_Torsdag") == null || stroage.getItem("buttonData_" + names[i] + "_Torsdag") == undefined) {
-          buttonData_Heldag = "&nbsp;"
-        }
-        else {
-          if (stroage.getItem("buttonData_" + names[i] + "_Torsdag") == "HE") {
-            buttonData_Heldag = stroage.getItem("buttonData_" + names[i] + "_Torsdag");
-          }
-          else {
-            buttonData_Halvdag = stroage.getItem("buttonData_" + names[i] + "_Torsdag");
-          }
-        }
-        if (stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != undefined || stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != null) {
-          buttonData_Heldag = stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag");
-        } else if (stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != undefined || stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != null) {
-          buttonData_Halvdag = stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag");
-        }
-      }
-      if (dayName == "fredag") {
-        if (stroage.getItem("buttonData_" + names[i] + "_Fredag") == null || stroage.getItem("buttonData_" + names[i] + "_Fredag") == undefined) {
-          buttonData_Heldag = "&nbsp;"
-        }
-        else {
-          if (stroage.getItem("buttonData_" + names[i] + "_Fredag") == "HE") {
-            buttonData_Heldag = stroage.getItem("buttonData_" + names[i] + "_Fredag");
-          }
-          else {
-            buttonData_Halvdag = stroage.getItem("buttonData_" + names[i] + "_Fredag");
-          }
-        }
-        if (stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != undefined || stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != null) {
-          buttonData_Heldag = stroage.getItem("buttonData_" + names[i] + "_" + j + "_heldag");
-        } else if (stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != undefined || stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != null) {
-          buttonData_Halvdag = stroage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag");
-        }
-      }
+        if (storage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != undefined || storage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != null) {
+          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_" + j + "_heldag");
+        } else if (storage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != undefined || storage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != null) {
+          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag");
+        } //else {
+  //    if (dayName == "måndag") {
+  //      if (storage.getItem("buttonData_" + names[i] + "_Mandag") == null || storage.getItem("buttonData_" + names[i] + "_Mandag") == undefined) {
+  //        buttonData_Heldag = "&nbsp;";
+  //      } else {
+  //        if (storage.getItem("buttonData_" + names[i] + "_Mandag") == "HE") {
+  //          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_Mandag");
+  //        } else {
+  //          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_Mandag");
+  //        }
+  //      }
+  //    }
+  //    if (dayName == "tisdag") {
+  //      if (storage.getItem("buttonData_" + names[i] + "_Tisdag") == null || storage.getItem("buttonData_" + names[i] + "_Tisdag") == undefined) {
+  //        buttonData_Heldag = "&nbsp;"
+  //      }
+  //      else {
+  //        if (storage.getItem("buttonData_" + names[i] + "_Tisdag") == "HE") {
+  //          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_Tisdag");
+  //        }
+  //        else {
+  //          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_Tisdag");
+  //        }
+  //      }
+  //    }
+  //    if (dayName == "onsdag") {
+  //      if (storage.getItem("buttonData_" + names[i] + "_Onsdag") == null || storage.getItem("buttonData_" + names[i] + "_Onsdag") == undefined) {
+  //        buttonData_Heldag = "&nbsp;"
+  //      }
+  //      else {
+  //        if (storage.getItem("buttonData_" + names[i] + "_Onsdag") == "HE") {
+  //          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_Onsdag");
+  //        }
+  //        else {
+  //          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_Onsdag");
+  //        }
+  //      }
+  //    }
+  //    if (dayName == "torsdag") {
+  //      if (storage.getItem("buttonData_" + names[i] + "_Torsdag") == null || storage.getItem("buttonData_" + names[i] + "_Torsdag") == undefined) {
+  //        buttonData_Heldag = "&nbsp;"
+  //      }
+  //      else {
+  //        if (storage.getItem("buttonData_" + names[i] + "_Torsdag") == "HE") {
+  //          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_Torsdag");
+  //        }
+  //        else {
+  //          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_Torsdag");
+  //        }
+  //      }
+  //    }
+  //    if (dayName == "fredag") {
+  //      if (storage.getItem("buttonData_" + names[i] + "_Fredag") == null || storage.getItem("buttonData_" + names[i] + "_Fredag") == undefined) {
+  //        buttonData_Heldag = "&nbsp;"
+  //      }
+  //      else {
+  //        if (storage.getItem("buttonData_" + names[i] + "_Fredag") == "HE") {
+  //          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_Fredag");
+  //        }
+  //        else {
+  //          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_Fredag");
+  //        }
+  //      }
+  //    }
+  //    }
       columnHTML +=
         '<div class="Row">' +
         '<div class="' + heldagClass + '">' +
@@ -325,7 +318,7 @@ const daysInMonth = new Date(year, month + 1, 0).getDate();
   return days;
 }
 
-function getEaster() {
+function getEaster(year) {
   // Beräkna datumet för påskdagen
   const f = Math.floor,
     G = year % 19,
@@ -362,7 +355,7 @@ function isRedDay(day) {
   }
 
   // Beräkna påsken för det aktuella året
-  const easterSunday = getEaster();
+  const easterSunday = getEaster(year);
 
   // Rörliga helgdagar baserade på påsken
   const longFriday = new Date(easterSunday);
@@ -412,92 +405,95 @@ function dialog(day, name, event) {
   dialogElement.showModal();
   document.body.style.overflow = "hidden";
 
-  document.getElementById("dialogM").addEventListener("click", function () {
+  document.getElementById("dialogM").onclick = function () {
     document.getElementById(id).innerHTML = "M"
-    stroage.setItem("buttonData_" + id, "M");
+    storage.setItem("buttonData_" + id, "M");
     dialogElement.close();
     id = null
     clickedElement = null
     document.body.style.overflow = "auto";
-  });
+  };
 
-  document.getElementById("dialogX").addEventListener("click", function () {
+  document.getElementById("dialogX").onclick = function () {
     document.getElementById(id).innerHTML = "X"
-    stroage.setItem("buttonData_" + id, "X");
+    storage.setItem("buttonData_" + id, "X");
     dialogElement.close();
     id = null
     clickedElement = null
     document.body.style.overflow = "auto";
-  });
+  };
 
-  document.getElementById("dialog-").addEventListener("click", function () {
+  document.getElementById("dialog-").onclick = function () {
     document.getElementById(id).innerHTML = "-"
-    stroage.setItem("buttonData_" + id, "-");
+    storage.setItem("buttonData_" + id, "-");
     dialogElement.close();
     id = null
     clickedElement = null
     document.body.style.overflow = "auto";
-  });
+  };
 
-  document.getElementById("dialogL").addEventListener("click", function () {
+  document.getElementById("dialogL").onclick = function () {
     document.getElementById(id).innerHTML = "L"
-    stroage.setItem("buttonData_" + id, "L");
+    storage.setItem("buttonData_" + id, "L");
     dialogElement.close();
     id = null
     clickedElement = null
     document.body.style.overflow = "auto";
-  });
+  };
 
-  document.getElementById("dialogS").addEventListener("click", function () {
+  document.getElementById("dialogS").onclick = function () {
     document.getElementById(id).innerHTML = "S"
-    stroage.setItem("buttonData_" + id, "S");
+    storage.setItem("buttonData_" + id, "S");
     dialogElement.close();
     id = null
     clickedElement = null
     document.body.style.overflow = "auto";
-  });
+  };
 
-//  document.getElementById("dialogH").addEventListener("click", function () {
+//  document.getElementById("dialogH").onclick = function () {
 //    document.getElementById(id).innerHTML = "HE"
-//    stroage.setItem("buttonData_" + id, "HE");
+//    storage.setItem("buttonData_" + id, "HE");
 //    dialogElement.close();
 //    id = null
 //    clickedElement = null
 //    document.body.style.overflow = "auto";
-//  });
+//  };
 //
-//  document.getElementById("dialogF").addEventListener("click", function () {
+//  document.getElementById("dialogF").onclick = function () {
 //    document.getElementById(id).innerHTML = "HA"
-//    stroage.setItem("buttonData_" + id, "HA");
+//    storage.setItem("buttonData_" + id, "HA");
 //    dialogElement.close();
 //    id = null
 //    clickedElement = null
 //    document.body.style.overflow = "auto";
-//  });
+//  };
 
-  document.getElementById("dialogRensa").addEventListener("click", function () {
+  document.getElementById("dialogRensa").onclick = function () {
     document.getElementById(id).innerHTML = "&nbsp;"
-    stroage.setItem("buttonData_" + id, " ");
+    storage.setItem("buttonData_" + id, " ");
     dialogElement.close();
     id = null
     clickedElement = null
     document.body.style.overflow = "auto";
-  });
+  };
 
-  document.getElementById("dialogclose").addEventListener("click", function () {
+  document.getElementById("dialogclose").onclick = function () {
     dialogElement.close();
     id = null
     clickedElement = null
     document.body.style.overflow = "auto";
-  });
+  };
 }
 
 async function PreloadSwichDate() {
 const names = await getAllNarvaroDBNames();
 names.forEach(item => {
+const monthName = item.split(" ")[0];
+if (monthName && document.getElementById(`dialogSwichDateMonad_${monthName}`)) {
 document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).style.background = "green";
 document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).style.cursor = "pointer";
 document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).onclick = function() {dialogSwichDateLoad(item,item.split(" ")[0])};
+}
 });
 }
 
@@ -553,7 +549,7 @@ lssave(monthData[monthName],monthName,name_Group).then(() => {
   }
 
 
-//    document.getElementById("dialogSwichDateMonad_sparaFil").addEventListener("click", function () {
+//    document.getElementById("dialogSwichDateMonad_sparaFil").onclick = function () {
 //      monthData[monthName].forEach(item => {
 //      if (item.name) {
 //        name_Group = item.name_Group || "Namnlös";
@@ -563,7 +559,7 @@ lssave(monthData[monthName],monthName,name_Group).then(() => {
 }
 
 
-function lssave(jsonData, monthName, name_Group) {
+async function lssave(jsonData, monthName, name_Group) {
   if(monthName != null && name_Group != null){
     document.getElementById("titelDataTitel").innerHTML = name_Group;
     document.getElementById("titleDate").innerHTML = monthName;
@@ -578,13 +574,13 @@ function lssave(jsonData, monthName, name_Group) {
   }
 
 
-  for (let i = stroage.length - 1; i >= 0; i--) {
-    const key = stroage.key(i);
+  for (let i = storage.length - 1; i >= 0; i--) {
+    const key = storage.key(i);
     if (key && key.startsWith("buttonData_")) {
-      stroage.removeItem(key);
+      storage.removeItem(key);
     }
     if (key && key === "titelData") {
-      stroage.removeItem(key);
+      storage.removeItem(key);
     }
   }
 
@@ -593,18 +589,18 @@ function lssave(jsonData, monthName, name_Group) {
   jsonData.forEach(item => {
 
     if (item.currentDate) {
-    stroage.setItem("currentDate",item.currentDate);
+    storage.setItem("currentDate",item.currentDate);
 }
 
     if (!item || typeof item.name_Group === "string") {
-      stroage.setItem("titelData", String(item.name_Group));
+      storage.setItem("titelData", String(item.name_Group));
       document.getElementById("grupp_NameInput").value = item.name_Group;
       document.getElementById("titelDataTitel").innerHTML = item.name_Group;
     }
     if (!item || typeof item.name !== "string") return;
 
     if (item.name === "name_Group") {
-      stroage.setItem("titelData", String(item.name_Group));
+      storage.setItem("titelData", String(item.name_Group));
       document.getElementById("grupp_NameInput").value = item.name_Group;
       document.getElementById("titelDataTitel").innerHTML = item.name_Group;
     } else {
@@ -629,9 +625,9 @@ function lssave(jsonData, monthName, name_Group) {
 //        }
 //
 //        if (val === null || val === "" || val === "&nbsp;") {
-//          stroage.removeItem(key);
+//          storage.removeItem(key);
 //        } else {
-//          stroage.setItem(key, String(val));
+//          storage.setItem(key, String(val));
 //        }
 //    }
 
@@ -644,9 +640,9 @@ function lssave(jsonData, monthName, name_Group) {
         } else {
           const [data, value] = val.split(/:(.+)/).filter(Boolean);
           if (value === null || value === "" || value === "&nbsp;") {
-            stroage.removeItem(data);
+            storage.removeItem(data);
           } else {
-            stroage.setItem(data, String(value));
+            storage.setItem(data, String(value));
           }
         }
       }
@@ -654,7 +650,7 @@ function lssave(jsonData, monthName, name_Group) {
   });
 
 
-  stroage.setItem("namesData", JSON.stringify(namesData));
+  storage.setItem("namesData", JSON.stringify(namesData));
   document.getElementById("nameEditContainer").innerHTML = "";
   document.getElementById("column").innerHTML = "";
 
@@ -670,26 +666,26 @@ function lssave(jsonData, monthName, name_Group) {
 }
 
 
-function getjsoin() {
+function getJson() {
   let names = namesData;
   let output = [];
-  output.push({ name_Group: stroage.getItem("titelData") });
+  output.push({ name_Group: storage.getItem("titelData") });
   for (let i = 0; i < names.length; i++) {
 //    let workDayArr = [];
     let workDayArrOveride = [];
     const daysInMonth = getAllDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
     for (let j = 1; j <= daysInMonth.length; j++) {
-      if (stroage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
-        workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + stroage.getItem(`buttonData_${names[i]}_${j}_heldag`));
-      } else if (stroage.getItem(`buttonData_${names[i]}_${j}_halvdag`) != null) {
-        workDayArrOveride.push(`buttonData_${names[i]}_${j}_halvdag:` + stroage.getItem(`buttonData_${names[i]}_${j}_halvdag`));
+      if (storage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
+        workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + storage.getItem(`buttonData_${names[i]}_${j}_heldag`));
+      } else if (storage.getItem(`buttonData_${names[i]}_${j}_halvdag`) != null) {
+        workDayArrOveride.push(`buttonData_${names[i]}_${j}_halvdag:` + storage.getItem(`buttonData_${names[i]}_${j}_halvdag`));
       }
     }
-//    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Mandag`));
-//    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Tisdag`));
-//    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Onsdag`));
-//    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Torsdag`));
-//    workDayArr.push(stroage.getItem(`buttonData_${names[i]}_Fredag`));
+//    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Mandag`));
+//    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Tisdag`));
+//    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Onsdag`));
+//    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Torsdag`));
+//    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Fredag`));
 
     output.push({
       name: names[i],
@@ -720,25 +716,17 @@ function saveDataToAsFile(jsonString, monthName,name_Group) {
 }
 
 
-
-
-
-
-// await clearAllData();
 async function clearAllData() {
   try {
   let this_Year = thisDate.getFullYear();
   let this_month = thisDate.getMonth();
   isTemp = true;
-        // Clear localStorage
+
     localStorage.clear();
     console.log("LocalStorage cleared");
 
-    // Clear sessionStorage
     sessionStorage.clear();
     console.log("SessionStorage cleared");
-
-    // Clear indexedDB
 
       for (let i = 1; i <= Months.length; i++) {
         removeSpecificDB(Months[i] + " " + localStorage.getItem("storedYear"));
