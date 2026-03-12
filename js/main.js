@@ -8,7 +8,7 @@ let namesData = [];
 let index;
 let year;
 let month;
-let  day;
+let day;
 
 window.onload = function() {
   
@@ -22,6 +22,7 @@ window.onload = function() {
       this_Year = parseInt(sessionStorage.getItem("storedYear"));
     }
   }
+
   updateUI(this_Year, this_month).then(() => {
     setInterval(checkMonthChange, 10000);
     checkMonthChange();
@@ -31,14 +32,14 @@ window.onload = function() {
 async function updateUI(Year, Month) {
 const daysInMonth = getAllDaysInMonth(Year, Month);
   LoadingBarDialog.showModal();
-  currentDate = new Date(Year, Month, 1);
+  currentDate = new Date(Year, Month);
   year = currentDate.getFullYear();
   month = currentDate.getMonth();
   day = currentDate.getDate();
 document.getElementById("numer").innerHTML = "";
 
 if (localStorage.getItem("storedMonth") == undefined || localStorage.getItem("storedMonth") == null) {
-  localStorage.setItem("storedMonth", month + 1);
+  localStorage.setItem("storedMonth", month);
 }
 if (localStorage.getItem("storedYear") == undefined || localStorage.getItem("storedYear") == null) {
   localStorage.setItem("storedYear", year);
@@ -129,18 +130,21 @@ function setTemp(value){
 async function checkMonthChange() {
   if (!isTemp) {
     const currentDateCheck = new Date();
-    if (localStorage.getItem("storedYear") !== currentDateCheck.getFullYear().toString())
+    if (localStorage.getItem("storedYear").toString() !== currentDateCheck.getFullYear().toString())
     {
-       for (let i = 1; i <= Months.length; i++) {
-        removeSpecificDB(Months[i] + " " + localStorage.getItem("storedYear")).then(() => {
-            localStorage.setItem("currentDate", currentDateCheck);
-            localStorage.setItem("storedMonth", (currentDateCheck.getMonth() + 1));
-            localStorage.setItem("storedYear", currentDateCheck.getFullYear());
-        });
-      }
-        window.location = window.location;
+      const deletePromises = [];
+    for (let i = 0; i < Months.length; i++) {
+              deletePromises.push(removeSpecificDB(Months[i] + " " + localStorage.getItem("storedYear")));
     }
-  if (localStorage.getItem("storedMonth") !== (currentDateCheck.getMonth() + 1).toString()) {
+        await Promise.all(deletePromises);
+        
+        localStorage.setItem("currentDate", currentDateCheck);
+        localStorage.setItem("storedMonth", currentDateCheck.getMonth());
+        localStorage.setItem("storedYear", currentDateCheck.getFullYear());
+        window.location = window.location;
+
+    }
+  if (localStorage.getItem("storedMonth").toString() !== (currentDateCheck.getMonth()).toString()) {
     try {
     namesData = JSON.parse(localStorage.getItem("namesData"));
     } catch (error) {
@@ -185,7 +189,7 @@ async function checkMonthChange() {
       localStorage.setItem("titelData", name_Group);
       localStorage.setItem("dbVersion", dbVersion);
       localStorage.setItem("currentDate", currentDateCheck);
-      localStorage.setItem("storedMonth", (currentDateCheck.getMonth() + 1));
+      localStorage.setItem("storedMonth", currentDateCheck.getMonth());
       localStorage.setItem("storedYear", currentDateCheck.getFullYear());
     
     window.location = window.location;
@@ -193,7 +197,6 @@ async function checkMonthChange() {
   }
 }
 }
-
 async function main(namesData) {
   let names = namesData;
   window.scrollTo({
@@ -728,11 +731,13 @@ async function clearAllData() {
     sessionStorage.clear();
     console.log("SessionStorage cleared");
 
-      for (let i = 1; i <= Months.length; i++) {
-        removeSpecificDB(Months[i] + " " + localStorage.getItem("storedYear"));
-      }
-
-    updateUI(this_Year, this_month).then(() => {
+      const deletePromises = [];
+    for (let i = 0; i < Months.length; i++) {
+              deletePromises.push(removeSpecificDB(Months[i] + " " + localStorage.getItem("storedYear")));
+    }
+      await Promise.all(deletePromises);
+    
+      updateUI(this_Year, this_month).then(() => {
       isTemp = false;
     });
     console.log("All data cleared successfully");
