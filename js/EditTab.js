@@ -30,6 +30,7 @@ function createName() {
 //  document.getElementById("menuSubTitelEditDialog").textContent = "Välj arbetsdagar";
   document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i>Gå tillbaka`;
   document.getElementById("MenuButtonDialogEditTopBar").onclick = createNameCancel;
+  document.getElementById("MenuButtonDialogSaveAsJson").style.display = "none";
   document.getElementById("gruppEditContainer").style.display = "none";
   document.getElementById("AddNames").style.display = "none";
   document.getElementById("ladda_deltagare_eller").style.display = "none";
@@ -87,6 +88,7 @@ function createNameEdit(index, name) {
 //  document.getElementById("menuSubTitelEditDialog").textContent = "Välj arbetsdagar";
   document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i>Gå tillbaka`;
   document.getElementById("MenuButtonDialogEditTopBar").onclick = createNameCancel;
+  document.getElementById("MenuButtonDialogSaveAsJson").style.display = "none";
   document.getElementById("gruppEditContainer").style.display = "none";
   document.getElementById("AddNames").style.display = "none";
   document.getElementById("ladda_deltagare_eller").style.display = "none";
@@ -161,6 +163,7 @@ function createNameCancel() {
   document.getElementById("menuSubTitelEditDialog").textContent = "Deltagare";
   document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i> Spara och gå tillbaka`;
   document.getElementById("MenuButtonDialogEditTopBar").onclick = ButtonEditSwishToMain;
+  document.getElementById("MenuButtonDialogSaveAsJson").style.display = "inline";
   document.getElementById("gruppEditContainer").style.display = "block";
   document.getElementById("AddNames").style.display = "block";
   document.getElementById("ladda_deltagare_eller").style.display = "inline";
@@ -173,7 +176,7 @@ function addNameInArray() {
 //  const Onsdag = document.getElementById("Onsdag");
 //  const Torsdag = document.getElementById("Torsdag");
 //  const Fredag = document.getElementById("Fredag");
-const exists = namesData.find(item => item === newNameInput.value.toUpperCase()) !== undefined;
+const exists = namesData.find(item => item === newNameInput.value) !== undefined;
   if (exists === false) {
     if (newNameInput.value.length === 0) {
       alert("Namnet kan inte vara tomt.");
@@ -243,6 +246,9 @@ const exists = namesData.find(item => item === newNameInput.value.toUpperCase())
     document.getElementById("nameEditContainer").innerHTML = "";
     namesData.forEach(displayEditNameArry);
     newNameInput.value = "";
+  }else {
+    alert("Namnet finns redan.");
+    return;
   }
 }
 
@@ -357,6 +363,7 @@ function dialogEditTopBar() {
   document.getElementById("ladda_deltagare_eller").style.display = "inline";
   document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i> Spara och gå tillbaka`;
   document.getElementById("MenuButtonDialogEditTopBar").onclick = ButtonEditSwishToMain;
+  document.getElementById("MenuButtonDialogSaveAsJson").style.display = "inline";
   document.getElementById("MenuButtonDialogPrint").style.display = "none";
   document.getElementById("MenuButtonFullScreen").style.display = "none";
   document.getElementById("MenuButtonSwichDate").style.display = "none";
@@ -378,6 +385,7 @@ function ButtonEditSwishToMain() {
   document.getElementById("layoutEdit").style.display = "none";
   document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">edit</i> Redigera deltagare`;
   document.getElementById("MenuButtonDialogEditTopBar").onclick = dialogEditTopBar;
+  document.getElementById("MenuButtonDialogSaveAsJson").style.display = "none";
   document.getElementById("MenuButtonDialogPrint").style.display = "inline";
   document.getElementById("MenuButtonFullScreen").style.display = "inline";
   document.getElementById("MenuButtonSwichDate").style.display = "inline";

@@ -231,6 +231,10 @@ button {
   cursor: wait;
 }
 
+#MenuButtonDialogSaveAsJson{
+  display: none;
+}
+
 dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.4);
   -webkit-backdrop-filter: blur(2px);

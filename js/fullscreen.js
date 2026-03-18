@@ -22,7 +22,7 @@ window.addEventListener("beforeunload", (event) => {
 if (document.fullscreenElement) {
   event.preventDefault();
   event.returnValue = '';
-  event.return
+  event.return;
   }
 })
 
@@ -30,6 +30,6 @@ window.onbeforeunload = (event) => {
 if (document.fullscreenElement) {
   event.preventDefault();
   event.returnValue = '';
-  event.return
+  event.return;
   }
 }

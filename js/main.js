@@ -154,7 +154,7 @@ async function checkMonthChange() {
     let names = namesData;
     let output = [];
     output.push({ name_Group: localStorage.getItem("titelData") });
-    if (namesData !== null){
+    if (names !== null && names !== undefined && names.length > 0) {
     for (let i = 0; i < names.length; i++) {
 //      let workDayArr = [];
       let workDayArrOveride = [];
@@ -333,7 +333,19 @@ function getEaster(year) {
     month = 3 + f((L + 40) / 44),
     day = L + 28 - 31 * f(month / 4);
 
-  return new Date(year, month - 1, day); // Returnera påskdagen som ett Date-objekt
+  return new Date(year, month - 1, day);
+}
+
+function getMidsommar(year) {
+    // Start on June 19
+    let date = new Date(year, 5, 19); // months are 0-indexed: 5 = June
+
+    // Find the first Friday on or after June 19
+    let dayOfWeek = date.getDay(); // 0 = Sunday, 5 = Friday
+    let daysUntilFriday = (5 - dayOfWeek + 7) % 7; 
+    date.setDate(date.getDate() + daysUntilFriday);
+
+    return date;
 }
 
 function isRedDay(day) {
@@ -360,6 +372,9 @@ function isRedDay(day) {
   // Beräkna påsken för det aktuella året
   const easterSunday = getEaster(year);
 
+  // Beräkna midsommar för det aktuella året
+  const midsommar = getMidsommar(year);
+
   // Rörliga helgdagar baserade på påsken
   const longFriday = new Date(easterSunday);
   longFriday.setDate(easterSunday.getDate() - 2); // Långfredag
@@ -378,7 +393,8 @@ function isRedDay(day) {
     easterSunday.toLocaleDateString('sv-SE', { month: "numeric", day: "numeric" }),
     easterMonday.toLocaleDateString('sv-SE', { month: "numeric", day: "numeric" }),
     ascensionDay.toLocaleDateString('sv-SE', { month: "numeric", day: "numeric" }),
-    pentecostSunday.toLocaleDateString('sv-SE', { month: "numeric", day: "numeric" })
+    pentecostSunday.toLocaleDateString('sv-SE', { month: "numeric", day: "numeric" }),
+    midsommar.toLocaleDateString('sv-SE', { month: "numeric", day: "numeric" })
   ];
 
   if (movableRedDays.includes(dayAndMonth) || dayName === "lördag" || dayName === "söndag") {
@@ -387,8 +403,6 @@ function isRedDay(day) {
 
   return false;
 }
-
-
 
 //Dialog boxes
 
@@ -697,12 +711,9 @@ function getJson() {
     });
   }
 
-  saveData(output)
-    .then(() => console.log("Data saved to IndexedDB"))
-    .catch(err => console.error("IndexedDB error:", err));
-
    let name_Group = document.getElementById("titelDataTitel").innerText;
-      let TitelMonth = document.getElementById("titleDate").innerText;
+   let TitelMonth = document.getElementById("titleDate").innerText;
+
   saveDataToAsFile(JSON.stringify(output, null, 2),TitelMonth,name_Group);
 }
 

@@ -31,4 +31,6 @@ HA = Förmiddag/Eftermiddag
 
 [⛔️] Ta bort månader ifrån förra året automatiskt
 
+[⛔️] Röda dagar för Midsommarafton
+
 ----------
