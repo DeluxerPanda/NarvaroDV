@@ -25,12 +25,12 @@ HA = Förmiddag/Eftermiddag
 
 [✅] Redigera deltagare
 
-[⛔️] Kunna gå tillbaka till alla föregående månader
+[✅] Kunna gå tillbaka till alla föregående månader
 
-[⛔️] kunna skriva ut nuvarande och alla föregående månader
+[✅] kunna skriva ut nuvarande och alla föregående månader
 
 [⛔️] Ta bort månader ifrån förra året automatiskt
 
-[⛔️] Röda dagar för Midsommarafton
+[✅] Röda dagar för Midsommarafton
 
 ----------

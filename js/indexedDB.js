@@ -142,35 +142,12 @@ async function getNarvaro(name) {
     });
 }
 
-async function removeSpecificDB(storeName) {
-  try {
+async function removeSpecificDB() {
     const db = await openDB(false);
-
-    console.log("Clearing stores:", storeName);
-    
-      const tx = db.transaction(storeName, "readwrite");
-      const store = tx.objectStore(storeName);
-      
-      // Get all entries
-      const allEntries = await new Promise((resolve, reject) => {
-        const request = store.getAll();
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-      
-      console.log(`${storeName} entries retrieved:`, allEntries);
-      
-      // Clear the store
-      store.clear();
-      await tx.complete;
     
     db.close();
-    console.log("All stores cleared successfully");
-  } catch (error) {
-    console.warn("Error clearing stores:", error);
-  }
-
-  return new Promise((resolve, reject) => {
+    
+    return new Promise((resolve, reject) => {
     const request = indexedDB.deleteDatabase(DB_NAME);
 
     request.onsuccess = () => {

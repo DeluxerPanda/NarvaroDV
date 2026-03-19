@@ -9,6 +9,7 @@ let index;
 let year;
 let month;
 let day;
+let ProgressBarInterval;
 
 window.onload = function() {
   
@@ -24,8 +25,22 @@ window.onload = function() {
   }
 
   updateUI(this_Year, this_month).then(() => {
-    setInterval(checkMonthChange, 10000);
-    checkMonthChange();
+checkMonthChange();
+if (!isTemp) {
+  var elem = document.getElementById("checkMonthChangeProgressBar");
+  var width = 1;
+  ProgressBarInterval = setInterval(frame, 1000);
+  function frame() {
+    if (width >= 100) {
+      checkMonthChange()
+      width = 1;
+      elem.style.width = width + "%";
+    } else {
+      width++;
+      elem.style.width = width + "%";
+    }
+  }
+}
   });
 }
 
@@ -100,6 +115,8 @@ function setTemp(value){
   if(value){
     storage= sessionStorage;
     isTemp = true;
+    clearInterval(ProgressBarInterval);
+    document.getElementById("checkMonthChangeProgressBar").style.width = 0 + "%"
     document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons"
         style="vertical-align:middle; font-size: 15px;">edit</i> Gå tillbaka`;
     document.getElementById("MenuButtonDialogEditTopBar").onclick = function() 
@@ -128,23 +145,40 @@ function setTemp(value){
 }
 
 async function checkMonthChange() {
+  console.log("checkMonthChange called");
   if (!isTemp) {
     const currentDateCheck = new Date();
     if (localStorage.getItem("storedYear").toString() !== currentDateCheck.getFullYear().toString())
     {
-      const deletePromises = [];
-    for (let i = 0; i < Months.length; i++) {
-              deletePromises.push(removeSpecificDB(Months[i] + " " + localStorage.getItem("storedYear")));
-    }
-        await Promise.all(deletePromises);
-        
-        localStorage.setItem("currentDate", currentDateCheck);
-        localStorage.setItem("storedMonth", currentDateCheck.getMonth());
-        localStorage.setItem("storedYear", currentDateCheck.getFullYear());
-        window.location = window.location;
+      clearInterval(ProgressBarInterval);
+      document.getElementById("checkMonthChangeProgressBar").style.width = 0 + "%";
 
+      await removeSpecificDB().then(() => {
+      localStorage.setItem("currentDate", currentDateCheck);
+      localStorage.setItem("storedMonth", currentDateCheck.getMonth());
+      localStorage.setItem("storedYear", currentDateCheck.getFullYear());
+
+    updateUI(currentDateCheck.getFullYear(), currentDateCheck.getMonth()).then(() => {
+      checkMonthChange();
+      var elem = document.getElementById("checkMonthChangeProgressBar");
+      var width = 1;
+      ProgressBarInterval = setInterval(frame, 1000);
+  function frame() {
+    if (width >= 100) {
+      checkMonthChange()
+      width = 1;
+      elem.style.width = width + "%";
+    } else {
+      width++;
+      elem.style.width = width + "%";
+    }
+  }
+  });
+      });
     }
   if (localStorage.getItem("storedMonth").toString() !== (currentDateCheck.getMonth()).toString()) {
+    clearInterval(ProgressBarInterval);
+    document.getElementById("checkMonthChangeProgressBar").style.width = 0 + "%"
     try {
     namesData = JSON.parse(localStorage.getItem("namesData"));
     } catch (error) {
@@ -192,7 +226,22 @@ async function checkMonthChange() {
       localStorage.setItem("storedMonth", currentDateCheck.getMonth());
       localStorage.setItem("storedYear", currentDateCheck.getFullYear());
     
-    window.location = window.location;
+    updateUI(currentDateCheck.getFullYear(), currentDateCheck.getMonth()).then(() => {
+      checkMonthChange();
+      var elem = document.getElementById("checkMonthChangeProgressBar");
+      var width = 1;
+      ProgressBarInterval = setInterval(frame, 1000);
+  function frame() {
+    if (width >= 100) {
+      checkMonthChange()
+      width = 1;
+      elem.style.width = width + "%";
+    } else {
+      width++;
+      elem.style.width = width + "%";
+    }
+  }
+  });
     });
   }
 }
@@ -742,15 +791,12 @@ async function clearAllData() {
     sessionStorage.clear();
     console.log("SessionStorage cleared");
 
-      const deletePromises = [];
-    for (let i = 0; i < Months.length; i++) {
-              deletePromises.push(removeSpecificDB(Months[i] + " " + localStorage.getItem("storedYear")));
-    }
-      await Promise.all(deletePromises);
-    
-      updateUI(this_Year, this_month).then(() => {
-      isTemp = false;
+    await removeSpecificDB().then(async () => {
+    await  updateUI(this_Year, this_month).then(() => {
+        isTemp = false;
+      });
     });
+
     console.log("All data cleared successfully");
 
     return true;

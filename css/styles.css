@@ -97,6 +97,16 @@ button {
   width: 34px;
 }
 
+#checkMonthChangeProgressBar {
+  width: 1%;
+  height: 2px;
+  background-color: #5e81ac;
+  border-radius: 8px;
+  transition: width 1s linear;
+  padding: 0;
+  margin: 0;
+}
+
 .column {
   background-color: white;
   padding-left: 35px;
