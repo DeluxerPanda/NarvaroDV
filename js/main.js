@@ -25,22 +25,22 @@ window.onload = function() {
   }
 
   updateUI(this_Year, this_month).then(() => {
-checkMonthChange();
-if (!isTemp) {
-  var elem = document.getElementById("checkMonthChangeProgressBar");
-  var width = 1;
-  ProgressBarInterval = setInterval(frame, 1000);
-  function frame() {
-    if (width >= 100) {
-      checkMonthChange()
-      width = 1;
-      elem.style.width = width + "%";
-    } else {
-      width++;
-      elem.style.width = width + "%";
-    }
-  }
-}
+//checkMonthChange();
+//if (!isTemp) {
+//  var elem = document.getElementById("checkMonthChangeProgressBar");
+//  var width = 1;
+//  ProgressBarInterval = setInterval(frame, 1000);
+//  function frame() {
+//    if (width >= 100) {
+//      checkMonthChange()
+//      width = 1;
+//      elem.style.width = width + "%";
+//    } else {
+//      width++;
+//      elem.style.width = width + "%";
+//    }
+//  }
+//}
   });
 }
 
@@ -108,7 +108,23 @@ if (localStorage.getItem("storedYear") == undefined || localStorage.getItem("sto
     document.getElementById("column").innerHTML = "";
     main(namesData).then(() => {
         namesData.forEach(displayEditNameArry);
-      });
+        checkMonthChange();
+if (!isTemp) {
+      var elem = document.getElementById("checkMonthChangeProgressBar");
+      var width = 1;
+      ProgressBarInterval = setInterval(frame, 1000);
+  function frame() {
+    if (width >= 100) {
+      checkMonthChange()
+      width = 1;
+      elem.style.width = width + "%";
+    } else {
+      width++;
+      elem.style.width = width + "%";
+    }
+  }
+  }
+});
 }
 
 function setTemp(value){
@@ -157,22 +173,22 @@ async function checkMonthChange() {
       localStorage.setItem("currentDate", currentDateCheck);
       localStorage.setItem("storedMonth", currentDateCheck.getMonth());
       localStorage.setItem("storedYear", currentDateCheck.getFullYear());
-
+      window.location = window.location
     updateUI(currentDateCheck.getFullYear(), currentDateCheck.getMonth()).then(() => {
-      checkMonthChange();
-      var elem = document.getElementById("checkMonthChangeProgressBar");
-      var width = 1;
-      ProgressBarInterval = setInterval(frame, 1000);
-  function frame() {
-    if (width >= 100) {
-      checkMonthChange()
-      width = 1;
-      elem.style.width = width + "%";
-    } else {
-      width++;
-      elem.style.width = width + "%";
-    }
-  }
+//      checkMonthChange();
+//      var elem = document.getElementById("checkMonthChangeProgressBar");
+//      var width = 1;
+//      ProgressBarInterval = setInterval(frame, 1000);
+//  function frame() {
+//    if (width >= 100) {
+//      checkMonthChange()
+//      width = 1;
+//      elem.style.width = width + "%";
+//    } else {
+//      width++;
+//      elem.style.width = width + "%";
+//    }
+//  }
   });
       });
     }
@@ -227,20 +243,20 @@ async function checkMonthChange() {
       localStorage.setItem("storedYear", currentDateCheck.getFullYear());
     
     updateUI(currentDateCheck.getFullYear(), currentDateCheck.getMonth()).then(() => {
-      checkMonthChange();
-      var elem = document.getElementById("checkMonthChangeProgressBar");
-      var width = 1;
-      ProgressBarInterval = setInterval(frame, 1000);
-  function frame() {
-    if (width >= 100) {
-      checkMonthChange()
-      width = 1;
-      elem.style.width = width + "%";
-    } else {
-      width++;
-      elem.style.width = width + "%";
-    }
-  }
+//      checkMonthChange();
+//      var elem = document.getElementById("checkMonthChangeProgressBar");
+//      var width = 1;
+//      ProgressBarInterval = setInterval(frame, 1000);
+//  function frame() {
+//    if (width >= 100) {
+//      checkMonthChange()
+//      width = 1;
+//      elem.style.width = width + "%";
+//    } else {
+//      width++;
+//      elem.style.width = width + "%";
+//    }
+//  }
   });
     });
   }
@@ -253,7 +269,7 @@ async function main(namesData) {
     left: 1,
     behavior: "smooth",
   });
-
+  const checkDate =  new Date(currentDate);
   names.sort((a, b) => a.localeCompare(b, 'sv'));
   // Build the entire HTML string at once instead of appending in loops
   let columnHTML = '';
@@ -261,8 +277,8 @@ async function main(namesData) {
     columnHTML += '<div class="nameContainer"><p class="name">' + names[i] + '</p></div>';
     const daysInMonth = getAllDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
     for (let j = 1; j <= daysInMonth.length; j++) {
-      currentDate.setDate(j);
-      let dayName = currentDate.toLocaleDateString('sv-SE', { weekday: 'long' });
+      checkDate.setDate(j);
+      //let dayName = currentDate.toLocaleDateString('sv-SE', { weekday: 'long' });
 
       const redDay = isRedDay(j);
       const heldagClass = redDay ? 'Row-weekend' : 'Row-Heldag';
@@ -398,10 +414,10 @@ function getMidsommar(year) {
 }
 
 function isRedDay(day) {
-  currentDate.setDate(day); // Sätt dagen att kontrollera
-  const dayName = currentDate.toLocaleDateString('sv-SE', { weekday: 'long' });
-  const dayAndMonth = currentDate.toLocaleDateString('sv-SE', { month: "numeric", day: "numeric" });
-
+  const checkDate =  new Date(currentDate);
+  checkDate.setDate(day); // Sätt dagen att kontrollera
+  const dayName = checkDate.toLocaleDateString('sv-SE', { weekday: 'long' });
+  const dayAndMonth = checkDate.toLocaleDateString('sv-SE', { month: "numeric", day: "numeric" });
   // Fasta röda dagar
   const fixedRedDays = [
     "1/1",  // Nyårsdagen

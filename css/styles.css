@@ -99,7 +99,7 @@ button {
 
 #checkMonthChangeProgressBar {
   width: 1%;
-  height: 2px;
+  height: 20px;
   background-color: #5e81ac;
   border-radius: 8px;
   transition: width 1s linear;
