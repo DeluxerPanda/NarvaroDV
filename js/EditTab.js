@@ -374,6 +374,7 @@ function dialogEditTopBar() {
     left: 1,
     behavior: "smooth",
   });
+  setAutoUpdate(false);
 }
 
 function ButtonEditSwishToMain() {
@@ -389,6 +390,7 @@ function ButtonEditSwishToMain() {
   document.getElementById("MenuButtonDialogPrint").style.display = "inline";
   document.getElementById("MenuButtonFullScreen").style.display = "inline";
   document.getElementById("MenuButtonSwichDate").style.display = "inline";
+  setAutoUpdate(true);
   window.location = window.location;
 };
 

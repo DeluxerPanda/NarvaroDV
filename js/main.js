@@ -3,7 +3,7 @@ const Months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "
 const thisDate = new Date();
 let currentDate;
 let storage = localStorage;
-let isTemp = false;
+let autoUpdate = true;
 let namesData = [];
 let index;
 let year;
@@ -12,36 +12,28 @@ let day;
 let ProgressBarInterval;
 
 window.onload = function() {
-  
   let this_Year = thisDate.getFullYear();
   let this_month = thisDate.getMonth();
-  if (isTemp) {
-    if (sessionStorage.getItem("storedMonth") !== null) {
-      this_month = parseInt(sessionStorage.getItem("storedMonth"));
-    }
-    if (sessionStorage.getItem("storedYear") !== null) {
-      this_Year = parseInt(sessionStorage.getItem("storedYear"));
-    }
-  }
 
-  updateUI(this_Year, this_month).then(() => {
-//checkMonthChange();
-//if (!isTemp) {
-//  var elem = document.getElementById("checkMonthChangeProgressBar");
-//  var width = 1;
-//  ProgressBarInterval = setInterval(frame, 1000);
-//  function frame() {
-//    if (width >= 100) {
-//      checkMonthChange()
-//      width = 1;
-//      elem.style.width = width + "%";
-//    } else {
-//      width++;
-//      elem.style.width = width + "%";
-//    }
-//  }
-//}
-  });
+  if (!autoUpdate) {
+    if (sessionStorage.getItem("storedMonth") == null) {
+        sessionStorage.setItem("storedMonth", this_month);
+    }
+    
+    if (sessionStorage.getItem("storedYear") == null) {
+        sessionStorage.setItem("storedYear", this_Year);
+    }
+  }else{
+    if (localStorage.getItem("storedMonth") == null) {
+        localStorage.setItem("storedMonth", this_month);
+    }
+    
+    if (localStorage.getItem("storedYear") == null) {
+        localStorage.setItem("storedYear", this_Year);
+    } 
+  }
+    checkMonthChange();
+    updateUI(this_Year, this_month);
 }
 
 async function updateUI(Year, Month) {
@@ -108,8 +100,7 @@ if (localStorage.getItem("storedYear") == undefined || localStorage.getItem("sto
     document.getElementById("column").innerHTML = "";
     main(namesData).then(() => {
         namesData.forEach(displayEditNameArry);
-        checkMonthChange();
-if (!isTemp) {
+if (autoUpdate) {
       var elem = document.getElementById("checkMonthChangeProgressBar");
       var width = 1;
       ProgressBarInterval = setInterval(frame, 1000);
@@ -127,26 +118,34 @@ if (!isTemp) {
 });
 }
 
-function setTemp(value){
+function setAutoUpdate(value){
   if(value){
-    storage= sessionStorage;
-    isTemp = true;
+    autoUpdate = true;
+    clearInterval(ProgressBarInterval);
+      var elem = document.getElementById("checkMonthChangeProgressBar");
+      var width = 1;
+      ProgressBarInterval = setInterval(frame, 1000);
+  function frame() {
+    if (width >= 100) {
+      checkMonthChange()
+      width = 1;
+      elem.style.width = width + "%";
+    } else {
+      width++;
+      elem.style.width = width + "%";
+    }
+  }
+}else{
+    autoUpdate = false;
     clearInterval(ProgressBarInterval);
     document.getElementById("checkMonthChangeProgressBar").style.width = 0 + "%"
-    document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons"
-        style="vertical-align:middle; font-size: 15px;">edit</i> Gå tillbaka`;
-    document.getElementById("MenuButtonDialogEditTopBar").onclick = function() 
-    {
-      for (let i = sessionStorage.length - 1; i >= 0; i--) {
-            const key = sessionStorage.key(i);
-            sessionStorage.removeItem(key);
-      }
-      window.location = window.location;
-};
+  }
+}
 
-}else{
+function setTemp(value){
+  if(!value){
     storage= localStorage;
-    isTemp = false;
+    setAutoUpdate(true);
     document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons"
         style="vertical-align:middle; font-size: 15px;">edit</i> Redigera deltagare`;
     document.getElementById("MenuButtonDialogEditTopBar").onclick = function() 
@@ -157,44 +156,52 @@ function setTemp(value){
         const key = sessionStorage.key(i);
         sessionStorage.removeItem(key);
       }
+}else{
+    storage= sessionStorage;
+    setAutoUpdate(false);
+    document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons"
+        style="vertical-align:middle; font-size: 15px;">edit</i> Gå tillbaka`;
+    document.getElementById("MenuButtonDialogEditTopBar").onclick = function() 
+    {
+      for (let i = sessionStorage.length - 1; i >= 0; i--) {
+            const key = sessionStorage.key(i);
+            sessionStorage.removeItem(key);
+      }
+      window.location = window.location;
+};
   }
 }
 
 async function checkMonthChange() {
   console.log("checkMonthChange called");
-  if (!isTemp) {
+  if (autoUpdate) {
     const currentDateCheck = new Date();
-    if (localStorage.getItem("storedYear").toString() !== currentDateCheck.getFullYear().toString())
-    {
+    if (localStorage.getItem("storedYear").toString() !== currentDateCheck.getFullYear().toString()) {
       clearInterval(ProgressBarInterval);
       document.getElementById("checkMonthChangeProgressBar").style.width = 0 + "%";
+      document.querySelectorAll("dialog").forEach(dialog => {dialog.close();});
 
-      await removeSpecificDB().then(() => {
+      await removeDB().then(() => {
+      namesData = JSON.parse(localStorage.getItem("namesData"));
+      const name_Group = localStorage.getItem("titelData");
+      const dbVersion = localStorage.getItem("dbVersion");
+      
+      localStorage.clear();
+
+      localStorage.setItem("namesData", JSON.stringify(namesData));
+      localStorage.setItem("titelData", name_Group);
+      localStorage.setItem("dbVersion", dbVersion);
       localStorage.setItem("currentDate", currentDateCheck);
       localStorage.setItem("storedMonth", currentDateCheck.getMonth());
       localStorage.setItem("storedYear", currentDateCheck.getFullYear());
-      window.location = window.location
-    updateUI(currentDateCheck.getFullYear(), currentDateCheck.getMonth()).then(() => {
-//      checkMonthChange();
-//      var elem = document.getElementById("checkMonthChangeProgressBar");
-//      var width = 1;
-//      ProgressBarInterval = setInterval(frame, 1000);
-//  function frame() {
-//    if (width >= 100) {
-//      checkMonthChange()
-//      width = 1;
-//      elem.style.width = width + "%";
-//    } else {
-//      width++;
-//      elem.style.width = width + "%";
-//    }
-//  }
-  });
+
+      updateUI(currentDateCheck.getFullYear(), currentDateCheck.getMonth());
       });
     }
   if (localStorage.getItem("storedMonth").toString() !== (currentDateCheck.getMonth()).toString()) {
     clearInterval(ProgressBarInterval);
     document.getElementById("checkMonthChangeProgressBar").style.width = 0 + "%"
+    document.querySelectorAll("dialog").forEach(dialog => {dialog.close();});
     try {
     namesData = JSON.parse(localStorage.getItem("namesData"));
     } catch (error) {
@@ -242,22 +249,8 @@ async function checkMonthChange() {
       localStorage.setItem("storedMonth", currentDateCheck.getMonth());
       localStorage.setItem("storedYear", currentDateCheck.getFullYear());
     
-    updateUI(currentDateCheck.getFullYear(), currentDateCheck.getMonth()).then(() => {
-//      checkMonthChange();
-//      var elem = document.getElementById("checkMonthChangeProgressBar");
-//      var width = 1;
-//      ProgressBarInterval = setInterval(frame, 1000);
-//  function frame() {
-//    if (width >= 100) {
-//      checkMonthChange()
-//      width = 1;
-//      elem.style.width = width + "%";
-//    } else {
-//      width++;
-//      elem.style.width = width + "%";
-//    }
-//  }
-  });
+    updateUI(currentDateCheck.getFullYear(), currentDateCheck.getMonth());
+
     });
   }
 }
@@ -569,6 +562,8 @@ function dialog(day, name, event) {
 
 async function PreloadSwichDate() {
 const names = await getAllNarvaroDBNames();
+
+if (names.length > 0){
 names.forEach(item => {
 const monthName = item.split(" ")[0];
 if (monthName && document.getElementById(`dialogSwichDateMonad_${monthName}`)) {
@@ -577,6 +572,13 @@ document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).style.curs
 document.getElementById(`dialogSwichDateMonad_${item.split(" ")[0]}`).onclick = function() {dialogSwichDateLoad(item,item.split(" ")[0])};
 }
 });
+}else{
+  document.querySelectorAll(".dialogButtonSwichDate").forEach(item => {
+      item.style.background = "gray";
+      item.style.cursor = "not-allowed";
+      item.onclick = function(){};
+  });
+}
 }
 
 //Dialog boxe Swich Date
@@ -799,7 +801,7 @@ async function clearAllData() {
   try {
   let this_Year = thisDate.getFullYear();
   let this_month = thisDate.getMonth();
-  isTemp = true;
+  autoUpdate = false;
 
     localStorage.clear();
     console.log("LocalStorage cleared");
@@ -807,10 +809,9 @@ async function clearAllData() {
     sessionStorage.clear();
     console.log("SessionStorage cleared");
 
-    await removeSpecificDB().then(async () => {
-    await  updateUI(this_Year, this_month).then(() => {
-        isTemp = false;
-      });
+    await removeDB().then(async () => {
+      autoUpdate = true;
+    await  updateUI(this_Year, this_month);
     });
 
     console.log("All data cleared successfully");

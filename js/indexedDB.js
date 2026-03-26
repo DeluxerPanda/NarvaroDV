@@ -142,14 +142,15 @@ async function getNarvaro(name) {
     });
 }
 
-async function removeSpecificDB() {
+async function removeDB() {
     const db = await openDB(false);
     
     db.close();
     
     return new Promise((resolve, reject) => {
     const request = indexedDB.deleteDatabase(DB_NAME);
-
+    clearDBCache();
+    
     request.onsuccess = () => {
       console.log("IndexedDB deleted");
       resolve(true);
