@@ -12,6 +12,16 @@ let day;
 let ProgressBarInterval;
 
 window.onload = function() {
+      if (navigator.serviceWorker) {
+      navigator.serviceWorker
+          // The register function takes as argument
+          // the file path to the worker's file
+          .register('../service_worker.js')
+          // Gives us registration object
+          .then(reg => console.log('Service Worker Registered'))
+          .catch(err => console.log(`Service Worker Installation Error: ${err}}`));
+};
+
   let this_Year = thisDate.getFullYear();
   let this_month = thisDate.getMonth();
 
@@ -161,12 +171,13 @@ function setTemp(value){
     setAutoUpdate(false);
     document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons"
         style="vertical-align:middle; font-size: 15px;">edit</i> Gå tillbaka`;
-    document.getElementById("MenuButtonDialogEditTopBar").onclick = function() 
+    document.getElementById("MenuButtonDialogEditTopBar").onclick = function()
     {
       for (let i = sessionStorage.length - 1; i >= 0; i--) {
             const key = sessionStorage.key(i);
             sessionStorage.removeItem(key);
       }
+      LoadingBarDialog.showModal();
       window.location = window.location;
 };
   }
@@ -756,15 +767,15 @@ function getJson() {
   output.push({ name_Group: storage.getItem("titelData") });
   for (let i = 0; i < names.length; i++) {
 //    let workDayArr = [];
-    let workDayArrOveride = [];
-    const daysInMonth = getAllDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
-    for (let j = 1; j <= daysInMonth.length; j++) {
-      if (storage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
-        workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + storage.getItem(`buttonData_${names[i]}_${j}_heldag`));
-      } else if (storage.getItem(`buttonData_${names[i]}_${j}_halvdag`) != null) {
-        workDayArrOveride.push(`buttonData_${names[i]}_${j}_halvdag:` + storage.getItem(`buttonData_${names[i]}_${j}_halvdag`));
-      }
-    }
+//    let workDayArrOveride = [];
+//    const daysInMonth = getAllDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
+//    for (let j = 1; j <= daysInMonth.length; j++) {
+//      if (storage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
+//        workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + storage.getItem(`buttonData_${names[i]}_${j}_heldag`));
+//      } else if (storage.getItem(`buttonData_${names[i]}_${j}_halvdag`) != null) {
+//        workDayArrOveride.push(`buttonData_${names[i]}_${j}_halvdag:` + storage.getItem(`buttonData_${names[i]}_${j}_halvdag`));
+//      }
+//    }
 //    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Mandag`));
 //    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Tisdag`));
 //    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Onsdag`));
@@ -774,7 +785,7 @@ function getJson() {
     output.push({
       name: names[i],
 //      arbetsDagar: workDayArr,
-      arbetsdagArrOveride: workDayArrOveride,
+//      arbetsdagArrOveride: workDayArrOveride,
     });
   }
 

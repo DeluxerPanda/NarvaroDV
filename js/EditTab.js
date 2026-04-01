@@ -391,6 +391,7 @@ function ButtonEditSwishToMain() {
   document.getElementById("MenuButtonFullScreen").style.display = "inline";
   document.getElementById("MenuButtonSwichDate").style.display = "inline";
   setAutoUpdate(true);
+  LoadingBarDialog.showModal();
   window.location = window.location;
 };
 

@@ -3,12 +3,11 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="robots" content="noindex,nofollow" />
-
+  <meta name="robots" content="noindex,nofollow,noarchive,nocache,nosnippet,noimageindex"/>
   <link rel="stylesheet" type="text/css" href="css/styles.css">
-  <link rel="stylesheet" href="css/loading.css" media="screen" />
+  <link rel="stylesheet" href="css/loading.css" media="screen"/>
   <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
-  <link rel="icon" href="#">
+  <link rel="icon" type="image/png-icon" href="#">
   <noscript>
     <title>JavaScript måste vara aktiverat</title>
   </noscript>
@@ -27,7 +26,7 @@
         style="vertical-align:middle; font-size: 15px;">print</i> Skriv ut</button>
 
             <button class="MenuButtons" id="MenuButtonDialogSaveAsJson" onclick="getJson()"><i class="material-icons"
-        style="vertical-align:middle; font-size: 15px;">save_as</i> Spara som json</button>
+        style="vertical-align:middle; font-size: 15px;">save_as</i> Spara deltagare som fil</button>
 
     <button class="MenuButtons" id="MenuButtonFullScreen" onclick="fullScreen()"><i class="material-icons"
         style="vertical-align:middle; font-size: 15px;">fullscreen</i> Fullskärmsläge</button>
@@ -64,7 +63,7 @@
 
       <div id="column"></div>
       <noscript class="viktigtMedelande">
-        <h1>Tyvärr, din webbläsare stöder inte JavaScript!</h1>
+        <h1>Tyvärr, din webbläsare måste ha JavaScript igång!</h1>
         <h2>JavaScript måste vara aktiverat för att denna applikation ska fungera korrekt.</h2>
       </noscript>
 
@@ -165,9 +164,6 @@
       <input type="file" class="file" id="real-file" hidden="hidden">
       <button type="button" class="dialogAddName" id="MenuButtonEditDialogAddByFile" onclick="uploadName()">Ladda
         deltagare ifrån fil</button>
-      <label for="file-upload" class="custom-file-upload">
-      </label>
-
     </div>
 
     <h2 class="menuTitelEditDialog" id="menuSubTitelEditDialog">Deltagare</h2>
