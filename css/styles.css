@@ -701,3 +701,6 @@ form button:hover,
   justify-content: center;
   width: fit-content;
 }
+.brake-page{
+    display: none;
+}

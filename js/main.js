@@ -1,6 +1,5 @@
 const LoadingBarDialog = document.getElementById("LoadingBarDialog");
 const Months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December"];
-const thisDate = new Date();
 let currentDate;
 let storage = localStorage;
 let autoUpdate = true;
@@ -21,7 +20,7 @@ window.onload = function() {
           .then(reg => console.log('Service Worker Registered'))
           .catch(err => console.log(`Service Worker Installation Error: ${err}}`));
 };
-
+  let thisDate = new Date();
   let this_Year = thisDate.getFullYear();
   let this_month = thisDate.getMonth();
 
@@ -54,6 +53,7 @@ const daysInMonth = getAllDaysInMonth(Year, Month);
   month = currentDate.getMonth();
   day = currentDate.getDate();
 document.getElementById("numer").innerHTML = "";
+
 
 if (localStorage.getItem("storedMonth") == undefined || localStorage.getItem("storedMonth") == null) {
   localStorage.setItem("storedMonth", month);
@@ -108,6 +108,7 @@ if (localStorage.getItem("storedYear") == undefined || localStorage.getItem("sto
   }
 
     document.getElementById("column").innerHTML = "";
+    clearInterval(ProgressBarInterval);
     main(namesData).then(() => {
         namesData.forEach(displayEditNameArry);
 if (autoUpdate) {
@@ -177,8 +178,11 @@ function setTemp(value){
             const key = sessionStorage.key(i);
             sessionStorage.removeItem(key);
       }
-      LoadingBarDialog.showModal();
-      window.location = window.location;
+      setTemp(false);
+      let thisDate = new Date();
+      let this_Year = thisDate.getFullYear();
+      let this_month = thisDate.getMonth();
+      updateUI(this_Year, this_month);
 };
   }
 }
@@ -274,16 +278,18 @@ async function main(namesData) {
     behavior: "smooth",
   });
   const checkDate =  new Date(currentDate);
+  let columnContainerCount = 0;
   names.sort((a, b) => a.localeCompare(b, 'sv'));
   // Build the entire HTML string at once instead of appending in loops
   let columnHTML = '';
   for (let i = 0; i < names.length; i++) {
+    columnContainerCount++;
     columnHTML += '<div class="nameContainer"><p class="name">' + names[i] + '</p></div>';
     const daysInMonth = getAllDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
     for (let j = 1; j <= daysInMonth.length; j++) {
       checkDate.setDate(j);
       //let dayName = currentDate.toLocaleDateString('sv-SE', { weekday: 'long' });
-
+      
       const redDay = isRedDay(j);
       const heldagClass = redDay ? 'Row-weekend' : 'Row-Heldag';
       const halvdagClass = redDay ? 'Row-weekend' : 'Row-Halvdag';
@@ -369,6 +375,10 @@ async function main(namesData) {
         '<a class="full-width-button" id="' + names[i] + '_' + j + '_halvdag" ' + onclick + '>' + buttonData_Halvdag + '</a>' +
         '</div>' +
         '</div>';
+
+    }
+    if (columnContainerCount == 16){
+          columnHTML += `<div class="brake-page"></div>`;
     }
     columnHTML += "<br>";
   }
@@ -810,6 +820,7 @@ function saveDataToAsFile(jsonString, monthName,name_Group) {
 
 async function clearAllData() {
   try {
+  let thisDate = new Date();
   let this_Year = thisDate.getFullYear();
   let this_month = thisDate.getMonth();
   autoUpdate = false;

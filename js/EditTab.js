@@ -391,8 +391,10 @@ function ButtonEditSwishToMain() {
   document.getElementById("MenuButtonFullScreen").style.display = "inline";
   document.getElementById("MenuButtonSwichDate").style.display = "inline";
   setAutoUpdate(true);
-  LoadingBarDialog.showModal();
-  window.location = window.location;
+  let thisDate = new Date();
+  let this_Year = thisDate.getFullYear();
+  let this_month = thisDate.getMonth();
+  updateUI(this_Year, this_month);
 };
 
 function checkMaxLength(input) {
