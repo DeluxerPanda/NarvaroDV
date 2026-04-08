@@ -24,12 +24,4 @@ if (document.fullscreenElement) {
   event.returnValue = '';
   event.return;
   }
-})
-
-window.onbeforeunload = (event) => {
-if (document.fullscreenElement) {
-  event.preventDefault();
-  event.returnValue = '';
-  event.return;
-  }
-}
+});

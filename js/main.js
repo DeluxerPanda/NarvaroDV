@@ -71,8 +71,8 @@ if (localStorage.getItem("storedYear") == undefined || localStorage.getItem("sto
   if (storage.getItem("titelData") == null || storage.getItem("titelData") == undefined) {
     storage.setItem("titelData", "Namnlös");
   }
-
-  document.getElementById("titelDataTitel").innerHTML = storage.getItem("titelData");
+  
+  document.getElementById("titelDataTitel").innerText = storage.getItem("titelData");
 
   document.getElementById("gruppEditContainer").innerHTML =
     '<input type="text" maxlength="50" oninput="checkMaxLength(this)" id="grupp_NameInput" placeholder="Gruppens namn" value="' + storage.getItem("titelData") + '" class="gruppEditItem"></input>';
@@ -106,8 +106,6 @@ if (localStorage.getItem("storedYear") == undefined || localStorage.getItem("sto
       LoadingBarDialog.close();
     return;
   }
-
-    document.getElementById("column").innerHTML = "";
     clearInterval(ProgressBarInterval);
     main(namesData).then(() => {
         namesData.forEach(displayEditNameArry);
@@ -288,19 +286,31 @@ async function main(namesData) {
     const daysInMonth = getAllDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
     for (let j = 1; j <= daysInMonth.length; j++) {
       checkDate.setDate(j);
+
+        const escapedElement = names[i]
+        .replace(/\\/g, '\\\\')   // Escape backslash first
+        .replace(/'/g, "\\'")     // Escape single quotes
+        .replace(/"/g, '\\"')     // Escape double quotes
+        .replace(/\n/g, '\\n')    // Escape newline
+        .replace(/\r/g, '\\r')    // Escape carriage return
+        .replace(/\t/g, '\\t')    // Escape tab
+        .replace(/\b/g, '\\b')    // Escape backspace
+        .replace(/\f/g, '\\f')    // Escape form feed
+        .replace(/\v/g, '\\v')    // Escape vertical tab
+        .replace(/\0/g, '\\0');   // Escape null character
+      let buttonData_Halvdag = "&nbsp;";
+      let buttonData_Heldag = "&nbsp;";
       //let dayName = currentDate.toLocaleDateString('sv-SE', { weekday: 'long' });
-      
+
       const redDay = isRedDay(j);
       const heldagClass = redDay ? 'Row-weekend' : 'Row-Heldag';
       const halvdagClass = redDay ? 'Row-weekend' : 'Row-Halvdag';
+      const onclick = redDay ? '' : `onclick="dialog(${j}, '${escapedElement}', event)"`;
 
-      const onclick = redDay ? '' : `onclick="dialog(${j}, '${names[i]}', event)"`;
-      let buttonData_Halvdag = "&nbsp;";
-      let buttonData_Heldag = "&nbsp;";
-        if (storage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != undefined || storage.getItem("buttonData_" + names[i] + "_" + j + "_heldag") != null) {
-          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_" + j + "_heldag");
-        } else if (storage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != undefined || storage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag") != null) {
-          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_" + j + "_halvdag");
+        if (storage.getItem("buttonData_" + escapedElement + "_" + j + "_heldag") != undefined || storage.getItem("buttonData_" + escapedElement + "_" + j + "_heldag") != null) {
+          buttonData_Heldag = storage.getItem("buttonData_" + escapedElement + "_" + j + "_heldag");
+        } else if (storage.getItem("buttonData_" + escapedElement + "_" + j + "_halvdag") != undefined || storage.getItem("buttonData_" + escapedElement + "_" + j + "_halvdag") != null) {
+          buttonData_Halvdag = storage.getItem("buttonData_" + escapedElement + "_" + j + "_halvdag");
         } //else {
   //    if (dayName == "måndag") {
   //      if (storage.getItem("buttonData_" + names[i] + "_Mandag") == null || storage.getItem("buttonData_" + names[i] + "_Mandag") == undefined) {
@@ -369,10 +379,10 @@ async function main(namesData) {
       columnHTML +=
         '<div class="Row">' +
         '<div class="' + heldagClass + '">' +
-        '<a class="full-width-button" id="' + names[i] + '_' + j + '_heldag"' + onclick + '>' + buttonData_Heldag + '</a>' +
+        '<a class="full-width-button" id="' + escapedElement + '_' + j + '_heldag"' + onclick + '>' + buttonData_Heldag + '</a>' +
         '</div><br>' +
         '<div class="' + halvdagClass + '">' +
-        '<a class="full-width-button" id="' + names[i] + '_' + j + '_halvdag" ' + onclick + '>' + buttonData_Halvdag + '</a>' +
+        '<a class="full-width-button" id="' + escapedElement + '_' + j + '_halvdag" ' + onclick + '>' + buttonData_Halvdag + '</a>' +
         '</div>' +
         '</div>';
 
@@ -757,10 +767,10 @@ async function lssave(jsonData, monthName, name_Group) {
 
   storage.setItem("namesData", JSON.stringify(namesData));
   document.getElementById("nameEditContainer").innerHTML = "";
-  document.getElementById("column").innerHTML = "";
 
   if (namesData.length === 0) {
     document.getElementById("column").innerHTML = "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>";
+      document.getElementById("column").innerHTML = "";
     LoadingBarDialog.close();
   } else {
       document.getElementById("column").innerHTML = "";

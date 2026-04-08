@@ -1,20 +1,47 @@
 function displayEditNameArry(element, index) {
+  const escapedElement = element
+  .replace(/\\/g, '\\\\')   // Escape backslash first
+  .replace(/'/g, "\\'")     // Escape single quotes
+  .replace(/"/g, '\\"')     // Escape double quotes
+  .replace(/\n/g, '\\n')    // Escape newline
+  .replace(/\r/g, '\\r')    // Escape carriage return
+  .replace(/\t/g, '\\t')    // Escape tab
+  .replace(/\b/g, '\\b')    // Escape backspace
+  .replace(/\f/g, '\\f')    // Escape form feed
+  .replace(/\v/g, '\\v')    // Escape vertical tab
+  .replace(/\0/g, '\\0');   // Escape null character
   document.getElementById("nameEditContainer").innerHTML += `
-        <div id="inputContainer_${index}" style="display: flex; align-items: center; justify-content: center; width: max-content; margin-inline: auto; margin-bottom: 10px; padding: 10px; border-radius: 25px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
-          <p class="nameEditItem">${element}</p>
-          <button class="editNameInArray material-icons" onclick="createNameEdit(${index}, '${element}')"><i class="material-icons" style="vertical-align:middle; font-size: 2rem;">settings</i></button>
-          <button class="removeNameInArray" onclick="removeNameInArray(${index}, '${element}')"><i class="material-icons" style="vertical-align:middle; font-size: 2rem;">delete</i></button>
-        </div>`;
+    <div id="inputContainer_${index}" style="display: flex; align-items: center; justify-content: center; width: max-content; margin-inline: auto; margin-bottom: 10px; padding: 10px; border-radius: 25px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
+      <p class="nameEditItem">${element}</p>
+      <button class="editNameInArray material-icons"
+        onclick="createNameEdit(${index}, '${escapedElement}')">
+        <i class="material-icons" style="vertical-align:middle; font-size: 2rem;">settings</i>
+      </button>
+      <button class="removeNameInArray"
+        onclick="removeNameInArray(${index}, '${escapedElement}')">
+        <i class="material-icons" style="vertical-align:middle; font-size: 2rem;">delete</i>
+      </button>
+    </div>`;
 }
 
 function removeNameInArray(index, element) {
-
+  const escapedElement = element
+  .replace(/\\/g, '\\\\')   // Escape backslash first
+  .replace(/'/g, "\\'")     // Escape single quotes
+  .replace(/"/g, '\\"')     // Escape double quotes
+  .replace(/\n/g, '\\n')    // Escape newline
+  .replace(/\r/g, '\\r')    // Escape carriage return
+  .replace(/\t/g, '\\t')    // Escape tab
+  .replace(/\b/g, '\\b')    // Escape backspace
+  .replace(/\f/g, '\\f')    // Escape form feed
+  .replace(/\v/g, '\\v')    // Escape vertical tab
+  .replace(/\0/g, '\\0');   // Escape null character
   if (index != "undefined" && index > -1) {
     if (confirm("Vill du verkligen ta bort " + element + "? \nAll närvaro för " + element + " kommer att försvinna!")) {
       namesData.splice(index, 1);
       document.getElementById("nameEditContainer").innerHTML = "";
       for (var key in localStorage) {
-        if (key.startsWith("buttonData_" + element + "_")) {
+        if (key.startsWith("buttonData_" + escapedElement + "_")) {
           localStorage.removeItem(key);
         }
       }
@@ -52,6 +79,8 @@ function createName() {
 
 const realFileBtn = document.getElementById("real-file");
 const customBtn = document.getElementById("MenuButtonEditDialogAddByFile");
+
+customBtn.addEventListener("click", uploadName);
 
 function uploadName() {
   realFileBtn.accept = ".json";
@@ -102,10 +131,14 @@ function createNameEdit(index, name) {
   form.onsubmit = function (event) {
     event.preventDefault();
     const newNameInput = document.getElementById("newNameInput");
-    if (newNameInput.value.trim().length === 0) {
+      if (newNameInput.value.trim().length === 0) {
       alert("Namnet kan inte vara tomt.");
       return;
+    }else if (newNameInput.value.length > newNameInput.maxLength) {
+      alert(`Namnet är för långt, max ${newNameInput.maxLength} tecken.`);
+      return;
     }
+  
     editNameInArray(index, name);
   };
 
@@ -178,14 +211,14 @@ function addNameInArray() {
 //  const Fredag = document.getElementById("Fredag");
 const exists = namesData.find(item => item === newNameInput.value) !== undefined;
   if (exists === false) {
-    if (newNameInput.value.length === 0) {
+      if (newNameInput.value.trim().length === 0) {
       alert("Namnet kan inte vara tomt.");
       return;
-    }
-    if (newNameInput.value.length > newNameInput.maxLength) {
+    }else if (newNameInput.value.length > newNameInput.maxLength) {
       alert(`Namnet är för långt, max ${newNameInput.maxLength} tecken.`);
       return;
     }
+    
     let id_name = newNameInput.value.toUpperCase();
     createNameCancel();
     namesData.push(id_name);
@@ -361,7 +394,7 @@ function dialogEditTopBar() {
   document.getElementById("gruppEditContainer").style.display = "block";
   document.getElementById("AddNames").style.display = "block";
   document.getElementById("ladda_deltagare_eller").style.display = "inline";
-  document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i> Spara och gå tillbaka`;
+  document.getElementById("MenuButtonDialogEditTopBar").innerHTML = '<i class="material-icons" style="vertical-align:middle; font-size: 15px;">arrow_back</i> Spara och gå tillbaka';
   document.getElementById("MenuButtonDialogEditTopBar").onclick = ButtonEditSwishToMain;
   document.getElementById("MenuButtonDialogSaveAsJson").style.display = "inline";
   document.getElementById("MenuButtonDialogPrint").style.display = "none";
@@ -384,12 +417,13 @@ function ButtonEditSwishToMain() {
   localStorage.setItem("namesData", JSON.stringify(namesData));
   document.getElementById("layoutMain").style.display = "block";
   document.getElementById("layoutEdit").style.display = "none";
-  document.getElementById("MenuButtonDialogEditTopBar").innerHTML = `<i class="material-icons" style="vertical-align:middle; font-size: 15px;">edit</i> Redigera deltagare`;
+  document.getElementById("MenuButtonDialogEditTopBar").innerHTML = '<i class="material-icons" style="vertical-align:middle; font-size: 15px;">edit</i> Redigera deltagare';
   document.getElementById("MenuButtonDialogEditTopBar").onclick = dialogEditTopBar;
   document.getElementById("MenuButtonDialogSaveAsJson").style.display = "none";
   document.getElementById("MenuButtonDialogPrint").style.display = "inline";
   document.getElementById("MenuButtonFullScreen").style.display = "inline";
   document.getElementById("MenuButtonSwichDate").style.display = "inline";
+  document.getElementById("nameEditContainer").innerHTML = "";
   setAutoUpdate(true);
   let thisDate = new Date();
   let this_Year = thisDate.getFullYear();

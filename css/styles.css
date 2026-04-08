@@ -99,7 +99,7 @@ button {
 
 #checkMonthChangeProgressBar {
   width: 1%;
-  height: 20px;
+  height: 8px;
   background-color: #5e81ac;
   border-radius: 8px;
   transition: width 1s linear;
@@ -414,6 +414,7 @@ input[type=button]::-moz-focus-inner {
   color: white;
   font-weight: 900;
   font-size: large;
+  cursor: pointer;
 }
 
 .dialogAddName:hover {
@@ -555,7 +556,7 @@ input[type=button]::-moz-focus-inner {
 }
 
 #menuTopButtons {
-  margin-top: 10px;
+  margin-top: 2px;
   margin-bottom: 10px;
 }
 

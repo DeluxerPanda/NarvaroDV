@@ -5,10 +5,21 @@ let cachedDB = null;
 
 // Dynamically get current store name based on localStorage
 function getStoreName() {
-  const year = localStorage.getItem("storedYear");
-  const month = localStorage.getItem("storedMonth");
-  const date = new Date(year, month);
-  return `${date.toLocaleString("sv-SE", { month: "long" })} ${year}`;
+  let year = localStorage.getItem("storedYear");
+  let month = localStorage.getItem("storedMonth");
+  
+    if (localStorage.getItem("storedMonth") == null || (localStorage.getItem("storedYear") == null)) {
+
+        let thisDate = new Date();
+        year = thisDate.getFullYear();
+        month = thisDate.getMonth();
+
+        localStorage.setItem("storedMonth", month);
+        localStorage.setItem("storedYear", year);  
+      }
+
+      const date = new Date(year, month);
+    return `${date.toLocaleString("sv-SE", { month: "long" })} ${year}`;
 }
 
 // Get or increment the DB version counter
