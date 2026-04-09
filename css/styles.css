@@ -320,7 +320,7 @@ input[type=button]::-moz-focus-inner {
 .dialogButton_L {
   border-radius: 8px;
   text-align: center;
-  background-color: orange;
+  background-color: hsl(39, 100%, 45%);
   color: white;
   font-weight: 900;
   height: 100px;
@@ -328,7 +328,7 @@ input[type=button]::-moz-focus-inner {
 }
 
 .dialogButton_L:hover {
-  background-color: darkorange;
+  background-color: hsl(33, 100%, 45%);
 }
 
 .dialogButton_S {

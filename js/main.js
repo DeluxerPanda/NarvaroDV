@@ -10,6 +10,16 @@ let month;
 let day;
 let ProgressBarInterval;
 
+function EscapeString(string) {
+          const escapedElement = string
+        .replace(/\\/g, '\\\\')   // Escape backslash first
+        .replace(/'/g, "\\'")     // Escape single quotes
+        .replace(/"/g, '\\"')     // Escape double quotes
+        .replace(/\r/g, '\\r')    // Escape carriage return
+        .replace(/\0/g, '\\0');   // Escape null character
+        return escapedElement;
+}
+
 window.onload = function() {
       if (navigator.serviceWorker) {
       navigator.serviceWorker
@@ -228,12 +238,13 @@ async function checkMonthChange() {
     for (let i = 0; i < names.length; i++) {
 //      let workDayArr = [];
       let workDayArrOveride = [];
+      let escapedName = EscapeString(names[i]);
       const daysInMonth = getAllDaysInMonth(currentDateCheck.getFullYear(), currentDateCheck.getMonth());
         for (let j = 1; j <= daysInMonth.length; j++) {
-        if (localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
-          workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + localStorage.getItem(`buttonData_${names[i]}_${j}_heldag`));
-        } else if (localStorage.getItem(`buttonData_${names[i]}_${j}_halvdag`) != null) {
-          workDayArrOveride.push(`buttonData_${names[i]}_${j}_halvdag:` + localStorage.getItem(`buttonData_${names[i]}_${j}_halvdag`));
+        if (localStorage.getItem(`buttonData_${escapedName}_${j}_heldag`) != null) {
+          workDayArrOveride.push(`buttonData_${escapedName}_${j}_heldag:` + localStorage.getItem(`buttonData_${escapedName}_${j}_heldag`));
+        } else if (localStorage.getItem(`buttonData_${escapedName}_${j}_halvdag`) != null) {
+          workDayArrOveride.push(`buttonData_${escapedName}_${j}_halvdag:` + localStorage.getItem(`buttonData_${escapedName}_${j}_halvdag`));
         }
       }
 //      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Mandag`));
@@ -268,6 +279,7 @@ async function checkMonthChange() {
   }
 }
 }
+
 async function main(namesData) {
   let names = namesData;
   window.scrollTo({
@@ -286,18 +298,7 @@ async function main(namesData) {
     const daysInMonth = getAllDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
     for (let j = 1; j <= daysInMonth.length; j++) {
       checkDate.setDate(j);
-
-        const escapedElement = names[i]
-        .replace(/\\/g, '\\\\')   // Escape backslash first
-        .replace(/'/g, "\\'")     // Escape single quotes
-        .replace(/"/g, '\\"')     // Escape double quotes
-        .replace(/\n/g, '\\n')    // Escape newline
-        .replace(/\r/g, '\\r')    // Escape carriage return
-        .replace(/\t/g, '\\t')    // Escape tab
-        .replace(/\b/g, '\\b')    // Escape backspace
-        .replace(/\f/g, '\\f')    // Escape form feed
-        .replace(/\v/g, '\\v')    // Escape vertical tab
-        .replace(/\0/g, '\\0');   // Escape null character
+      let escapedElement = EscapeString(names[i]);
       let buttonData_Halvdag = "&nbsp;";
       let buttonData_Heldag = "&nbsp;";
       //let dayName = currentDate.toLocaleDateString('sv-SE', { weekday: 'long' });
@@ -855,4 +856,3 @@ async function clearAllData() {
     return false;
   }
 }
-

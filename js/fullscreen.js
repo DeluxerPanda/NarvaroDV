@@ -1,4 +1,3 @@
-
 const elem = document.getElementById("layoutMain");
 function fullScreen() {
     if (document.fullscreenElement) {
@@ -8,7 +7,6 @@ function fullScreen() {
     }
     document.getElementById("MenuButtonExitFullScreen").style.display = "block";
     elem.requestFullscreen();
-
 }
 
 document.addEventListener("fullscreenchange", (event) => {
@@ -25,3 +23,4 @@ if (document.fullscreenElement) {
   event.return;
   }
 });
+

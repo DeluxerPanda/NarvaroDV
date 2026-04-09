@@ -1,15 +1,5 @@
 function displayEditNameArry(element, index) {
-  const escapedElement = element
-  .replace(/\\/g, '\\\\')   // Escape backslash first
-  .replace(/'/g, "\\'")     // Escape single quotes
-  .replace(/"/g, '\\"')     // Escape double quotes
-  .replace(/\n/g, '\\n')    // Escape newline
-  .replace(/\r/g, '\\r')    // Escape carriage return
-  .replace(/\t/g, '\\t')    // Escape tab
-  .replace(/\b/g, '\\b')    // Escape backspace
-  .replace(/\f/g, '\\f')    // Escape form feed
-  .replace(/\v/g, '\\v')    // Escape vertical tab
-  .replace(/\0/g, '\\0');   // Escape null character
+let escapedElement = EscapeString(element);
   document.getElementById("nameEditContainer").innerHTML += `
     <div id="inputContainer_${index}" style="display: flex; align-items: center; justify-content: center; width: max-content; margin-inline: auto; margin-bottom: 10px; padding: 10px; border-radius: 25px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
       <p class="nameEditItem">${element}</p>
@@ -25,17 +15,7 @@ function displayEditNameArry(element, index) {
 }
 
 function removeNameInArray(index, element) {
-  const escapedElement = element
-  .replace(/\\/g, '\\\\')   // Escape backslash first
-  .replace(/'/g, "\\'")     // Escape single quotes
-  .replace(/"/g, '\\"')     // Escape double quotes
-  .replace(/\n/g, '\\n')    // Escape newline
-  .replace(/\r/g, '\\r')    // Escape carriage return
-  .replace(/\t/g, '\\t')    // Escape tab
-  .replace(/\b/g, '\\b')    // Escape backspace
-  .replace(/\f/g, '\\f')    // Escape form feed
-  .replace(/\v/g, '\\v')    // Escape vertical tab
-  .replace(/\0/g, '\\0');   // Escape null character
+let escapedElement = EscapeString(element);
   if (index != "undefined" && index > -1) {
     if (confirm("Vill du verkligen ta bort " + element + "? \nAll närvaro för " + element + " kommer att försvinna!")) {
       namesData.splice(index, 1);

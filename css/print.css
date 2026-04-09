@@ -1,15 +1,11 @@
 body {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    zoom: 80%;
-    margin: 0;
-    padding: 0;
 }
 
 @page {
     size: a4 landscape;
     margin: 0;
-    padding: 0;
 }
 
 .dont-print-that {
@@ -21,7 +17,7 @@ body {
 }
 
 .brake-page{
-    margin-top: 60px;
+    padding-top: 66px;
     display: block;
-    break-before: page; 
+    break-before: page;
 }
