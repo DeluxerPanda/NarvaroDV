@@ -56,14 +56,15 @@ window.onload = function() {
 }
 
 async function updateUI(Year, Month) {
-const daysInMonth = getAllDaysInMonth(Year, Month);
+  const daysInMonth = getAllDaysInMonth(Year, Month);
   LoadingBarDialog.showModal();
   currentDate = new Date(Year, Month);
   year = currentDate.getFullYear();
   month = currentDate.getMonth();
   day = currentDate.getDate();
-document.getElementById("numer").innerHTML = "";
 
+  document.getElementById("numer").innerHTML = "";
+  document.getElementById("column").innerHTML = "";
 
 if (localStorage.getItem("storedMonth") == undefined || localStorage.getItem("storedMonth") == null) {
   localStorage.setItem("storedMonth", month);
@@ -99,20 +100,20 @@ if (localStorage.getItem("storedYear") == undefined || localStorage.getItem("sto
       '</span>';
   }
 
-  if (storage.getItem("namesData") == null || storage.getItem("namesData") == undefined || storage.getItem("namesData").length === 0) {
-    document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>"
+  if (storage.getItem("namesData") == null || storage.getItem("namesData").length === 0) {
+    document.getElementById("column").innerHTML = "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>";
     LoadingBarDialog.close();
     return;
   }
 
-    try {
-  namesData = JSON.parse(storage.getItem("namesData"));
-    } catch (error) {
-      alert("Fel vid parsning av JSON. Se console för mer info.");
-      console.error("Fel vid parsning av JSON:", error);
-    }
+  try {
+    namesData = JSON.parse(storage.getItem("namesData"));
+  } catch (error) {
+    alert("Fel vid parsning av JSON. Se console för mer info.");
+    console.error("Fel vid parsning av JSON:", error);
+  }
   if (namesData == null || namesData == undefined || namesData.length === 0) {
-      document.getElementById("column").innerHTML += "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>"
+      document.getElementById("column").innerHTML = "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>";
       LoadingBarDialog.close();
     return;
   }
@@ -196,7 +197,6 @@ function setTemp(value){
 }
 
 async function checkMonthChange() {
-  console.log("checkMonthChange called");
   if (autoUpdate) {
     const currentDateCheck = new Date();
     if (localStorage.getItem("storedYear").toString() !== currentDateCheck.getFullYear().toString()) {
@@ -771,10 +771,9 @@ async function lssave(jsonData, monthName, name_Group) {
 
   if (namesData.length === 0) {
     document.getElementById("column").innerHTML = "<h1>Inga namn hittades</h1><h2>Klicka på <br> redigera deltagare</h2>";
-      document.getElementById("column").innerHTML = "";
     LoadingBarDialog.close();
   } else {
-      document.getElementById("column").innerHTML = "";
+      document.getElementById("column").innerHTML = " ";
       main(namesData).then(() => {
         namesData.forEach(displayEditNameArry);
       });

@@ -1,60 +1,56 @@
-var cacheName = 'narvarodv-cache-v1';
-//var cacheAssets = [
-//    'css/loading.css',
-//    'css/print.css',
-//    'css/styles.css',
-//    'js/EditTab.js',
-//    'js/fullscreen.js',
-//    'js/indexedDB.js',
-//    'js/main.js',
-//    'js/print.js',
-//    'index.html'
-//];
+const CACHE_NAME = 'narvarodv-cache-v1';
+const ASSETS_TO_CACHE = [
+  '/',
+  '/index.html',
+  '/css/styles.css',
+  '/css/loading.css',
+  '/css/print.css',
+  '/js/main.js',
+  '/js/EditTab.js',
+  '/js/indexedDB.js',
+  '/js/print.js',
+  '/js/fullscreen.js'
+];
 
-
-self.addEventListener('install', e => {
-    console.log('Service Worker: installing');
-//    e.waitUntil(
-//        caches.open(cacheName)
-//        .then(cache => {
-//            console.log(`Service Worker: Caching Files: ${cache}`);
-//            cache.addAll(cacheAssets)
-//                // When everything is set
-//                .then(() => self.skipWaiting())
-//        })
-//    );
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(ASSETS_TO_CACHE))
+      .then(() => self.skipWaiting())
+  );
 });
 
-// Call Activate Event
-self.addEventListener('activate', e => {
-    console.log('Service Worker: Activated');
-    e.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(
-                    cache => {
-                        if (cache !== cacheName) {
-                            console.log('Service Worker: Clearing Old Cache');
-                            return caches.delete(cache);
-                        }
-                    }
-                )
-            )
-        })
-    );
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys =>
+        Promise.all(
+          keys.map(key => key !== CACHE_NAME ? caches.delete(key) : null)
+        )
+      )
+      .then(() => self.clients.claim())
+  );
 });
 
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
 
-self.addEventListener('fetch', e => {
-    console.log('Service Worker: Fetching');
-    e.respondWith(
-        fetch(e.request)
-        .then(res => {
-            const resColne = res.clone();
-            caches.open(cacheName).then(cache => {
-                cache.put(e.request, resColne);
-            });
-            return res;
-        }).catch(err => caches.match(e.request).then(res => res))
-    );
+  event.respondWith(
+    caches.match(event.request)
+      .then(cached => {
+        if (cached) return cached;
+
+        return fetch(event.request)
+          .then(response => {
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseClone));
+            return response;
+          });
+      })
+      .catch(() => caches.match('/index.html'))
+  );
 });

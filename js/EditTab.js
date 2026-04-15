@@ -61,11 +61,13 @@ const realFileBtn = document.getElementById("real-file");
 const customBtn = document.getElementById("MenuButtonEditDialogAddByFile");
 
 customBtn.addEventListener("click", uploadName);
+realFileBtn.addEventListener("change", uploadHandler);
 
 function uploadName() {
   realFileBtn.accept = ".json";
   realFileBtn.click();
-  realFileBtn.addEventListener("change", function () {
+};
+function uploadHandler() {
     const file = document.querySelector('.file').files[0];
     if (!file || file.type !== 'application/json') {
       alert('Only JSON files are allowed.');
@@ -85,8 +87,7 @@ function uploadName() {
     }
     }
     fileReader.readAsText(file);
-  });
-}
+  };
 
 function createNameEdit(index, name) {
   const newNameInput = document.getElementById("newNameInput");
