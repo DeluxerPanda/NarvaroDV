@@ -14,6 +14,7 @@ function EscapeString(string) {
           const escapedElement = string
         .replace(/\\/g, '\\\\')   // Escape backslash first
         .replace(/'/g, "\\'")     // Escape single quotes
+        .replace(/"/g, '&quot;') // Escape double quotes
         .replace(/"/g, '\\"')     // Escape double quotes
         .replace(/\r/g, '\\r')    // Escape carriage return
         .replace(/\0/g, '\\0');   // Escape null character
@@ -388,7 +389,7 @@ async function main(namesData) {
         '</div>';
 
     }
-    if (columnContainerCount == 16){
+    if (columnContainerCount >= 15){
           columnHTML += `<div class="brake-page"></div>`;
     }
     columnHTML += "<br>";

@@ -1,23 +1,30 @@
 body {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    page-break-inside: avoid;
+    page-break-after: avoid;
+    break-inside: avoid;
+    padding: 0;
+    margin: 0;
 }
 
 @page {
     size: a4 landscape;
     margin: 0;
+    padding-top: 1.4cm;
+    padding-bottom: 1.4cm;
+    padding-inline: 1cm;
 }
 
 .dont-print-that {
     display: none;
 }
 
-.title-container {
-    padding-top: 55px;
+.title-container{
+    padding: 0;
 }
 
-.brake-page{
-    padding-top: 66px;
-    display: block;
-    break-before: page;
+
+main{
+    padding: 0;
 }
