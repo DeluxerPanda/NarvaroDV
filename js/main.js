@@ -22,7 +22,14 @@ function EscapeString(string) {
 }
 
 window.onload = function() {
-      if (navigator.serviceWorker) {
+if (!navigator.userAgent.includes("Chrome") && !localStorage.getItem("useUnSupportedBrowser")) {
+  document.getElementById("NotSupportedBrowser").style.display = "block";
+  document.getElementById("menuTopButtons").style.visibility = "hidden";
+  document.querySelector(".title-container").style.visibility = "hidden";
+  document.getElementById("checkMonthChangeProgressBar").style.visibility = "hidden";
+  return;
+}
+      if (!navigator.serviceWorker) {
       navigator.serviceWorker
           // The register function takes as argument
           // the file path to the worker's file
@@ -855,4 +862,9 @@ async function clearAllData() {
     console.error("Error clearing data:", error);
     return false;
   }
+}
+
+function useUnSupportedBrowser() {
+localStorage.setItem("useUnSupportedBrowser", "true");
+window.location.reload();
 }

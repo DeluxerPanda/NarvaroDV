@@ -554,6 +554,19 @@ input[type=button]::-moz-focus-inner {
   text-align: center;
   font-weight: bold;
 }
+.viktigtMedelande a {
+  color: white;
+  text-decoration: underline;
+}
+.viktigtMedelande a:hover {
+  color: #bfb9b9;
+}
+.viktigtMedelande h2 {
+  padding-inline: 20px;
+}
+#useUnSupportedBrowserButton{
+font-size: larger;
+}
 
 #menuTopButtons {
   margin-top: 2px;
