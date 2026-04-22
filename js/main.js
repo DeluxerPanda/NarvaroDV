@@ -29,14 +29,14 @@ if (!navigator.userAgent.includes("Chrome") && !localStorage.getItem("useUnSuppo
   document.getElementById("checkMonthChangeProgressBar").style.visibility = "hidden";
   return;
 }
-      if (!navigator.serviceWorker) {
+      if (navigator.serviceWorker) {
       navigator.serviceWorker
           // The register function takes as argument
           // the file path to the worker's file
           .register('../service_worker.js')
           // Gives us registration object
           .then(reg => console.log('Service Worker Registered'))
-          .catch(err => console.log(`Service Worker Installation Error: ${err}}`));
+          .catch(err => console.log(`Service Worker Installation Error: ${err}`));
 };
   let thisDate = new Date();
   let this_Year = thisDate.getFullYear();
@@ -244,23 +244,18 @@ async function checkMonthChange() {
     output.push({ name_Group: localStorage.getItem("titelData") });
     if (names !== null && names !== undefined && names.length > 0) {
     for (let i = 0; i < names.length; i++) {
-//      let workDayArr = [];
+
       let workDayArrOveride = [];
       let escapedName = EscapeString(names[i]);
       const daysInMonth = getAllDaysInMonth(currentDateCheck.getFullYear(), currentDateCheck.getMonth());
         for (let j = 1; j <= daysInMonth.length; j++) {
         if (localStorage.getItem(`buttonData_${escapedName}_${j}_heldag`) != null) {
           workDayArrOveride.push(`buttonData_${escapedName}_${j}_heldag:` + localStorage.getItem(`buttonData_${escapedName}_${j}_heldag`));
-        } else if (localStorage.getItem(`buttonData_${escapedName}_${j}_halvdag`) != null) {
+        }
+        if (localStorage.getItem(`buttonData_${escapedName}_${j}_halvdag`) != null) {
           workDayArrOveride.push(`buttonData_${escapedName}_${j}_halvdag:` + localStorage.getItem(`buttonData_${escapedName}_${j}_halvdag`));
         }
       }
-//      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Mandag`));
-//      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Tisdag`));
-//      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Onsdag`));
-//      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Torsdag`));
-//      workDayArr.push(localStorage.getItem(`buttonData_${names[i]}_Fredag`));
-//        arbetsDagar: workDayArr,
       output.push({
         name: names[i],
         arbetsdagArrOveride: workDayArrOveride,
@@ -309,7 +304,6 @@ async function main(namesData) {
       let escapedElement = EscapeString(names[i]);
       let buttonData_Halvdag = "&nbsp;";
       let buttonData_Heldag = "&nbsp;";
-      //let dayName = currentDate.toLocaleDateString('sv-SE', { weekday: 'long' });
 
       const redDay = isRedDay(j);
       const heldagClass = redDay ? 'Row-weekend' : 'Row-Heldag';
@@ -318,73 +312,11 @@ async function main(namesData) {
 
         if (storage.getItem("buttonData_" + escapedElement + "_" + j + "_heldag") != undefined || storage.getItem("buttonData_" + escapedElement + "_" + j + "_heldag") != null) {
           buttonData_Heldag = storage.getItem("buttonData_" + escapedElement + "_" + j + "_heldag");
-        } else if (storage.getItem("buttonData_" + escapedElement + "_" + j + "_halvdag") != undefined || storage.getItem("buttonData_" + escapedElement + "_" + j + "_halvdag") != null) {
+        }
+        if (storage.getItem("buttonData_" + escapedElement + "_" + j + "_halvdag") != undefined || storage.getItem("buttonData_" + escapedElement + "_" + j + "_halvdag") != null) {
           buttonData_Halvdag = storage.getItem("buttonData_" + escapedElement + "_" + j + "_halvdag");
-        } //else {
-  //    if (dayName == "måndag") {
-  //      if (storage.getItem("buttonData_" + names[i] + "_Mandag") == null || storage.getItem("buttonData_" + names[i] + "_Mandag") == undefined) {
-  //        buttonData_Heldag = "&nbsp;";
-  //      } else {
-  //        if (storage.getItem("buttonData_" + names[i] + "_Mandag") == "HE") {
-  //          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_Mandag");
-  //        } else {
-  //          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_Mandag");
-  //        }
-  //      }
-  //    }
-  //    if (dayName == "tisdag") {
-  //      if (storage.getItem("buttonData_" + names[i] + "_Tisdag") == null || storage.getItem("buttonData_" + names[i] + "_Tisdag") == undefined) {
-  //        buttonData_Heldag = "&nbsp;"
-  //      }
-  //      else {
-  //        if (storage.getItem("buttonData_" + names[i] + "_Tisdag") == "HE") {
-  //          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_Tisdag");
-  //        }
-  //        else {
-  //          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_Tisdag");
-  //        }
-  //      }
-  //    }
-  //    if (dayName == "onsdag") {
-  //      if (storage.getItem("buttonData_" + names[i] + "_Onsdag") == null || storage.getItem("buttonData_" + names[i] + "_Onsdag") == undefined) {
-  //        buttonData_Heldag = "&nbsp;"
-  //      }
-  //      else {
-  //        if (storage.getItem("buttonData_" + names[i] + "_Onsdag") == "HE") {
-  //          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_Onsdag");
-  //        }
-  //        else {
-  //          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_Onsdag");
-  //        }
-  //      }
-  //    }
-  //    if (dayName == "torsdag") {
-  //      if (storage.getItem("buttonData_" + names[i] + "_Torsdag") == null || storage.getItem("buttonData_" + names[i] + "_Torsdag") == undefined) {
-  //        buttonData_Heldag = "&nbsp;"
-  //      }
-  //      else {
-  //        if (storage.getItem("buttonData_" + names[i] + "_Torsdag") == "HE") {
-  //          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_Torsdag");
-  //        }
-  //        else {
-  //          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_Torsdag");
-  //        }
-  //      }
-  //    }
-  //    if (dayName == "fredag") {
-  //      if (storage.getItem("buttonData_" + names[i] + "_Fredag") == null || storage.getItem("buttonData_" + names[i] + "_Fredag") == undefined) {
-  //        buttonData_Heldag = "&nbsp;"
-  //      }
-  //      else {
-  //        if (storage.getItem("buttonData_" + names[i] + "_Fredag") == "HE") {
-  //          buttonData_Heldag = storage.getItem("buttonData_" + names[i] + "_Fredag");
-  //        }
-  //        else {
-  //          buttonData_Halvdag = storage.getItem("buttonData_" + names[i] + "_Fredag");
-  //        }
-  //      }
-  //    }
-  //    }
+        }
+
       columnHTML +=
         '<div class="Row">' +
         '<div class="' + heldagClass + '">' +
@@ -498,7 +430,6 @@ function isRedDay(day) {
   if (movableRedDays.includes(dayAndMonth) || dayName === "lördag" || dayName === "söndag") {
     return true;
   }
-
   return false;
 }
 
@@ -519,9 +450,13 @@ function dialog(day, name, event) {
   document.getElementById("dialogName").innerText = name.toUpperCase() + " - Dag: " + day
   dialogElement.showModal();
   document.body.style.overflow = "hidden";
+  if (!autoUpdate) {
+    alert("Ändringar kommer inte att sparas. För denna lista är " + document.getElementById("titleDate").innerText +" lista.");
+  }
 
   document.getElementById("dialogM").onclick = function () {
-    document.getElementById(id).innerHTML = "M"
+    document.getElementById(id).innerHTML = "M";
+    id = EscapeString(id);
     storage.setItem("buttonData_" + id, "M");
     dialogElement.close();
     id = null
@@ -530,7 +465,8 @@ function dialog(day, name, event) {
   };
 
   document.getElementById("dialogX").onclick = function () {
-    document.getElementById(id).innerHTML = "X"
+    document.getElementById(id).innerHTML = "X";
+    id = EscapeString(id);
     storage.setItem("buttonData_" + id, "X");
     dialogElement.close();
     id = null
@@ -539,7 +475,8 @@ function dialog(day, name, event) {
   };
 
   document.getElementById("dialog-").onclick = function () {
-    document.getElementById(id).innerHTML = "-"
+    document.getElementById(id).innerHTML = "-";
+    id = EscapeString(id);
     storage.setItem("buttonData_" + id, "-");
     dialogElement.close();
     id = null
@@ -548,7 +485,8 @@ function dialog(day, name, event) {
   };
 
   document.getElementById("dialogL").onclick = function () {
-    document.getElementById(id).innerHTML = "L"
+    document.getElementById(id).innerHTML = "L";
+    id = EscapeString(id);
     storage.setItem("buttonData_" + id, "L");
     dialogElement.close();
     id = null
@@ -557,7 +495,8 @@ function dialog(day, name, event) {
   };
 
   document.getElementById("dialogS").onclick = function () {
-    document.getElementById(id).innerHTML = "S"
+    document.getElementById(id).innerHTML = "S";
+    id = EscapeString(id);
     storage.setItem("buttonData_" + id, "S");
     dialogElement.close();
     id = null
@@ -565,26 +504,9 @@ function dialog(day, name, event) {
     document.body.style.overflow = "auto";
   };
 
-//  document.getElementById("dialogH").onclick = function () {
-//    document.getElementById(id).innerHTML = "HE"
-//    storage.setItem("buttonData_" + id, "HE");
-//    dialogElement.close();
-//    id = null
-//    clickedElement = null
-//    document.body.style.overflow = "auto";
-//  };
-//
-//  document.getElementById("dialogF").onclick = function () {
-//    document.getElementById(id).innerHTML = "HA"
-//    storage.setItem("buttonData_" + id, "HA");
-//    dialogElement.close();
-//    id = null
-//    clickedElement = null
-//    document.body.style.overflow = "auto";
-//  };
-
   document.getElementById("dialogRensa").onclick = function () {
     document.getElementById(id).innerHTML = "&nbsp;"
+    id = EscapeString(id);
     storage.setItem("buttonData_" + id, " ");
     dialogElement.close();
     id = null
@@ -671,15 +593,6 @@ lssave(monthData[monthName],monthName,name_Group).then(() => {
   return ("Ett fel uppstod vid lssave data.",error);
 });;
   }
-
-
-//    document.getElementById("dialogSwichDateMonad_sparaFil").onclick = function () {
-//      monthData[monthName].forEach(item => {
-//      if (item.name) {
-//        name_Group = item.name_Group || "Namnlös";
-//      }});
-//        saveDataToAsFile(JSON.stringify(monthData[monthName], null, 2),monthName,name_Group);
-//    });
 }
 
 
@@ -731,31 +644,6 @@ async function lssave(jsonData, monthName, name_Group) {
       const name = item.name;
       namesData.push(name);
 
-//      const arbeteArray = Array.isArray(item.arbetsDagar) ? item.arbetsDagar : [];
-//
-//      for (let i = 0; i < arbeteArray.length; i++) {
-//        let val = arbeteArray[i];
-//        let key = "";
-//        if (i == 0) {
-//          key = `buttonData_${name}_Mandag`;
-//        } else if (i == 1) {
-//          key = `buttonData_${name}_Tisdag`;
-//        } else if (i == 2) {
-//          key = `buttonData_${name}_Onsdag`;
-//        } else if (i == 3) {
-//          key = `buttonData_${name}_Torsdag`;
-//        } else if (i == 4) {
-//          key = `buttonData_${name}_Fredag`;
-//        }
-//
-//        if (val === null || val === "" || val === "&nbsp;") {
-//          storage.removeItem(key);
-//        } else {
-//          storage.setItem(key, String(val));
-//        }
-//    }
-
-
       const arbeteArrayOveride = Array.isArray(item.arbetsdagArrOveride) ? item.arbetsdagArrOveride : [];
       for (let i = 0; i < arbeteArrayOveride.length; i++) {
         let val = arbeteArrayOveride[i];
@@ -794,26 +682,9 @@ function getJson() {
   let output = [];
   output.push({ name_Group: storage.getItem("titelData") });
   for (let i = 0; i < names.length; i++) {
-//    let workDayArr = [];
-//    let workDayArrOveride = [];
-//    const daysInMonth = getAllDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
-//    for (let j = 1; j <= daysInMonth.length; j++) {
-//      if (storage.getItem(`buttonData_${names[i]}_${j}_heldag`) != null) {
-//        workDayArrOveride.push(`buttonData_${names[i]}_${j}_heldag:` + storage.getItem(`buttonData_${names[i]}_${j}_heldag`));
-//      } else if (storage.getItem(`buttonData_${names[i]}_${j}_halvdag`) != null) {
-//        workDayArrOveride.push(`buttonData_${names[i]}_${j}_halvdag:` + storage.getItem(`buttonData_${names[i]}_${j}_halvdag`));
-//      }
-//    }
-//    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Mandag`));
-//    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Tisdag`));
-//    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Onsdag`));
-//    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Torsdag`));
-//    workDayArr.push(storage.getItem(`buttonData_${names[i]}_Fredag`));
 
     output.push({
       name: names[i],
-//      arbetsDagar: workDayArr,
-//      arbetsdagArrOveride: workDayArrOveride,
     });
   }
 
