@@ -13,6 +13,34 @@ body {
   background-color: #d8dee9;
 }
 
+button {
+  border: none;
+}
+
+/* fallback */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/materialicons/v145/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
 .headers {
   overflow-y: scroll;
 }
@@ -69,6 +97,16 @@ body {
   width: 34px;
 }
 
+#checkMonthChangeProgressBar {
+  width: 1%;
+  height: 8px;
+  background-color: #5e81ac;
+  border-radius: 8px;
+  transition: width 1s linear;
+  padding: 0;
+  margin: 0;
+}
+
 .column {
   background-color: white;
   padding-left: 35px;
@@ -115,6 +153,7 @@ body {
   font-size: 15px;
   width: fit-content;
   display: flex;
+  text-transform: uppercase;
 }
 
 
@@ -140,6 +179,8 @@ body {
 
 .Row-weekend {
   background-color: red;
+  color: red;
+  font-size: 0px;
   float: left;
   width: 37px;
   height: 22px;
@@ -147,8 +188,20 @@ body {
 
 .full-width-button {
   width: 100%;
+  height: 100%;
   text-align: center;
   display: block;
+}
+.full-width-button:hover {
+  cursor: pointer;
+}
+
+.Row-weekend .full-width-button {
+  background-color: red;
+}
+.Row-weekend .full-width-button:hover {
+  background-color: red;
+  cursor: default;
 }
 
 .MenuButtons {
@@ -158,23 +211,50 @@ body {
   padding: 5px;
   text-align: center;
   font-weight: 900;
+  cursor: pointer;
 }
 
-.MenuButtons:hover {
+.MenuButtons:hover,
+#MenuButtonExitFullScreen:hover {
   color: #bfb9b9;
+}
+
+#MenuButtonFullScreen,
+#MenuButtonExitFullScreen {
+  float: right;
+}
+
+#MenuButtonExitFullScreen {
+  display: none;
+  position: fixed;
+  color: #e5e9f0;
+  background-color: #434c5e;
+  border-radius: 8px;
+  padding: 5px;
+  margin: 5px;
+  text-align: center;
+  font-weight: 900;
+  right: 0%;
+  cursor: pointer;
+}
+#MenuButtonSwichDate{
+  cursor: wait;
+}
+
+#MenuButtonDialogSaveAsJson{
+  display: none;
 }
 
 dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.4);
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
 }
 
 dialog {
   background-color: #d8dee9;
   border-radius: 8px;
   text-align: center;
-
 }
 
 button,
@@ -203,6 +283,7 @@ input[type=button]::-moz-focus-inner {
   font-weight: 900;
   height: 100px;
   width: 100px;
+  cursor: pointer;
 }
 
 .dialogButton_X:hover {
@@ -217,6 +298,7 @@ input[type=button]::-moz-focus-inner {
   font-weight: 900;
   height: 100px;
   width: 100px;
+  cursor: pointer;
 }
 
 .dialogButton_M:hover {
@@ -231,6 +313,7 @@ input[type=button]::-moz-focus-inner {
   font-weight: 900;
   height: 100px;
   width: 100px;
+  cursor: pointer;
 }
 
 .dialogButton_-:hover {
@@ -240,15 +323,16 @@ input[type=button]::-moz-focus-inner {
 .dialogButton_L {
   border-radius: 8px;
   text-align: center;
-  background-color: orange;
+  background-color: hsl(39, 100%, 45%);
   color: white;
   font-weight: 900;
   height: 100px;
   width: 100px;
+  cursor: pointer;
 }
 
 .dialogButton_L:hover {
-  background-color: darkorange;
+  background-color: hsl(33, 100%, 45%);
 }
 
 .dialogButton_S {
@@ -259,6 +343,7 @@ input[type=button]::-moz-focus-inner {
   font-weight: 900;
   height: 100px;
   width: 100px;
+  cursor: pointer;
 }
 
 .dialogButton_S:hover {
@@ -276,13 +361,15 @@ input[type=button]::-moz-focus-inner {
   float: left;
   margin-top: 2rem;
   margin-inline: 2rem;
+  cursor: pointer;
 }
 
 #dialogRensa:hover {
   background-color: #555;
 }
 
-.dialogclose {
+.dialogclose,
+.dialogSwichDateclose {
   border-radius: 8px;
   text-align: center;
   background-color: crimson;
@@ -294,13 +381,19 @@ input[type=button]::-moz-focus-inner {
   float: right;
   margin-top: 2rem;
   margin-inline: 2rem;
-
+  cursor: pointer;
 }
 
-.dialogclose:hover {
+.dialogclose:hover,
+.dialogSwichDateclose:hover {
   background-color: darkred;
 }
 
+.dialogSwichDateclose {
+  width: 100%;
+  margin-inline: auto;
+  float: none;
+}
 
 /* dialog button save */
 .dialogSave {
@@ -327,12 +420,33 @@ input[type=button]::-moz-focus-inner {
   color: white;
   font-weight: 900;
   font-size: large;
+  cursor: pointer;
 }
 
 .dialogAddName:hover {
   background-color: darkgreen;
 }
 
+
+.dialogButtonSwichDate {
+  border-radius: 8px;
+  cursor: not-allowed;
+  border-radius: 8px;
+  text-align: center;
+  background-color: gray;
+  color: white;
+  font-weight: 900;
+  padding: 15px;
+  margin: 0;
+}
+
+.dialogButtonSwichDate:hover {
+  background-color: darkgray;
+}
+
+#dialogSwichDateButtons{
+  visibility: hidden;
+}
 
 /*  */
 
@@ -352,10 +466,16 @@ input[type=button]::-moz-focus-inner {
 }
 
 .nameEditItem {
+  text-transform: uppercase;
   text-align: center;
+  cursor: default;
   font-size: 2rem;
-  width: 400px;
-  height: 68px;
+  width: 250px;
+  height: 45px;
+  border-radius: 25px;
+  margin: 0;
+  background: white;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
 
 #nameEditContainer {
@@ -365,14 +485,33 @@ input[type=button]::-moz-focus-inner {
   margin-top: 20px;
 }
 
-.removeNameInArray {
-  background-color: red;
-  color: black;
-  font-weight: 900;
-  font-size: 2rem;
-  height: 68px;
-  width: 68px;
+.editNameInArray {
+  background-color: #434c5e;
+  color: orange;
+  cursor: pointer;
+  height: 45px;
+  margin-inline: 10px;
+  border-radius: 25px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
+
+.editNameInArray:hover {
+  color: darkorange;
+}
+
+.removeNameInArray {
+  background-color: #434c5e;
+  color: red;
+  cursor: pointer;
+  height: 45px;
+  border-radius: 25px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+
+.removeNameInArray:hover {
+  color: darkred;
+}
+
 
 
 .dialogButtonPrintOld {
@@ -421,36 +560,167 @@ input[type=button]::-moz-focus-inner {
   text-align: center;
   font-weight: bold;
 }
+.viktigtMedelande a {
+  color: white;
+  text-decoration: underline;
+}
+.viktigtMedelande a:hover {
+  color: #bfb9b9;
+}
+.viktigtMedelande h2 {
+  padding-inline: 20px;
+}
+#useUnSupportedBrowserButton{
+font-size: larger;
+}
 
 #menuTopButtons {
-  margin-top: 10px;
+  margin-top: 2px;
   margin-bottom: 10px;
 }
 
-#layoutMain {
+main {
+  max-width: 96rem;
+  height: 100%;
+  padding-bottom: 100px;
+  background-color: white;
+  width: max-content;
+}
+
+main:fullscreen,
+#layoutEdit:fullscreen {
+  overflow-y: scroll;
+}
+
+#layoutEdit {
+  display: none;
   max-width: 96rem;
   min-width: 85rem;
   height: 100%;
   padding-bottom: 100px;
   background-color: white;
+  text-align: center;
 }
 
-#layoutMain:fullscreen {
-  overflow-y:scroll;
+.AddNames {
+  text-align: center;
 }
-
-#MenuButtonEditDialog {
-  width: 100%;
-  height: 100%;
-}
-
 
 #AddNamesBox {
   background-color: #d8dee9;
   width: 50rem;
   height: fit-content;
-  display: flex;
+  display: block;
   margin-inline: auto;
   padding-bottom: 20px;
   margin-top: 10px;
+}
+
+noscript.viktigtMedelande {
+  text-align: center;
+  display: block;
+}
+
+
+#createNameForm {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  margin-inline: auto;
+  margin-top: 10px;
+  font-weight: 900;
+}
+
+#createNameForm #newNameInput {
+  background-color: white;
+  color: black;
+  border-radius: 8px;
+  padding: 5px;
+  text-align: center;
+  font-weight: 900;
+  cursor: text;
+  margin: 10px;
+  font-size: 18px;
+}
+
+
+#createNameForm input[type="submit"] {
+  background-color: green;
+  color: #e5e9f0;
+  border-radius: 8px;
+  padding: 5px;
+  text-align: center;
+  font-weight: 900;
+  cursor: pointer;
+  margin: 10px;
+}
+
+form button {
+  color: #e5e9f0;
+  background-color: #434c5e;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+form button:hover,
+#createNameForm input[type="submit"]:hover {
+  color: #bfb9b9;
+}
+
+#createNameSelects {
+  display: flex;
+  margin-inline: auto;
+  text-align: center;
+  justify-content: center;
+}
+
+#createNameSelects select {
+  font-size: 1rem;
+  margin: 5px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #434c5e;
+  font-weight: 900;
+  color: white;
+}
+
+#createNameSelects label {
+  font-weight: 900;
+  display: block;
+  width: max-content;
+  margin-inline: auto;
+}
+
+#createNameSelects select#Mandag {
+  background-color: green;
+}
+
+#createNameSelects select#Tisdag {
+  background-color: blue;
+}
+
+#createNameSelects select#Onsdag {
+  color: black;
+  background-color: white;
+}
+
+#createNameSelects select#Torsdag {
+  background-color: red;
+}
+
+#createNameSelects select#Fredag {
+  color: black;
+  background-color: yellow;
+}
+
+#dialogSwichDateBox {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: fit-content;
+}
+.brake-page{
+    display: none;
 }

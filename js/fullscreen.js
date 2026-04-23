@@ -1,21 +1,26 @@
+const elem = document.getElementById("layoutMain");
 function fullScreen() {
-     const elem = document.getElementById("layoutMain");
-
-     if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-     } else if (elem.mozRequestFullScreen) { // Firefox
-          elem.mozRequestFullScreen();
-     } else if (elem.webkitRequestFullscreen) { // Chrome, Safari and Opera
-          elem.webkitRequestFullscreen();
-     } else if (elem.msRequestFullscreen) { // IE/Edge
-          elem.msRequestFullscreen();
-     }
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+        document.getElementById("MenuButtonExitFullScreen").style.display = "none";
+        return;
+    }
+    document.getElementById("MenuButtonExitFullScreen").style.display = "block";
+    elem.requestFullscreen();
 }
 
-const bodyElement = document.querySelector("html");
-
-bodyElement.addEventListener('keydown', (event) => {
-     if (event.key === 'F11') {
-          event.preventDefault();
-     }
+document.addEventListener("fullscreenchange", (event) => {
+    event.preventDefault();
+    if (!document.fullscreenElement) {
+        document.getElementById("MenuButtonExitFullScreen").style.display = "none";
+    }
 });
+
+window.addEventListener("beforeunload", (event) => { 
+if (document.fullscreenElement) {
+  event.preventDefault();
+  event.returnValue = '';
+  event.return;
+  }
+});
+
