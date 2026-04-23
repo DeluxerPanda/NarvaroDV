@@ -283,6 +283,7 @@ input[type=button]::-moz-focus-inner {
   font-weight: 900;
   height: 100px;
   width: 100px;
+  cursor: pointer;
 }
 
 .dialogButton_X:hover {
@@ -297,6 +298,7 @@ input[type=button]::-moz-focus-inner {
   font-weight: 900;
   height: 100px;
   width: 100px;
+  cursor: pointer;
 }
 
 .dialogButton_M:hover {
@@ -311,6 +313,7 @@ input[type=button]::-moz-focus-inner {
   font-weight: 900;
   height: 100px;
   width: 100px;
+  cursor: pointer;
 }
 
 .dialogButton_-:hover {
@@ -325,6 +328,7 @@ input[type=button]::-moz-focus-inner {
   font-weight: 900;
   height: 100px;
   width: 100px;
+  cursor: pointer;
 }
 
 .dialogButton_L:hover {
@@ -339,6 +343,7 @@ input[type=button]::-moz-focus-inner {
   font-weight: 900;
   height: 100px;
   width: 100px;
+  cursor: pointer;
 }
 
 .dialogButton_S:hover {
@@ -356,6 +361,7 @@ input[type=button]::-moz-focus-inner {
   float: left;
   margin-top: 2rem;
   margin-inline: 2rem;
+  cursor: pointer;
 }
 
 #dialogRensa:hover {
